@@ -23,8 +23,14 @@ class BillboardShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    BillboardShader& setRelativeBillboardRatio(const Vector2& ratio) {
+      setUniform(_relativeBillboardRatioUniform, ratio);
+      return *this;
+    }
+
   private:
     enum: Int { TextureUnit = 0 };
 
     Int _colorUniform;
+    Int _relativeBillboardRatioUniform;
 };

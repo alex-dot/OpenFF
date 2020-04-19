@@ -25,4 +25,6 @@ BillboardShader::BillboardShader() {
 
   _colorUniform = uniformLocation("color");
   setUniform(uniformLocation("textureData"), TextureUnit);
+  _relativeBillboardRatioUniform = uniformLocation("relativeBillboardRatio");
+  setUniform(_relativeBillboardRatioUniform, Vector2(1.0f));
 }

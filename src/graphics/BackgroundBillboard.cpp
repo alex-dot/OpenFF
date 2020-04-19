@@ -1,5 +1,4 @@
 #include <Corrade/Containers/Optional.h>
-#include <Corrade/PluginManager/Manager.h>
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/GL/Texture.h>
 #include <Magnum/GL/TextureFormat.h>
@@ -13,6 +12,8 @@
 #include <Magnum/Trade/ImageData.h>
 #include <Magnum/Trade/MeshData.h>
 
+#include <iostream>
+
 #include "BackgroundBillboard.h"
 
 BackgroundBillboard::BackgroundBillboard() {
@@ -23,7 +24,7 @@ BackgroundBillboard::BackgroundBillboard() {
       Vector2 position;
       Vector2 textureCoordinates;
     };
-    const QuadVertex data[]{
+    QuadVertex data[]{
       {{-1.0f,  1.0f}, {0.0f, 1.0f}},
       {{-1.0f, -1.0f}, {0.0f, 0.0f}},
       {{ 1.0f,  1.0f}, {1.0f, 1.0f}},
@@ -38,25 +39,31 @@ BackgroundBillboard::BackgroundBillboard() {
       .addVertexBuffer(std::move(buffer), 0,
         BillboardShader::Position{},
         BillboardShader::TextureCoordinates{});
+}
 
-    PluginManager::Manager<Trade::AbstractImporter> manager;
-    Containers::Pointer<Trade::AbstractImporter> importer =
-      manager.loadAndInstantiate("PngImporter");
-    if(!importer) std::exit(1);
-
-    if(!importer->openFile("../../ff7/data/flevel/ancnt1.png")) std::exit(2);
-    Containers::Optional<Trade::ImageData2D> image = importer->image2D(0);
-    CORRADE_INTERNAL_ASSERT(image);
+void BackgroundBillboard::setBackground(Containers::Optional<Trade::ImageData2D> &image) {
     _texture.setWrapping(GL::SamplerWrapping::ClampToEdge)
       .setMagnificationFilter(GL::SamplerFilter::Linear)
       .setMinificationFilter(GL::SamplerFilter::Linear)
       .setStorage(1, GL::textureFormat(image->format()), image->size())
       .setSubImage(0, {}, *image);
+    _backgroundSize = image->size();
 }
 
 void BackgroundBillboard::draw() {
   using namespace Magnum::Math::Literals;
-  _shader.setColor(0xffb2b2_rgbf)
+
+  Vector2 relative_billboard_ratio;
+  float window_ratio = float(_windowSize.x())/float(_windowSize.y());
+  float background_ratio = float(_backgroundSize.x())/float(_backgroundSize.y());
+  float relative_ratio = window_ratio/background_ratio;
+  if (relative_ratio >= 1.0f)
+    relative_billboard_ratio = Vector2(1.0f/relative_ratio, 1.0f);
+  else
+    relative_billboard_ratio = Vector2(1.0f, relative_ratio);
+  _shader.setRelativeBillboardRatio(relative_billboard_ratio);
+
+  _shader.setColor(0xffffff_rgbf)
     .bindTexture(_texture)
     .draw(_billboard);
 }
