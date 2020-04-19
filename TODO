@@ -3,6 +3,13 @@
 ## 0.1.x
 * Controller Support
 
+## 0.1.2
+* Resolution settings
+* Screen Settings
+** Pixel Perfect (multiple of base resolution (320*224))
+** Zoom
+** Stretch
+
 ## 0.1.1
 * ff7 field level image loading
 
