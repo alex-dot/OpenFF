@@ -4,3 +4,6 @@
 [submodule "libraries/magnum"]
 	path = libraries/magnum
 	url = https://github.com/mosra/magnum.git
+[submodule "libraries/magnum-plugins"]
+	path = libraries/magnum-plugins
+	url = https://github.com/mosra/magnum-plugins.git

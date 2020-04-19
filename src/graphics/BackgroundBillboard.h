@@ -5,6 +5,8 @@
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/Shaders/VertexColor.h>
 
+#include "shaders/BillboardShader.h"
+
 class BackgroundBillboard{
   public:
     explicit BackgroundBillboard();
@@ -12,6 +14,7 @@ class BackgroundBillboard{
     void draw();
 
   private:
-    Magnum::GL::Mesh _billboard;
-    Magnum::Shaders::VertexColor3D _shader;
+    Magnum::GL::Mesh      _billboard;
+    BillboardShader       _shader;
+    Magnum::GL::Texture2D _texture;
 };
