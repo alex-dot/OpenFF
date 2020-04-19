@@ -1,9 +1,16 @@
 # MILESTONES
 
-## 0.1.1
+## 0.1.x
 * Controller Support
 
+## 0.1.1
+* ff7 field level image loading
+
 ## 0.1.0
+* ReadMe
+* Build Instructions
+
+## 0.0.5
 * UI
 
 ## 0.0.4
@@ -11,6 +18,7 @@
 
 ## 0.0.3
 * Configuration file loading
+* ff7-data path configuration
 
 ## 0.0.2
 * Background Rendering
