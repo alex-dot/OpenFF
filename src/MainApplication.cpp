@@ -1,5 +1,6 @@
 #include <Corrade/Containers/Optional.h>
 #include <Corrade/PluginManager/Manager.h>
+#include <Corrade/Utility/Debug.h>
 #include <Magnum/GL/Buffer.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/Platform/Sdl2Application.h>
@@ -16,13 +17,15 @@ class OpenFF_Main: public Platform::Application {
 
   private:
     void drawEvent() override;
+    void viewportEvent(ViewportEvent& event) override;
 
     OpenFF::BackgroundBillboard*  _bb;
 };
 
 OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   Platform::Application{arguments, Configuration{}
-                                    .setTitle("OpenFF_Main")}
+                                    .setTitle("OpenFF_Main")
+                                    .setWindowFlags(Configuration::WindowFlag::Resizable)}
 {
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -34,8 +37,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   CORRADE_INTERNAL_ASSERT(image);
 
   _bb = new OpenFF::BackgroundBillboard();
-  _bb->setWindowSize(Platform::Sdl2Application::windowSize());
   _bb->setBackground(image);
+  _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 }
 
 void OpenFF_Main::drawEvent() {
@@ -44,6 +47,11 @@ void OpenFF_Main::drawEvent() {
   _bb->draw();
 
   swapBuffers();
+}
+
+void OpenFF_Main::viewportEvent(ViewportEvent& event) {
+  GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
+  _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 }
 
 MAGNUM_APPLICATION_MAIN(OpenFF_Main)

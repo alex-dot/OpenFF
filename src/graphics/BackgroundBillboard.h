@@ -13,10 +13,8 @@ class BackgroundBillboard{
 
     void draw();
     void setBackground(Containers::Optional<Trade::ImageData2D> &image);
-
-    void setWindowSize(Magnum::Vector2i windowSize) {
-      _windowSize = windowSize;
-    };
+    void setRelativeBillboardRatio(
+            Magnum::Vector2i windowSize = Magnum::Vector2i(-1.0f));
 
   private:
     Magnum::GL::Mesh      _billboard;
