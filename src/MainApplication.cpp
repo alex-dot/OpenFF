@@ -10,19 +10,19 @@
 
 using namespace Magnum;
 
-class OpenFF: public Platform::Application {
+class OpenFF_Main: public Platform::Application {
   public:
-    explicit OpenFF(const Arguments& arguments);
+    explicit OpenFF_Main(const Arguments& arguments);
 
   private:
     void drawEvent() override;
 
-    BackgroundBillboard*  _bb;
+    OpenFF::BackgroundBillboard*  _bb;
 };
 
-OpenFF::OpenFF(const Arguments& arguments):
+OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   Platform::Application{arguments, Configuration{}
-                                    .setTitle("OpenFF")}
+                                    .setTitle("OpenFF_Main")}
 {
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -33,12 +33,12 @@ OpenFF::OpenFF(const Arguments& arguments):
   Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
   CORRADE_INTERNAL_ASSERT(image);
 
-  _bb = new BackgroundBillboard();
+  _bb = new OpenFF::BackgroundBillboard();
   _bb->setWindowSize(Platform::Sdl2Application::windowSize());
   _bb->setBackground(image);
 }
 
-void OpenFF::drawEvent() {
+void OpenFF_Main::drawEvent() {
   GL::defaultFramebuffer.clear(GL::FramebufferClear::Color);
 
   _bb->draw();
@@ -46,4 +46,4 @@ void OpenFF::drawEvent() {
   swapBuffers();
 }
 
-MAGNUM_APPLICATION_MAIN(OpenFF)
+MAGNUM_APPLICATION_MAIN(OpenFF_Main)

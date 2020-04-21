@@ -16,6 +16,8 @@
 
 #include "BackgroundBillboard.h"
 
+using namespace OpenFF;
+
 BackgroundBillboard::BackgroundBillboard() {
     using namespace Magnum;
     using namespace Math::Literals;

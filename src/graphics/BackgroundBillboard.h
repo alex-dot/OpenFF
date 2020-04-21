@@ -1,11 +1,11 @@
-
-
 #pragma once
 
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/Shaders/VertexColor.h>
 
 #include "shaders/BillboardShader.h"
+
+namespace OpenFF {
 
 class BackgroundBillboard{
   public:
@@ -25,3 +25,5 @@ class BackgroundBillboard{
     Magnum::Vector2i      _windowSize;
     Magnum::Vector2i      _backgroundSize;
 };
+
+}
