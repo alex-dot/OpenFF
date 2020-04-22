@@ -8,7 +8,6 @@ add_subdirectory(libraries/corrade EXCLUDE_FROM_ALL)
 
 # Add Magnum as a subproject
 set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
-set(WITH_TGAIMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum EXCLUDE_FROM_ALL)
 
 # Add Magnum-Plugins as a subproject
