@@ -5,7 +5,9 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_executable(OpenFF MainApplication.cpp
     graphics/BackgroundBillboard.cpp
-    graphics/shaders/BillboardShader.cpp)
+    graphics/shaders/BillboardShader.cpp
+    utilities/Configuration.cpp
+    utilities/InputHandler.cpp)
 
 add_dependencies(OpenFF MagnumPlugins::PngImporter)
 
