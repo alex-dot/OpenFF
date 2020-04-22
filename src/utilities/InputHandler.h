@@ -9,6 +9,8 @@ class OpenFF_Main;
 
 namespace OpenFF {
 
+typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
+
 enum InputEvents {
   none,
   closeApp
@@ -27,36 +29,26 @@ class InputHandler{
   public:
     explicit InputHandler();
 
-    bool processKeyReleaseEvent(
-            Magnum::Platform::Sdl2Application::KeyEvent& event,
-            OpenFF_Main* main_application);
+    bool processKeyReleaseEvent(KeyEvent& event, OpenFF_Main* main_application);
 
     // callback setters
     void setMainExitCallback(std::function<void(OpenFF_Main&)> f) {_mainExit = f;};
 
-    void addKeyToInputEvents(
-            Magnum::Platform::Sdl2Application::KeyEvent::Key,
-            ModifierType,
-            InputEvents event);
-    void removeKeyFromInputEvents(
-            Magnum::Platform::Sdl2Application::KeyEvent::Key,
-            ModifierType);
+    void addKeyToInputEvents(KeyEvent::Key, ModifierType, InputEvents event);
+    void removeKeyFromInputEvents(KeyEvent::Key, ModifierType);
 
   private:
     // callbacks
     void doMainExit(OpenFF_Main* app) {_mainExit(*app);};
 
-    std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+    std::map<KeyEvent::Key,OpenFF::InputEvents>*
             determineInputEventMap(ModifierType modifier);
 
     std::map<OpenFF::InputEvents,
              std::function<void(InputHandler&,OpenFF_Main*)>> _event_callbacks;
-    std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,
-             OpenFF::InputEvents> _input_events_unmodified;
-    std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,
-             OpenFF::InputEvents> _input_events_shift;
-    std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,
-             OpenFF::InputEvents> _input_events_ctrl;
+    std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_unmodified;
+    std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_shift;
+    std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_ctrl;
 
     std::function<void(OpenFF_Main&)>  _mainExit;
 };

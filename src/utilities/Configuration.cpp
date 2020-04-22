@@ -11,19 +11,19 @@ Configuration::Configuration(InputHandler* input_handler) :
 
   // configure all input events
   _input_handler->addKeyToInputEvents(
-          Magnum::Platform::Sdl2Application::KeyEvent::Key::Esc,
+          KeyEvent::Key::Esc,
           ModifierType::unmodified,
           InputEvents::closeApp);
   _input_handler->addKeyToInputEvents(
-          Magnum::Platform::Sdl2Application::KeyEvent::Key::Q,
+          KeyEvent::Key::Q,
           ModifierType::ctrl,
           InputEvents::closeApp);
   _input_handler->addKeyToInputEvents(
-          Magnum::Platform::Sdl2Application::KeyEvent::Key::X,
+          KeyEvent::Key::X,
           ModifierType::shift,
           InputEvents::closeApp);
   _input_handler->removeKeyFromInputEvents(
-          Magnum::Platform::Sdl2Application::KeyEvent::Key::X,
+          KeyEvent::Key::X,
           ModifierType::shift);
 }
 

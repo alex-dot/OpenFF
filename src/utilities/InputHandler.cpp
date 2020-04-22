@@ -13,10 +13,8 @@ InputHandler::InputHandler() {
   _event_callbacks[InputEvents::closeApp] = &InputHandler::doMainExit;
 }
 
-std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+std::map<KeyEvent::Key,OpenFF::InputEvents>*
         InputHandler::determineInputEventMap(ModifierType modifier) {
-  using namespace Magnum::Platform;
-
   if( modifier == ModifierType::ctrl )
     return &_input_events_ctrl;
   else if ( modifier == ModifierType::shift )
@@ -26,7 +24,7 @@ std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
 }
 
 bool InputHandler::processKeyReleaseEvent(
-                    Magnum::Platform::Sdl2Application::KeyEvent& event,
+                    KeyEvent& event,
                     OpenFF_Main* main_application) {
   using namespace Magnum::Platform;
 
@@ -38,7 +36,7 @@ bool InputHandler::processKeyReleaseEvent(
   else
     modifier = ModifierType::unmodified;
 
-  const std::map<Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+  const std::map<KeyEvent::Key,OpenFF::InputEvents>*
           event_map = determineInputEventMap(modifier);
 
   auto e_iter = event_map->find(event.key());
@@ -53,25 +51,17 @@ bool InputHandler::processKeyReleaseEvent(
 }
 
 void InputHandler::addKeyToInputEvents(
-        Magnum::Platform::Sdl2Application::KeyEvent::Key key,
+        KeyEvent::Key key,
         ModifierType modifier,
         InputEvents event) {
-  using namespace Magnum::Platform;
-
-  std::map<Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+  std::map<KeyEvent::Key,OpenFF::InputEvents>*
           event_map = determineInputEventMap(modifier);
-
-  event_map->insert(std::pair<Sdl2Application::KeyEvent::Key,
-                              OpenFF::InputEvents>
-                              (key, event));
+  event_map->insert(std::pair<KeyEvent::Key,OpenFF::InputEvents>(key, event));
 }
 void InputHandler::removeKeyFromInputEvents(
-        Magnum::Platform::Sdl2Application::KeyEvent::Key key,
+        KeyEvent::Key key,
         ModifierType modifier) {
-  using namespace Magnum::Platform;
-
-  std::map<Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+  std::map<KeyEvent::Key,OpenFF::InputEvents>*
           event_map = determineInputEventMap(modifier);
-
   event_map->erase(key);
 }
