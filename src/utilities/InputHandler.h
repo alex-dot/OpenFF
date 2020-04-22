@@ -46,6 +46,9 @@ class InputHandler{
     // callbacks
     void doMainExit(OpenFF_Main* app) {_mainExit(*app);};
 
+    std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,OpenFF::InputEvents>*
+            determineInputEventMap(ModifierType modifier);
+
     std::map<OpenFF::InputEvents,
              std::function<void(InputHandler&,OpenFF_Main*)>> _event_callbacks;
     std::map<Magnum::Platform::Sdl2Application::KeyEvent::Key,
