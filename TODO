@@ -3,6 +3,9 @@
 ## 0.1.x
 * Controller Support
 
+## 0.1.3
+* MIDI support (by way of MidiAudioImporter Magnum-Plugin)
+
 ## 0.1.2
 * Resolution settings
 * Screen Settings
@@ -21,7 +24,7 @@
 * UI
 
 ## 0.0.4
-* Audio Playback
+* Ogg-Audio Playback
 
 ## 0.0.3
 * Configuration file loading
