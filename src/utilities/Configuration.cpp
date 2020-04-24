@@ -28,12 +28,15 @@ std::string OpenFF::readFileData(const char* filename) {
 Configuration::Configuration(InputHandler* input_handler) :
         _input_handler(input_handler),
         _ini(),
-        _background_location("../../ff7/data/flevel/ancnt1.png"),
+        _background_location(""),
         _configuration_settings(),
         _input_event_settings() {
 
   this->buildKeycodeLookupTable();
 
+  // Populate setting callbacks
+  _configuration_setting_callbacks[ConfigurationSettings::background_location]
+          = &Configuration::setBackgroundLocation;
   // All configuration settings, len(_configuration_settings) === len(ConfigurationSettings-1)
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
   // All input event settings, len(_input_event_settings) === len(InputEvents-2)
@@ -65,31 +68,44 @@ Configuration::Configuration(InputHandler* input_handler) :
 void Configuration::processIniConfigSections() {
   for( auto &sect : _ini ) {
     if( sect.get_name() == "Display" ) {
-      processIniConfigOptions<std::map<std::string,OpenFF::ConfigurationSettings>>(&_configuration_settings,sect);
+      processIniConfigOptions<std::map<std::string,OpenFF::ConfigurationSettings>>
+              (&_configuration_settings, sect, SettingTypes::configuration_settings);
     } else if( sect.get_name() == "Controls" ) {
-      processIniConfigOptions<std::map<std::string,OpenFF::InputEvents>>(&_input_event_settings,sect);
+      processIniConfigOptions<std::map<std::string,OpenFF::InputEvents>>
+              (&_input_event_settings, sect, SettingTypes::input_event_settings);
     }
 	}
 }
 template<typename settings_map> void Configuration::processIniConfigOptions(
-    settings_map* setting, inicpp::section options)
+    settings_map* setting, inicpp::section options, SettingTypes type)
 {
 	for( auto &opt : options ) {
     auto sm_iter = setting->find(opt.get_name());
     if( sm_iter != setting->end() ) {
       // if the option is known, either parse single value or list of values
   		if (!opt.is_list()) {
-	  		processInputEventsFromConfig(opt.get_name(), opt.get<inicpp::string_ini_t>());
+        processIniConfigValues(type, opt.get_name(), opt.get<inicpp::string_ini_t>());
 		  } else {
         // interpret list of values
-			  for (auto &list_item : opt.get_list<inicpp::string_ini_t>())
-				  processInputEventsFromConfig(opt.get_name(), list_item);
+			  for (auto &list_item : opt.get_list<inicpp::string_ini_t>()) {
+				  processIniConfigValues(type, opt.get_name(), list_item);
+        }
 		  }
     } else {
       // TODO add config file error handling (option not found)
       Corrade::Utility::Debug{} << opt.get_name().c_str();
     }
 	}
+}
+void Configuration::processIniConfigValues(SettingTypes type, std::string option, std::string value) {
+  switch( type ) {
+    case SettingTypes::configuration_settings:
+      _configuration_setting_callbacks[_configuration_settings[option]](*this, value);
+      break;
+    case SettingTypes::input_event_settings:
+      processInputEventsFromConfig(option, value);
+      break;
+  }
 }
 
 void Configuration::processInputEventsFromConfig(std::string option, std::string input) {
@@ -105,7 +121,7 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
       mod = ModifierType::shift;
     } else {
       // TODO add config file error handling (value invalid)
-      Corrade::Utility::Debug{} << "nope";
+      Corrade::Utility::Debug{} << "nope1";
     }
   }
 
@@ -114,7 +130,9 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
     _input_handler->addKeyToInputEvents(_keycodes[key], mod, _input_event_settings[option]);
   }
   // TODO add config file error handling (value invalid)
-  else { Corrade::Utility::Debug{} << "nope"; }
+  else {
+    Corrade::Utility::Debug{} << "nope2";
+  }
 }
 
 void Configuration::setBackgroundLocation(std::string new_loc) {

@@ -11,6 +11,7 @@ using namespace OpenFF;
 InputHandler::InputHandler() {
   // populate event callback map
   _event_callbacks[InputEvents::close_app] = &InputHandler::doMainExit;
+  // TODO (compiler?) error handling for size mismatches
 }
 
 std::map<KeyEvent::Key,OpenFF::InputEvents>*
