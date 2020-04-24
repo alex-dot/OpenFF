@@ -13,16 +13,19 @@ typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
 
 enum InputEvents {
   none,
-  closeApp
+  close_app,
+  INPUT_EVENTS_MAX = close_app
 };
 enum InputType {
-  keyPress,
-  keyRelease
+  key_press,
+  key_release,
+  INPUT_TYPE_MAX = key_release
 };
 enum ModifierType {
   unmodified,
   shift,
-  ctrl
+  ctrl,
+  MODIFIER_TYPE_MAX = ctrl
 };
 
 class InputHandler{

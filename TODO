@@ -2,6 +2,7 @@
 
 ## 0.1.x
 * Controller Support
+* config file saving
 
 ## 0.1.3
 * MIDI support (by way of MidiAudioImporter Magnum-Plugin)
@@ -30,6 +31,7 @@
 * Configuration file loading
 * ff7-data path configuration
 * basic input handling
+* config load error handling
 
 ## 0.0.2
 * Background Rendering

@@ -80,7 +80,7 @@ void OpenFF_Main::exitMain() {
 }
 
 void OpenFF_Main::keyPressEvent(KeyEvent& event) {
-  if(event.key() != KeyEvent::Key::Esc) return;
+  if(true) return;
   event.setAccepted();
 }
 void OpenFF_Main::keyReleaseEvent(KeyEvent& event) {

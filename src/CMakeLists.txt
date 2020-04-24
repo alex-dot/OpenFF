@@ -11,6 +11,9 @@ add_executable(OpenFF MainApplication.cpp
 
 add_dependencies(OpenFF MagnumPlugins::PngImporter)
 
+target_include_directories(OpenFF PRIVATE
+    ../libraries/inicpp/include/inicpp/)
+
 target_link_libraries(OpenFF PRIVATE
     Corrade::Main
     Magnum::Application
@@ -19,4 +22,5 @@ target_link_libraries(OpenFF PRIVATE
     Magnum::MeshTools
     Magnum::Primitives
     Magnum::Shaders
-    Magnum::Trade)
+    Magnum::Trade
+    inicpp)

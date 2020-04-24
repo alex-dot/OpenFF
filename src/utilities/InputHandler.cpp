@@ -10,7 +10,7 @@ using namespace OpenFF;
 
 InputHandler::InputHandler() {
   // populate event callback map
-  _event_callbacks[InputEvents::closeApp] = &InputHandler::doMainExit;
+  _event_callbacks[InputEvents::close_app] = &InputHandler::doMainExit;
 }
 
 std::map<KeyEvent::Key,OpenFF::InputEvents>*
