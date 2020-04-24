@@ -46,15 +46,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   _ini = inicpp::parser::load(readFileData("../conf/openff.ini"));
   this->processIniConfigSections();
 
-  // configure all input events
-  _input_handler->addKeyToInputEvents(
-          KeyEvent::Key::Esc,
-          ModifierType::unmodified,
-          InputEvents::close_app);
-  _input_handler->addKeyToInputEvents(
-          KeyEvent::Key::Q,
-          ModifierType::ctrl,
-          InputEvents::close_app);
+  // kept for posterity, should be moved once unit tests are implemented
   _input_handler->addKeyToInputEvents(
           KeyEvent::Key::X,
           ModifierType::shift,
