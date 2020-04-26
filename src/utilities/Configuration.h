@@ -67,12 +67,12 @@ template<typename enummap, typename iterator> bool validateEnumCallbackMaps(
     for( auto i=iter.begin(); i!=iter.end(); ++i ) {
       auto e_iter = map->find(*i);
       if( e_iter == map->end() ) {
-        FatlSrcLogicError("Could not find case "+std::to_string(*i)+" in "+name+" map");
+        FatlSrcLogicError<std::string>("Could not find case "+std::to_string(*i)+" in "+name+" map");
         return false;
       }
     }
   } else {
-    FatlSrcLogicError("Not enough cases defined in "+name+" map");
+    FatlSrcLogicError<std::string>("Not enough cases defined in "+name+" map");
     return false;
   }
   return true;
@@ -80,7 +80,7 @@ template<typename enummap, typename iterator> bool validateEnumCallbackMaps(
 template<typename enummap> bool validateStringEnumMaps(
         enummap* map, std::string name, unsigned int enum_size) {
   if( map->size() != enum_size ) {
-    FatlSrcLogicError("Not enough cases defined in "+name+" map");
+    FatlSrcLogicError<std::string>("Not enough cases defined in "+name+" map");
     return false;
   }
   return true;

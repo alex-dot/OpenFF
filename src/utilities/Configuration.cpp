@@ -21,7 +21,7 @@ std::string OpenFF::readFileData(const char* filename) {
     in.close();
     return(contents);
   }
-  FatlInputError("Error: could not open file at location: "+std::string(filename));
+  FatlInputError<std::string>("Error: could not open file at location: "+std::string(filename));
   return "";
 }
 
@@ -96,7 +96,7 @@ template<typename settings_map> void Configuration::processIniConfigOptions(
         }
 		  }
     } else {
-      Err("Parsing INI: Unknown Option \""+opt.get_name()+"\".");
+      Err<std::string>("Parsing INI: Unknown Option \""+opt.get_name()+"\".");
     }
   }
 }
@@ -123,8 +123,8 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
     } else if( modifier == "Shift" ) {
       mod = ModifierType::shift;
     } else {
-      Err("Parsing INI: Value  \""+modifier+"\" unsupported for "+option+".");
-      Err("Parsing INI: Valid values are \"Ctrl\", \"Shift\".");
+      Err<std::string>("Parsing INI: Value  \""+modifier+"\" unsupported for "+option+".");
+      Err<std::string>("Parsing INI: Valid values are \"Ctrl\", \"Shift\".");
     }
   }
 
@@ -132,8 +132,8 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
   if( k_iter != _keycodes.end() ) {
     _input_handler->addKeyToInputEvents(_keycodes[key], mod, _input_event_settings[option]);
   } else {
-    Err("Parsing INI: Value  \""+key+"\" unsupported for "+option+".");
-    Err("Parsing INI: Look at TODO for a list of valid keys.");
+    Err<std::string>("Parsing INI: Value  \""+key+"\" unsupported for "+option+".");
+    Err<std::string>("Parsing INI: Look at TODO for a list of valid keys.");
   }
 }
 

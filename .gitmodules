@@ -10,3 +10,6 @@
 [submodule "libraries/inicpp"]
 	path = libraries/inicpp
 	url = https://github.com/SemaiCZE/inicpp
+[submodule "libraries/assimp"]
+	path = libraries/assimp
+	url = https://github.com/assimp/assimp
