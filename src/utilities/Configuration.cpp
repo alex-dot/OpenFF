@@ -5,6 +5,7 @@
 
 #include "Configuration.h"
 #include "InputHandler.h"
+#include "../misc/TerminalOutput.h"
 
 using namespace OpenFF;
 
@@ -20,8 +21,7 @@ std::string OpenFF::readFileData(const char* filename) {
     in.close();
     return(contents);
   }
-  // TODO add corrade file load error handling
-  std::cout << "Error: could not open file at location: " << filename << std::endl;
+  FatlInputError("Error: could not open file at location: "+std::string(filename));
   return "";
 }
 
@@ -37,11 +37,23 @@ Configuration::Configuration(InputHandler* input_handler) :
   // Populate setting callbacks
   _configuration_setting_callbacks[ConfigurationSettings::background_location]
           = &Configuration::setBackgroundLocation;
+  validateEnumCallbackMaps<csc_map>
+          (&_configuration_setting_callbacks,
+          "configuration settings callback",
+          configuration_settings_iterator(),
+          ConfigurationSettings::CONFIGURATION_SETTINGS_MAX+1);
   // All configuration settings, len(_configuration_settings) === len(ConfigurationSettings-1)
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
+  validateStringEnumMaps<std::map<std::string,OpenFF::ConfigurationSettings>>
+          (&_configuration_settings,
+          "configuration settings",
+          ConfigurationSettings::CONFIGURATION_SETTINGS_MAX+1);
   // All input event settings, len(_input_event_settings) === len(InputEvents-2)
   _input_event_settings["close_app"] = InputEvents::close_app;
-  // TODO (compiler?) error handling for size mismatches
+  validateStringEnumMaps<std::map<std::string,OpenFF::InputEvents>>
+          (&_input_event_settings,
+          "input event settings",
+          InputEvents::INPUT_EVENTS_MAX+1);
 
   _ini = inicpp::parser::load(readFileData("../conf/openff.ini"));
   this->processIniConfigSections();
@@ -84,10 +96,9 @@ template<typename settings_map> void Configuration::processIniConfigOptions(
         }
 		  }
     } else {
-      // TODO add config file error handling (option not found)
-      Corrade::Utility::Debug{} << opt.get_name().c_str();
+      Err("Parsing INI: Unknown Option \""+opt.get_name()+"\".");
     }
-	}
+  }
 }
 void Configuration::processIniConfigValues(SettingTypes type, std::string option, std::string value) {
   switch( type ) {
@@ -112,18 +123,17 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
     } else if( modifier == "Shift" ) {
       mod = ModifierType::shift;
     } else {
-      // TODO add config file error handling (value invalid)
-      Corrade::Utility::Debug{} << "nope1";
+      Err("Parsing INI: Value  \""+modifier+"\" unsupported for "+option+".");
+      Err("Parsing INI: Valid values are \"Ctrl\", \"Shift\".");
     }
   }
 
   auto k_iter = _keycodes.find(key);
   if( k_iter != _keycodes.end() ) {
     _input_handler->addKeyToInputEvents(_keycodes[key], mod, _input_event_settings[option]);
-  }
-  // TODO add config file error handling (value invalid)
-  else {
-    Corrade::Utility::Debug{} << "nope2";
+  } else {
+    Err("Parsing INI: Value  \""+key+"\" unsupported for "+option+".");
+    Err("Parsing INI: Look at TODO for a list of valid keys.");
   }
 }
 

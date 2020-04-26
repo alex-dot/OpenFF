@@ -5,6 +5,8 @@
 #include <functional>
 #include <map>
 
+#include "../misc/EnumIterator.h"
+
 class OpenFF_Main;
 
 namespace OpenFF {
@@ -12,10 +14,10 @@ namespace OpenFF {
 typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
 
 enum InputEvents {
-  none,
   close_app,
   INPUT_EVENTS_MAX = close_app
 };
+typedef Iterator<InputEvents, InputEvents::close_app, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {
   key_press,
   key_release,
@@ -47,8 +49,9 @@ class InputHandler{
     std::map<KeyEvent::Key,OpenFF::InputEvents>*
             determineInputEventMap(ModifierType modifier);
 
-    std::map<OpenFF::InputEvents,
-             std::function<void(InputHandler&,OpenFF_Main*)>> _event_callbacks;
+    typedef std::map<OpenFF::InputEvents,
+                     std::function<void(InputHandler&,OpenFF_Main*)>> ec_map;
+    ec_map _event_callbacks;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_unmodified;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_shift;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_ctrl;

@@ -6,6 +6,7 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 add_executable(OpenFF MainApplication.cpp
     graphics/BackgroundBillboard.cpp
     graphics/shaders/BillboardShader.cpp
+    misc/TerminalOutput.cpp
     utilities/Configuration.cpp
     utilities/InputHandler.cpp)
 

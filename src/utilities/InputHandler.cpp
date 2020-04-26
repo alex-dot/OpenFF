@@ -1,5 +1,4 @@
 #include <Magnum/Platform/Sdl2Application.h>
-#include <Corrade/Utility/Debug.h>
 
 #include <map>
 
@@ -11,7 +10,10 @@ using namespace OpenFF;
 InputHandler::InputHandler() {
   // populate event callback map
   _event_callbacks[InputEvents::close_app] = &InputHandler::doMainExit;
-  // TODO (compiler?) error handling for size mismatches
+  validateEnumCallbackMaps<ec_map>(&_event_callbacks,
+                                   "event callback",
+                                   input_events_iterator(),
+                                   InputEvents::INPUT_EVENTS_MAX+1);
 }
 
 std::map<KeyEvent::Key,OpenFF::InputEvents>*
