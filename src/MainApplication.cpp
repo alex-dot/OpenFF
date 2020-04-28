@@ -9,6 +9,7 @@
 #include <functional>
 
 #include "graphics/BackgroundBillboard.h"
+#include "graphics/DebugBox.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
 
@@ -30,6 +31,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::BackgroundBillboard*  _bb;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
+    OpenFF::DebugBox*             _debug_box;
 };
 
 OpenFF_Main::OpenFF_Main(const Arguments& arguments):
@@ -60,6 +62,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
+  _debug_box = new OpenFF::DebugBox();
+
   // set rendering
   GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
   GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
@@ -85,6 +89,8 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0),
           GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
+
+  _debug_box->draw();
 
   swapBuffers();
 }
