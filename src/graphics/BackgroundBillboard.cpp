@@ -1,4 +1,5 @@
 #include <Corrade/Containers/Optional.h>
+#include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/GL/Texture.h>
 #include <Magnum/GL/TextureFormat.h>
@@ -12,15 +13,17 @@
 #include <Magnum/Trade/ImageData.h>
 #include <Magnum/Trade/MeshData.h>
 
-#include <iostream>
-
 #include "BackgroundBillboard.h"
 
 using namespace OpenFF;
 
-BackgroundBillboard::BackgroundBillboard() {
+BackgroundBillboard::BackgroundBillboard() :
+        _framebuffer(GL::defaultFramebuffer.viewport()) {
     using namespace Magnum;
     using namespace Math::Literals;
+
+    _color.setStorage(1, GL::TextureFormat::RGBA8, Vector2i(4096));
+    _framebuffer.attachTexture(GL::Framebuffer::ColorAttachment{0}, _color, 0);
 
     struct QuadVertex {
       Vector2 position;
@@ -50,14 +53,12 @@ void BackgroundBillboard::setBackground(Containers::Optional<Trade::ImageData2D>
       .setStorage(1, GL::textureFormat(image->format()), image->size())
       .setSubImage(0, {}, *image);
     _backgroundSize = image->size();
-    this->setRelativeBillboardRatio();
+    this->setRelativeBillboardRatio(_framebuffer.viewport().size());
 }
 
 void BackgroundBillboard::setRelativeBillboardRatio(Magnum::Vector2i windowSize) {
-  if( windowSize != Vector2i(-1.0f) ) _windowSize = windowSize;
-
   Vector2 relative_billboard_ratio;
-  float relative_ratio =   (float(_windowSize.x())/float(_windowSize.y()))
+  float relative_ratio =   (float(windowSize.x())/float(windowSize.y()))
                          / (float(_backgroundSize.x())/float(_backgroundSize.y()));
   if (relative_ratio >= 1.0f)
     relative_billboard_ratio = Vector2(1.0f/relative_ratio, 1.0f);

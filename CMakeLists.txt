@@ -14,10 +14,24 @@ add_subdirectory(libraries/corrade EXCLUDE_FROM_ALL)
 
 # Add Magnum as a subproject
 set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
+set(WITH_ANYSCENEIMPORTER ON CACHE BOOL "" FORCE)
+set(WITH_ANYIMAGEIMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum EXCLUDE_FROM_ALL)
+
+# Add Assimp with unwanted parts disabled, help Magnum find everything needed
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INCLUDE_DIR libraries/assimp/include CACHE STRING "" FORCE)
+set(ASSIMP_LIBRARY_DEBUG assimp CACHE STRING "" FORCE)
+set(ASSIMP_LIBRARY_RELEASE assimp CACHE STRING "" FORCE)
+set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
+add_subdirectory(libraries/assimp EXCLUDE_FROM_ALL)
+add_library(Assimp::Assimp ALIAS assimp)
 
 # Add Magnum-Plugins as a subproject
 set(WITH_PNGIMPORTER ON CACHE BOOL "" FORCE)
+set(WITH_ASSIMPIMPORTER ON CACHE BOOL "" FORCE)
+set(WITH_TINYGLTFIMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum-plugins EXCLUDE_FROM_ALL)
 
 # Add minIni as a subproject
