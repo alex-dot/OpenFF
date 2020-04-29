@@ -25,7 +25,12 @@
 * UI
 
 ## 0.0.4
-* Ogg-Audio Playback
+* Audio Playback
+* configurable keybinds for
+** increasing/decreasing gain
+** pausing/resuming
+** skipping
+* multiple songs
 
 ## 0.0.3
 * Configuration file loading

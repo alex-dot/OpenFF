@@ -1,5 +1,6 @@
 find_package(Corrade REQUIRED Main)
 find_package(Magnum REQUIRED
+    Audio
     GL
     MeshTools
     Shaders
@@ -13,6 +14,7 @@ find_package(MagnumPlugins REQUIRED AssimpImporter)
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_executable(OpenFF MainApplication.cpp
+    audio/Music.cpp
     graphics/BackgroundBillboard.cpp
     graphics/DebugBox.cpp
     graphics/shaders/BillboardShader.cpp
@@ -22,15 +24,20 @@ add_executable(OpenFF MainApplication.cpp
 add_dependencies(OpenFF
     Magnum::AnySceneImporter
     Magnum::AnyImageImporter
+    Magnum::AnyAudioImporter
     MagnumPlugins::AssimpImporter
     MagnumPlugins::TinyGltfImporter
-    MagnumPlugins::PngImporter)
+    MagnumPlugins::PngImporter
+    MagnumPlugins::DrFlacAudioImporter
+    MagnumPlugins::DrMp3AudioImporter
+    MagnumPlugins::StbVorbisAudioImporter)
 
 target_include_directories(OpenFF PRIVATE
     ../libraries/inicpp/include/inicpp/)
 
 target_link_libraries(OpenFF PRIVATE
     Corrade::Main
+    Magnum::Audio
     Magnum::Application
     Magnum::GL
     Magnum::Magnum

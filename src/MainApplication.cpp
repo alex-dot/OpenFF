@@ -8,6 +8,7 @@
 
 #include <functional>
 
+#include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
 #include "graphics/DebugBox.h"
 #include "utilities/Configuration.h"
@@ -29,6 +30,7 @@ class OpenFF_Main: public Platform::Application {
     void exitMain();
 
     OpenFF::BackgroundBillboard*  _bb;
+    OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
     OpenFF::DebugBox*             _debug_box;
@@ -56,6 +58,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   if(!png_importer->openFile(_config->getBackgroundLocation())) std::exit(2);
   Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
   CORRADE_INTERNAL_ASSERT(image);
+
+  _music = new OpenFF::Music();
 
   // initialise background billboard
   _bb = new OpenFF::BackgroundBillboard();
@@ -86,8 +90,7 @@ void OpenFF_Main::drawEvent() {
   GL::AbstractFramebuffer::blit(
           _bb->getFramebuffer(),
           GL::defaultFramebuffer,
-          Range2Di(Vector2i(0),
-          GL::defaultFramebuffer.viewport().size()),
+          Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
   _debug_box->draw();
