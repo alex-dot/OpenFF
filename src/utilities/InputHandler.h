@@ -15,6 +15,8 @@ typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
 
 enum InputEvents {
   app_close,
+  music_increase_gain,
+  music_decrease_gain,
   INPUT_EVENTS_MAX = app_close
 };
 typedef Iterator<InputEvents, InputEvents::app_close, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
@@ -34,7 +36,7 @@ class InputHandler{
   public:
     explicit InputHandler();
 
-    bool processKeyReleaseEvent(KeyEvent& event, OpenFF_Main* main_application);
+    bool processKeyReleaseEvent(KeyEvent& event, void* main_application);
 
     // callback setters
     void setMainExitCallback(std::function<void(OpenFF_Main&)> f) {_mainExit = f;};
@@ -44,13 +46,13 @@ class InputHandler{
 
   private:
     // callbacks
-    void doMainExit(OpenFF_Main* app) {_mainExit(*app);};
+    void doMainExit(void* app) {_mainExit(*static_cast<OpenFF_Main*>(app));};
 
     std::map<KeyEvent::Key,OpenFF::InputEvents>*
             determineInputEventMap(ModifierType modifier);
 
     typedef std::map<OpenFF::InputEvents,
-                     std::function<void(InputHandler&,OpenFF_Main*)>> ec_map;
+                     std::function<void(InputHandler&,void*)>> ec_map;
     ec_map _event_callbacks;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_unmodified;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_shift;

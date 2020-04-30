@@ -28,7 +28,7 @@ std::map<KeyEvent::Key,OpenFF::InputEvents>*
 
 bool InputHandler::processKeyReleaseEvent(
                     KeyEvent& event,
-                    OpenFF_Main* main_application) {
+                    void* object) {
   using namespace Magnum::Platform;
 
   ModifierType modifier;
@@ -45,7 +45,7 @@ bool InputHandler::processKeyReleaseEvent(
   auto e_iter = event_map->find(event.key());
   if( e_iter != event_map->end() ) {
     auto callback = _event_callbacks[e_iter->second];
-    callback(*this,main_application);
+    callback(*this,object);
     return true;
   }
 
