@@ -9,7 +9,7 @@ using namespace OpenFF;
 
 InputHandler::InputHandler() {
   // populate event callback map
-  _event_callbacks[InputEvents::close_app] = &InputHandler::doMainExit;
+  _event_callbacks[InputEvents::app_close] = &InputHandler::doMainExit;
   validateEnumCallbackMaps<ec_map>(&_event_callbacks,
                                    "event callback",
                                    input_events_iterator(),

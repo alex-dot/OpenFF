@@ -14,10 +14,10 @@ namespace OpenFF {
 typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
 
 enum InputEvents {
-  close_app,
-  INPUT_EVENTS_MAX = close_app
+  app_close,
+  INPUT_EVENTS_MAX = app_close
 };
-typedef Iterator<InputEvents, InputEvents::close_app, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
+typedef Iterator<InputEvents, InputEvents::app_close, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {
   key_press,
   key_release,

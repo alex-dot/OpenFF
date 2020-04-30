@@ -49,7 +49,7 @@ Configuration::Configuration(InputHandler* input_handler) :
           "configuration settings",
           ConfigurationSettings::CONFIGURATION_SETTINGS_MAX+1);
   // All input event settings, len(_input_event_settings) === len(InputEvents-2)
-  _input_event_settings["close_app"] = InputEvents::close_app;
+  _input_event_settings["app_close"] = InputEvents::app_close;
   validateStringEnumMaps<std::map<std::string,OpenFF::InputEvents>>
           (&_input_event_settings,
           "input event settings",
@@ -62,7 +62,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   _input_handler->addKeyToInputEvents(
           KeyEvent::Key::X,
           ModifierType::shift,
-          InputEvents::close_app);
+          InputEvents::app_close);
   _input_handler->removeKeyFromInputEvents(
           KeyEvent::Key::X,
           ModifierType::shift);
