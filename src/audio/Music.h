@@ -30,6 +30,7 @@ class Music{
   private:
     Music& increaseGain();
     Music& decreaseGain();
+    Music& pauseResume();
 
     Audio::Context                _context;
     Containers::Array<char>       _bufferData;
@@ -40,6 +41,7 @@ class Music{
     SceneGraph::DrawableGroup2D   _drawables;
     Audio::Listener2D             _listener;
     Audio::PlayableGroup2D        _playables;
+    bool                          _global_pause;
 };
 
 }

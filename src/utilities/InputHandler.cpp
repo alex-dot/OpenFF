@@ -12,6 +12,7 @@ InputHandler::InputHandler() {
   _event_callbacks[InputEvents::app_close] = &InputHandler::doMainExit;
   _event_callbacks[InputEvents::music_increase_gain] = &InputHandler::doMusicIncreaseGain;
   _event_callbacks[InputEvents::music_decrease_gain] = &InputHandler::doMusicDecreaseGain;
+  _event_callbacks[InputEvents::music_pause] = &InputHandler::doMusicPause;
   validateEnumCallbackMaps<ec_map>(&_event_callbacks,
                                    "event callback",
                                    input_events_iterator(),
@@ -20,6 +21,7 @@ InputHandler::InputHandler() {
   _callable_objects[InputEvents::app_close] = nullptr;
   _callable_objects[InputEvents::music_increase_gain] = nullptr;
   _callable_objects[InputEvents::music_decrease_gain] = nullptr;
+  _callable_objects[InputEvents::music_pause] = nullptr;
   validateEnumCallbackMaps<std::map<OpenFF::InputEvents,void*>>(
                                    &_callable_objects,
                                    "callable objects",

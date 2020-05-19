@@ -52,6 +52,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   _input_event_settings["app_close"] = InputEvents::app_close;
   _input_event_settings["music_increase_gain"] = InputEvents::music_increase_gain;
   _input_event_settings["music_decrease_gain"] = InputEvents::music_decrease_gain;
+  _input_event_settings["music_pause"] = InputEvents::music_pause;
   validateStringEnumMaps<std::map<std::string,OpenFF::InputEvents>>
           (&_input_event_settings,
           "input event settings",

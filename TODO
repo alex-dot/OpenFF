@@ -23,14 +23,15 @@
 
 ## 0.0.5
 * UI
+* Music:
+** multiple songs
+** song skipping
 
 ## 0.0.4
 * Audio Playback
 * configurable keybinds for
 ** increasing/decreasing gain
 ** pausing/resuming
-** skipping
-* multiple songs
 
 ## 0.0.3
 * Configuration file loading

@@ -20,7 +20,8 @@ enum InputEvents {
   app_close,
   music_increase_gain,
   music_decrease_gain,
-  INPUT_EVENTS_MAX = music_decrease_gain
+  music_pause,
+  INPUT_EVENTS_MAX = music_pause
 };
 typedef Iterator<InputEvents, InputEvents::app_close, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {
@@ -47,6 +48,7 @@ class InputHandler{
     void setMainExitCallback(std::function<void(OpenFF_Main&)> f) {_mainExit = f;};
     void setMusicIncreaseGainCallback(std::function<void(Music&)> f) {_musicIncreaseGain = f;};
     void setMusicDecreaseGainCallback(std::function<void(Music&)> f) {_musicDecreaseGain = f;};
+    void setMusicPauseCallback(std::function<void(Music&)> f) {_musicPause = f;}
 
     void addKeyToInputEvents(KeyEvent::Key, ModifierType, InputEvents event);
     void removeKeyFromInputEvents(KeyEvent::Key, ModifierType);
@@ -56,6 +58,7 @@ class InputHandler{
     void doMainExit(void* app) {_mainExit(*static_cast<OpenFF_Main*>(app));};
     void doMusicIncreaseGain(void* music) {_musicIncreaseGain(*static_cast<Music*>(music));}
     void doMusicDecreaseGain(void* music) {_musicDecreaseGain(*static_cast<Music*>(music));}
+    void doMusicPause(void* music) {_musicPause(*static_cast<Music*>(music));}
 
     std::map<KeyEvent::Key,OpenFF::InputEvents>*
             determineInputEventMap(ModifierType modifier);
@@ -71,6 +74,7 @@ class InputHandler{
     std::function<void(OpenFF_Main&)>  _mainExit;
     std::function<void(Music&)>        _musicIncreaseGain;
     std::function<void(Music&)>        _musicDecreaseGain;
+    std::function<void(Music&)>        _musicPause;
 };
 
 }

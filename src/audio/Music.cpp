@@ -20,7 +20,8 @@ Music::Music() :
         _sourceObject(&_sourceRig),
         _cameraObject(&_scene),
         _camera(_cameraObject),
-        _listener{_scene}
+        _listener{_scene},
+        _global_pause(false)
 {
   PluginManager::Manager<Audio::AbstractImporter> manager;
   Containers::Pointer<Audio::AbstractImporter> importer = manager.loadAndInstantiate("AnyAudioImporter");
@@ -50,6 +51,16 @@ Music& Music::decreaseGain() {
   this->draw();
   return *this;
 }
+Music& Music::pauseResume() {
+  if( _global_pause ) {
+    _playables.play();
+    _global_pause = false;
+  } else {
+    _playables.pause();
+    _global_pause = true;
+  }
+  return *this;
+}
 
 void Music::draw() {
   _listener.update({_playables});
@@ -59,7 +70,11 @@ void Music::draw() {
 void Music::bindCallbacks(InputHandler* input) {
   input->setMusicIncreaseGainCallback(&Music::increaseGain);
   input->setMusicDecreaseGainCallback(&Music::decreaseGain);
+  input->setMusicPauseCallback(&Music::pauseResume);
   input->setCallableObjects(
           static_cast<void*>(this),
-          {InputEvents::music_increase_gain,InputEvents::music_decrease_gain});
+          { InputEvents::music_increase_gain,
+            InputEvents::music_decrease_gain,
+            InputEvents::music_pause}
+          );
 }
