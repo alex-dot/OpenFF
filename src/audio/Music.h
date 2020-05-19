@@ -4,10 +4,14 @@
 #include <Magnum/Audio/Buffer.h>
 #include <Magnum/Audio/Context.h>
 #include <Magnum/Audio/Listener.h>
+#include <Magnum/Audio/Playable.h>
 #include <Magnum/Audio/PlayableGroup.h>
 #include <Magnum/SceneGraph/Camera.h>
 #include <Magnum/SceneGraph/Scene.h>
 #include <Magnum/SceneGraph/MatrixTransformation2D.h>
+#include <Magnum/Audio/Source.h>
+
+#include "../utilities/InputHandler.h"
 
 using namespace Magnum;
 
@@ -21,8 +25,12 @@ class Music{
     explicit Music();
 
     void draw();
+    void bindCallbacks(InputHandler*);
 
   private:
+    Music& increaseGain();
+    Music& decreaseGain();
+
     Audio::Context                _context;
     Containers::Array<char>       _bufferData;
     Audio::Buffer                 _buffer;

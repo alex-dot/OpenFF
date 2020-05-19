@@ -5,6 +5,7 @@
 #include <Magnum/SceneGraph/Drawable.h>
 
 #include "Music.h"
+#include "../misc/TerminalOutput.h"
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -39,7 +40,26 @@ Music::Music() :
     .play();
 }
 
+Music& Music::increaseGain() {
+  _listener.setGain(_listener.gain()+0.2f);
+  this->draw();
+  return *this;
+}
+Music& Music::decreaseGain() {
+  _listener.setGain(_listener.gain()-0.2f);
+  this->draw();
+  return *this;
+}
+
 void Music::draw() {
   _listener.update({_playables});
   _camera.draw(_drawables);
+}
+
+void Music::bindCallbacks(InputHandler* input) {
+  input->setMusicIncreaseGainCallback(&Music::increaseGain);
+  input->setMusicDecreaseGainCallback(&Music::decreaseGain);
+  input->setCallableObjects(
+          static_cast<void*>(this),
+          {InputEvents::music_increase_gain,InputEvents::music_decrease_gain});
 }

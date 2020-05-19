@@ -42,13 +42,17 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
                                 .setTitle("OpenFF_Main")
                                 .setWindowFlags(Configuration::WindowFlag::Resizable)}
 {
-  _input = new OpenFF::InputHandler();
+  _input = new OpenFF::InputHandler(this);
 
   // initialise configuration
   _config = new OpenFF::Configuration(_input);
 
   // populate main application callbacks
   _input->setMainExitCallback(&OpenFF_Main::exitMain);
+
+  // Music object
+  _music = new OpenFF::Music();
+  _music->bindCallbacks(_input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -58,8 +62,6 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   if(!png_importer->openFile(_config->getBackgroundLocation())) std::exit(2);
   Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
   CORRADE_INTERNAL_ASSERT(image);
-
-  _music = new OpenFF::Music();
 
   // initialise background billboard
   _bb = new OpenFF::BackgroundBillboard();
@@ -105,6 +107,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
 }
 
 void OpenFF_Main::exitMain() {
+  delete(_music);
   exit();
   redraw();
 }
@@ -114,7 +117,7 @@ void OpenFF_Main::keyPressEvent(KeyEvent& event) {
   event.setAccepted();
 }
 void OpenFF_Main::keyReleaseEvent(KeyEvent& event) {
-  if( _input->processKeyReleaseEvent(event,this) )
+  if( _input->processKeyReleaseEvent(event) )
     event.setAccepted();
 }
 
