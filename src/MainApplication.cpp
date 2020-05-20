@@ -11,6 +11,7 @@
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
 #include "graphics/DebugBox.h"
+#include "ui/MusicMenu.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
 
@@ -33,6 +34,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
+    OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
 };
 
@@ -51,7 +53,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _input->setMainExitCallback(&OpenFF_Main::exitMain);
 
   // Music object
-  _music = new OpenFF::Music(_input);
+  //_music = new OpenFF::Music(_input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -66,6 +68,12 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb = new OpenFF::BackgroundBillboard();
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
+
+  // Menus
+  _music_menu = new OpenFF::MusicMenu(
+          Platform::Sdl2Application::windowSize(),
+          Platform::Sdl2Application::dpiScaling(),
+          Platform::Sdl2Application::framebufferSize());
 
   _debug_box = new OpenFF::DebugBox();
 
@@ -94,6 +102,8 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
+  _music_menu->draw();
+
   _debug_box->draw();
 
   swapBuffers();
@@ -106,7 +116,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
 }
 
 void OpenFF_Main::exitMain() {
-  delete(_music);
+  //delete(_music);
   exit();
   redraw();
 }

@@ -20,6 +20,10 @@ set(WITH_ANYIMAGEIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_ANYAUDIOIMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum EXCLUDE_FROM_ALL)
 
+# Add minIni as a subproject
+set(NO_GOOGLE_TEST ON CACHE BOOL "" FORCE)
+add_subdirectory(libraries/inicpp EXCLUDE_FROM_ALL)
+
 # Add Assimp with unwanted parts disabled, help Magnum find everything needed
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -37,10 +41,11 @@ set(WITH_TINYGLTFIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_DRFLACAUDIOIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_DRMP3AUDIOIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_STBVORBISAUDIOIMPORTER ON CACHE BOOL "" FORCE)
+set(WITH_STBTRUETYPEFONT ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum-plugins EXCLUDE_FROM_ALL)
 
-# Add minIni as a subproject
-set(NO_GOOGLE_TEST ON CACHE BOOL "" FORCE)
-add_subdirectory(libraries/inicpp EXCLUDE_FROM_ALL)
+# Add Magnum-Extras as a subproject
+set(WITH_UI ON CACHE BOOL "" FORCE)
+add_subdirectory(libraries/magnum-extras EXCLUDE_FROM_ALL)
 
 add_subdirectory(src)
