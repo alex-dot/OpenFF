@@ -40,6 +40,9 @@ Music::Music() :
     .setLooping(true)
     .play();
 }
+Music::Music(InputHandler* input) : Music::Music() {
+  this->bindCallbacks(input);
+}
 
 Music& Music::increaseGain() {
   _listener.setGain(_listener.gain()+0.2f);

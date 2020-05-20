@@ -51,8 +51,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _input->setMainExitCallback(&OpenFF_Main::exitMain);
 
   // Music object
-  _music = new OpenFF::Music();
-  _music->bindCallbacks(_input);
+  _music = new OpenFF::Music(_input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =

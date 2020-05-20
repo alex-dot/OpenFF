@@ -23,6 +23,7 @@ namespace OpenFF {
 class Music{
   public:
     explicit Music();
+    explicit Music(InputHandler*);
 
     void draw();
     void bindCallbacks(InputHandler*);
