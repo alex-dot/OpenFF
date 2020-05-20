@@ -61,7 +61,10 @@ bool InputHandler::processKeyReleaseEvent(KeyEvent& event) {
   if( e_iter != event_map->end() ) {
     auto callback = _event_callbacks[e_iter->second];
     void* object = _callable_objects[e_iter->second];
-    callback(*this,object);
+    if( object == nullptr )
+      Dbg{} << "DEBUG: Object not defined, not calling Event Nr" << e_iter->second;
+    else
+      callback(*this,object);
     return true;
   }
 
