@@ -18,7 +18,8 @@ MusicMenu::MusicMenu(
             0, 16, 128};
   _label = new Ui::Label{*_plane,
             {Ui::Snap::Bottom|Ui::Snap::Left, Vector2(80, 32)},
-            "", Text::Alignment::MiddleLeft};
+            std::string(100,' '), Text::Alignment::MiddleLeft};
+  _label->setText("");
 }
 //MusicMenu::MusicMenu(InputHandler* input) : MusicMenu::MusicMenu() {
 //  this->bindCallbacks(input);
