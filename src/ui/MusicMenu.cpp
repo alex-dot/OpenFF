@@ -1,4 +1,9 @@
 #include <Magnum/GL/Renderer.h>
+#include <Magnum/Text/Alignment.h>
+#include <Magnum/Ui/Anchor.h>
+#include <Magnum/Ui/Style.h>
+
+#include <Corrade/PluginManager/Manager.h>
 
 #include "MusicMenu.h"
 #include "../misc/TerminalOutput.h"
@@ -12,7 +17,38 @@ MusicMenu::MusicMenu(
         Magnum::Vector2i framebuffer_size) :
                 MusicMenu::MusicMenu()
 {
-  _ui.emplace(Magnum::Vector2{window_size}/dpi_scaling, window_size, framebuffer_size);
+  this->initialise_ui(window_size, dpi_scaling, framebuffer_size);
+}
+MusicMenu::MusicMenu(
+        Text::AbstractFont* font,
+        Text::GlyphCache* glyph_cache,
+        Magnum::Vector2i window_size,
+        Magnum::Vector2 dpi_scaling,
+        Magnum::Vector2i framebuffer_size) :
+                MusicMenu::MusicMenu()
+{
+  this->initialise_ui(window_size, dpi_scaling, framebuffer_size, font, glyph_cache);
+}
+//MusicMenu::MusicMenu(InputHandler* input) : MusicMenu::MusicMenu() {
+//  this->bindCallbacks(input);
+//}
+
+void MusicMenu::initialise_ui(
+        Magnum::Vector2i window_size,
+        Magnum::Vector2  dpi_scaling,
+        Magnum::Vector2i framebuffer_size,
+        Text::AbstractFont* font,
+        Text::GlyphCache* glyph_cache) {
+  if( font != nullptr )
+    _ui.emplace(
+            Magnum::Vector2{window_size}/dpi_scaling,
+            window_size,
+            framebuffer_size,
+            *font,
+            *glyph_cache,
+            Magnum::Ui::defaultStyleConfiguration());
+  else
+    _ui.emplace(Magnum::Vector2{window_size}/dpi_scaling, window_size, framebuffer_size);
   _plane = new Ui::Plane{*_ui,
             Ui::Snap::Top|Ui::Snap::Bottom|Ui::Snap::Left|Ui::Snap::Right,
             0, 16, 128};
@@ -21,9 +57,6 @@ MusicMenu::MusicMenu(
             std::string(100,' '), Text::Alignment::MiddleLeft};
   _label->setText("");
 }
-//MusicMenu::MusicMenu(InputHandler* input) : MusicMenu::MusicMenu() {
-//  this->bindCallbacks(input);
-//}
 
 void MusicMenu::draw() {
   _label->setText("bla");

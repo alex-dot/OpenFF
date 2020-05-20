@@ -6,6 +6,9 @@
 #include <Magnum/Trade/AbstractImporter.h>
 #include <Magnum/Trade/ImageData.h>
 
+#include <Magnum/Text/AbstractFont.h>
+#include <Magnum/Text/GlyphCache.h>
+
 #include <functional>
 
 #include "audio/Music.h"
@@ -36,6 +39,10 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::InputHandler*         _input;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
+
+    PluginManager::Manager<Text::AbstractFont> _font_manager;
+    Containers::Pointer<Text::AbstractFont> _font;
+    Text::GlyphCache*                       _glyph_cache;
 };
 
 OpenFF_Main::OpenFF_Main(const Arguments& arguments):
@@ -69,8 +76,15 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
+  _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
+  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 16.0f))
+      Fatal{} << "Can't open font with StbTrueTypeFont";
+  _glyph_cache = new Text::GlyphCache{Vector2i{512}};
+  _font->fillGlyphCache(*_glyph_cache, "abcdefghijklmnopqrstuvwxyz");
+
   // Menus
   _music_menu = new OpenFF::MusicMenu(
+          _font.get(), _glyph_cache,
           Platform::Sdl2Application::windowSize(),
           Platform::Sdl2Application::dpiScaling(),
           Platform::Sdl2Application::framebufferSize());
