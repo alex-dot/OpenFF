@@ -17,7 +17,8 @@ typedef Magnum::Platform::Sdl2Application::KeyEvent::Key Keycode;
 
 enum ConfigurationSettings {
   background_location,
-  CONFIGURATION_SETTINGS_MAX = background_location
+  music_location,
+  CONFIGURATION_SETTINGS_MAX = music_location
 };
 typedef Iterator<ConfigurationSettings,
                  ConfigurationSettings::background_location,
@@ -37,8 +38,13 @@ class Configuration{
     explicit Configuration(InputHandler*);
 
     void setBackgroundLocation(std::string);
+    void setMusicLocation(std::string);
 
     std::string getBackgroundLocation() const;
+    std::string getMusicLocation() const;
+    bool getMusicLocation(std::string&, std::string) const;
+    bool getMusicName(std::string&, std::string) const;
+    std::string getRandomMusic() const;
 
   private:
     void processIniConfigSections();
@@ -47,11 +53,13 @@ class Configuration{
     void processIniConfigValues(SettingTypes, std::string, std::string);
     void processInputEventsFromConfig(std::string,std::string);
     void buildKeycodeLookupTable();
+    void buildMusicMap();
 
     InputHandler*   _input_handler;
     inicpp::config  _ini;
 
     std::string   _background_location;
+    std::string   _music_location;
 
     typedef std::map<OpenFF::ConfigurationSettings,
                      std::function<void(Configuration&,std::string)>> csc_map;
@@ -59,6 +67,8 @@ class Configuration{
     std::map<std::string,OpenFF::ConfigurationSettings> _configuration_settings;
     std::map<std::string,OpenFF::InputEvents>           _input_event_settings;
     std::map<std::string,OpenFF::Keycode>               _keycodes;
+    std::map<std::string,std::string>                   _music_name_map;
+    std::map<std::string,std::string>                   _music_location_map;
 };
 
 template<typename enummap, typename iterator> bool validateEnumCallbackMaps(

@@ -51,11 +51,10 @@ void MusicMenu::initialise_ui(
     _ui.emplace(Magnum::Vector2{window_size}/dpi_scaling, window_size, framebuffer_size);
   _plane = new Ui::Plane{*_ui,
             Ui::Snap::Top|Ui::Snap::Bottom|Ui::Snap::Left|Ui::Snap::Right,
-            0, 16, 128};
+            0, 16, 256};
   _label = new Ui::Label{*_plane,
             {Ui::Snap::Bottom|Ui::Snap::Left, Vector2(80, 32)},
-            std::string(100,' '), Text::Alignment::MiddleLeft};
-  _label->setText("");
+            "", Text::Alignment::MiddleLeft, 80};
 }
 
 void MusicMenu::draw() {

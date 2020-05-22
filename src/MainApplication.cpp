@@ -59,8 +59,21 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // populate main application callbacks
   _input->setMainExitCallback(&OpenFF_Main::exitMain);
 
+  // Menus
+  _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
+  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 16.0f))
+      Fatal{} << "Can't open font with StbTrueTypeFont";
+  _glyph_cache = new Text::GlyphCache{Vector2i{512}};
+  _font->fillGlyphCache(*_glyph_cache, "abcdefghijklmnopqrstuvwxyz");
+
+  _music_menu = new OpenFF::MusicMenu(
+          _font.get(), _glyph_cache,
+          Platform::Sdl2Application::windowSize(),
+          Platform::Sdl2Application::dpiScaling(),
+          Platform::Sdl2Application::framebufferSize());
+
   // Music object
-  //_music = new OpenFF::Music(_input);
+  _music = new OpenFF::Music(_config, _input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -75,19 +88,6 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb = new OpenFF::BackgroundBillboard();
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
-
-  _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
-  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 16.0f))
-      Fatal{} << "Can't open font with StbTrueTypeFont";
-  _glyph_cache = new Text::GlyphCache{Vector2i{512}};
-  _font->fillGlyphCache(*_glyph_cache, "abcdefghijklmnopqrstuvwxyz");
-
-  // Menus
-  _music_menu = new OpenFF::MusicMenu(
-          _font.get(), _glyph_cache,
-          Platform::Sdl2Application::windowSize(),
-          Platform::Sdl2Application::dpiScaling(),
-          Platform::Sdl2Application::framebufferSize());
 
   _debug_box = new OpenFF::DebugBox();
 
@@ -130,7 +130,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
 }
 
 void OpenFF_Main::exitMain() {
-  //delete(_music);
+  delete(_music);
   exit();
   redraw();
 }

@@ -1,3 +1,4 @@
+#include <Corrade/Utility/Directory.h>
 #include <inicpp.h>
 
 #include <string>
@@ -37,6 +38,8 @@ Configuration::Configuration(InputHandler* input_handler) :
   // Populate setting callbacks
   _configuration_setting_callbacks[ConfigurationSettings::background_location]
           = &Configuration::setBackgroundLocation;
+  _configuration_setting_callbacks[ConfigurationSettings::music_location]
+          = &Configuration::setMusicLocation;
   validateEnumCallbackMaps<csc_map>
           (&_configuration_setting_callbacks,
           "configuration settings callback",
@@ -44,6 +47,7 @@ Configuration::Configuration(InputHandler* input_handler) :
           ConfigurationSettings::CONFIGURATION_SETTINGS_MAX+1);
   // All configuration settings, len(_configuration_settings) === len(ConfigurationSettings-1)
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
+  _configuration_settings["music_location"] = ConfigurationSettings::music_location;
   validateStringEnumMaps<std::map<std::string,OpenFF::ConfigurationSettings>>
           (&_configuration_settings,
           "configuration settings",
@@ -61,6 +65,8 @@ Configuration::Configuration(InputHandler* input_handler) :
   _ini = inicpp::parser::load(readFileData("../conf/openff.ini"));
   this->processIniConfigSections();
 
+  this->buildMusicMap();
+
   // kept for posterity, should be moved once unit tests are implemented
   _input_handler->addKeyToInputEvents(
           KeyEvent::Key::X,
@@ -74,7 +80,7 @@ Configuration::Configuration(InputHandler* input_handler) :
 // This is where valid section names for the ini-file are defined
 void Configuration::processIniConfigSections() {
   for( auto &sect : _ini ) {
-    if( sect.get_name() == "Display" ) {
+    if( sect.get_name() == "Display" || sect.get_name() == "Music" ) {
       processIniConfigOptions<std::map<std::string,OpenFF::ConfigurationSettings>>
               (&_configuration_settings, sect, SettingTypes::configuration_settings);
     } else if( sect.get_name() == "Controls" ) {
@@ -143,9 +149,56 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
 void Configuration::setBackgroundLocation(std::string new_loc) {
   _background_location = new_loc;
 }
+void Configuration::setMusicLocation(std::string new_loc) {
+  _music_location = new_loc;
+}
 
 std::string Configuration::getBackgroundLocation() const {
   return _background_location;
+}
+std::string Configuration::getMusicLocation() const {
+  return _music_location;
+}
+bool Configuration::getMusicLocation(
+        std::string& location,
+        std::string short_name) const {
+  auto it = _music_location_map.find(short_name);
+  if( it != _music_location_map.end() ) {
+    location = it->second;
+    return true;
+  }
+  return false;
+}
+bool Configuration::getMusicName(
+        std::string& name,
+        std::string short_name) const {
+  auto it = _music_name_map.find(short_name);
+  if( it != _music_name_map.end() ) {
+    name = it->second;
+    return true;
+  }
+  return false;
+}
+std::string Configuration::getRandomMusic() const {
+  return _music_name_map.find("tb")->first;
+}
+
+void Configuration::buildMusicMap() {
+  // build names
+  inicpp::config music_ini = inicpp::parser::load(readFileData("../conf/music.ini"));
+  for( auto &sect : music_ini ) {
+    if( sect.get_name() == "music" ) {
+    	for( auto &opt : sect ) {
+        _music_name_map[opt.get_name()] = opt.get<inicpp::string_ini_t>();
+      }
+    }
+	}
+  // build locations
+  std::vector<std::string> dir = Corrade::Utility::Directory::list(this->getMusicLocation());
+  for(auto it = dir.begin(); it != dir.end(); ++it) {
+    if(it->length() > 4 && it->substr(it->length()-4) == ".ogg")
+      _music_location_map[it->substr(0,it->length()-4)] = *it;
+  }
 }
 
 void Configuration::buildKeycodeLookupTable() {
