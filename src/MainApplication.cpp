@@ -51,13 +51,19 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
                                 .setTitle("OpenFF_Main")
                                 .setWindowFlags(Configuration::WindowFlag::Resizable)}
 {
-  _input = new OpenFF::InputHandler(this);
+  _input = new OpenFF::InputHandler();
 
   // initialise configuration
   _config = new OpenFF::Configuration(_input);
 
   // populate main application callbacks
-  _input->setMainExitCallback(&OpenFF_Main::exitMain);
+  _input->setMainAppCallbacks(
+          static_cast<void*>(this),
+          OpenFF::ObjectType::main_app,
+          {std::make_pair(&OpenFF_Main::exitMain,OpenFF::InputEvents::app_close)});
+
+  // Music object
+  _music = new OpenFF::Music(_config, _input);
 
   // Menus
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
@@ -70,10 +76,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           _font.get(), _glyph_cache,
           Platform::Sdl2Application::windowSize(),
           Platform::Sdl2Application::dpiScaling(),
-          Platform::Sdl2Application::framebufferSize());
-
-  // Music object
-  _music = new OpenFF::Music(_config, _input);
+          Platform::Sdl2Application::framebufferSize(),
+          _music);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =

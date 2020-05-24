@@ -29,6 +29,7 @@ class Music{
     explicit Music(Configuration*);
     explicit Music(Configuration*, InputHandler*);
 
+    void initStart();
     void draw();
     void bindCallbacks(InputHandler*);
 

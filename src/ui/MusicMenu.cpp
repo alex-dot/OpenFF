@@ -10,7 +10,7 @@
 
 using namespace OpenFF;
 
-MusicMenu::MusicMenu() {}
+MusicMenu::MusicMenu() : _music(nullptr) {}
 MusicMenu::MusicMenu(
         Magnum::Vector2i window_size,
         Magnum::Vector2  dpi_scaling,
@@ -29,9 +29,29 @@ MusicMenu::MusicMenu(
 {
   this->initialise_ui(window_size, dpi_scaling, framebuffer_size, font, glyph_cache);
 }
-//MusicMenu::MusicMenu(InputHandler* input) : MusicMenu::MusicMenu() {
-//  this->bindCallbacks(input);
-//}
+MusicMenu::MusicMenu(Music* music) : MusicMenu::MusicMenu() { _music = music; }
+MusicMenu::MusicMenu(
+        Magnum::Vector2i window_size,
+        Magnum::Vector2  dpi_scaling,
+        Magnum::Vector2i framebuffer_size,
+        Music* music) :
+                MusicMenu::MusicMenu(
+                        window_size,
+                        dpi_scaling,
+                        framebuffer_size) { _music = music; }
+MusicMenu::MusicMenu(
+        Text::AbstractFont* font,
+        Text::GlyphCache* glyph_cache,
+        Magnum::Vector2i window_size,
+        Magnum::Vector2  dpi_scaling,
+        Magnum::Vector2i framebuffer_size,
+        Music* music) :
+                MusicMenu::MusicMenu(
+                        font,
+                        glyph_cache,
+                        window_size,
+                        dpi_scaling,
+                        framebuffer_size) { _music = music; }
 
 void MusicMenu::initialise_ui(
         Magnum::Vector2i window_size,
@@ -69,13 +89,24 @@ void MusicMenu::draw() {
           GL::Renderer::BlendFunction::One);
   GL::Renderer::disable(GL::Renderer::Feature::Blending);
 }
+
+MusicMenu& MusicMenu::increaseGain() {
+  return *this;
+}
+MusicMenu& MusicMenu::decreaseGain() {
+  return *this;
+}
+MusicMenu& MusicMenu::pauseResume() {
+  return *this;
+}
 /*
 void MusicMenu::bindCallbacks(InputHandler* input) {
-  input->setMusicIncreaseGainCallback(&Music::increaseGain);
-  input->setMusicDecreaseGainCallback(&Music::decreaseGain);
-  input->setMusicPauseCallback(&Music::pauseResume);
+//  input->setMusicIncreaseGainCallback(&MusicMenu::increaseGain);
+//  input->setMusicDecreaseGainCallback(&MusicMenu::decreaseGain);
+//  input->setMusicPauseCallback(&MusicMenu::pauseResume);
   input->setCallableObjects(
           static_cast<void*>(this),
+          ObjectTypes::menu_music,
           { InputEvents::music_increase_gain,
             InputEvents::music_decrease_gain,
             InputEvents::music_pause}

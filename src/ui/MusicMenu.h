@@ -27,7 +27,19 @@ class MusicMenu{
             Magnum::Vector2i window_size,
             Magnum::Vector2 dpi_scaling,
             Magnum::Vector2i framebuffer_size);
-//    explicit MusicMenu(InputHandler*);
+    explicit MusicMenu(OpenFF::Music*);
+    explicit MusicMenu(
+            Magnum::Vector2i window_size,
+            Magnum::Vector2 dpi_scaling,
+            Magnum::Vector2i framebuffer_size,
+            OpenFF::Music*);
+    explicit MusicMenu(
+            Text::AbstractFont* font,
+            Text::GlyphCache* glyph_cache,
+            Magnum::Vector2i window_size,
+            Magnum::Vector2 dpi_scaling,
+            Magnum::Vector2i framebuffer_size,
+            OpenFF::Music*);
 
     void draw();
 //    void bindCallbacks(InputHandler*);
@@ -40,6 +52,11 @@ class MusicMenu{
             Text::AbstractFont* font = nullptr,
             Text::GlyphCache* glyph_cache = nullptr);
 
+    MusicMenu& increaseGain();
+    MusicMenu& decreaseGain();
+    MusicMenu& pauseResume();
+
+    OpenFF::Music*                          _music;
     Containers::Optional<Ui::UserInterface> _ui;
     Ui::Plane*                              _plane;
     Ui::Label*                              _label;

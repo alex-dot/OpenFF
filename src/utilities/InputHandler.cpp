@@ -4,33 +4,111 @@
 
 #include "InputHandler.h"
 #include "Configuration.h"
+#include "../misc/TerminalOutput.h"
 
 using namespace OpenFF;
 
+// Add calls for each ObjectType
+void CalledObject::call() {
+    switch(_type) {
+      case(ObjectType::ot_undefined):
+        FatlSrcLogicError<std::string>("Callback on undefined object.");
+        break;
+      case(ObjectType::main_app):
+        callMainApp();
+        break;
+      case(ObjectType::music):
+        callMusic();
+        break;
+      case(ObjectType::menu_music):
+        callMenuMusic();
+        break;
+      default:
+        FatlSrcLogicError<std::string>("Callback on undefined object.");
+        break;
+    }
+}
+// Each ObjectType has its own switch-cases; thus this is where the
+// pseudo state-machine logic is defined
+void CalledObject::callMainApp() {
+  switch(_event) {
+    case(InputEvents::app_close):
+      _callback_main_app(*static_cast<OpenFF_Main*>(_object));
+      break;
+    default:
+      FatlSrcLogicError<std::string>("Callback on undefined event for object.");
+      break;
+  }
+}
+void CalledObject::callMusic() {
+  switch(_event) {
+    case(InputEvents::music_increase_gain):
+    case(InputEvents::music_decrease_gain):
+    case(InputEvents::music_pause):
+      _callback_music(*static_cast<Music*>(_object));
+      break;
+    default:
+      FatlSrcLogicError<std::string>("Callback on undefined event for object.");
+  }
+}
+void CalledObject::callMenuMusic() {
+  switch(_event) {
+    case(InputEvents::music_increase_gain):
+    case(InputEvents::music_decrease_gain):
+    case(InputEvents::music_pause):
+      _callback_menu_music(*static_cast<MusicMenu*>(_object));
+      break;
+    default:
+      FatlSrcLogicError<std::string>("Callback on undefined event for object.");
+  }
+}
+
 InputHandler::InputHandler() {
-  // populate event callback map
-  _event_callbacks[InputEvents::app_close] = &InputHandler::doMainExit;
-  _event_callbacks[InputEvents::music_increase_gain] = &InputHandler::doMusicIncreaseGain;
-  _event_callbacks[InputEvents::music_decrease_gain] = &InputHandler::doMusicDecreaseGain;
-  _event_callbacks[InputEvents::music_pause] = &InputHandler::doMusicPause;
-  validateEnumCallbackMaps<ec_map>(&_event_callbacks,
-                                   "event callback",
-                                   input_events_iterator(),
-                                   InputEvents::INPUT_EVENTS_MAX+1);
   // populate callable objects map
-  _callable_objects[InputEvents::app_close] = nullptr;
-  _callable_objects[InputEvents::music_increase_gain] = nullptr;
-  _callable_objects[InputEvents::music_decrease_gain] = nullptr;
-  _callable_objects[InputEvents::music_pause] = nullptr;
-  validateEnumCallbackMaps<std::map<OpenFF::InputEvents,void*>>(
-                                   &_callable_objects,
+  // for each InputEvent define a CalledObject
+  _callback_functions[InputEvents::ie_undefined] =
+          CalledObject(InputEvents::ie_undefined);
+  _callback_functions[InputEvents::app_close] =
+          CalledObject(InputEvents::app_close);
+  _callback_functions[InputEvents::music_increase_gain] =
+          CalledObject(InputEvents::music_increase_gain);
+  _callback_functions[InputEvents::music_decrease_gain] =
+          CalledObject(InputEvents::music_decrease_gain);
+  _callback_functions[InputEvents::music_pause] =
+          CalledObject(InputEvents::music_pause);
+  validateEnumCallbackMaps<std::map<OpenFF::InputEvents,CalledObject>>(
+                                   &_callback_functions,
                                    "callable objects",
                                    input_events_iterator(),
                                    InputEvents::INPUT_EVENTS_MAX+1);
 }
-InputHandler::InputHandler(OpenFF_Main* main_application)
-        : InputHandler::InputHandler() {
-  _callable_objects[InputEvents::app_close] = static_cast<void*>(main_application);
+
+// For each ObjectType, define a setCallback()-function
+// They only differ in the header and the second to last line,
+// still, this isn't worse than overloading
+void InputHandler::setMainAppCallbacks(
+        void* object, ObjectType type,
+        std::initializer_list<std::pair
+                <std::function<void(OpenFF_Main&)>,InputEvents>> events) {
+  for(auto it = events.begin(); it != events.end(); ++it) {
+    _callback_functions[it->second]._type = type;
+    _callback_functions[it->second]._object = static_cast<void*>(object);
+    _callback_functions[it->second]._callback_main_app = it->first;
+    _callback_functions[it->second]._callback_music = nullptr;
+    _callback_functions[it->second]._callback_menu_music = nullptr;
+  }
+}
+void InputHandler::setMusicCallbacks(
+        void* object, ObjectType type,
+        std::initializer_list<std::pair
+                <std::function<void(Music&)>,InputEvents>> events) {
+  for(auto it = events.begin(); it != events.end(); ++it) {
+    _callback_functions[it->second]._type = type;
+    _callback_functions[it->second]._object = static_cast<void*>(object);
+    _callback_functions[it->second]._callback_main_app = nullptr;
+    _callback_functions[it->second]._callback_music = it->first;
+    _callback_functions[it->second]._callback_menu_music = nullptr;
+  }
 }
 
 std::map<KeyEvent::Key,OpenFF::InputEvents>*
@@ -59,24 +137,12 @@ bool InputHandler::processKeyReleaseEvent(KeyEvent& event) {
 
   auto e_iter = event_map->find(event.key());
   if( e_iter != event_map->end() ) {
-    auto callback = _event_callbacks[e_iter->second];
-    void* object = _callable_objects[e_iter->second];
-    if( object == nullptr )
-      Dbg{} << "DEBUG: Object not defined, not calling Event Nr" << e_iter->second;
-    else
-      callback(*this,object);
+    _callback_functions[e_iter->second].call();
     return true;
   }
 
   // Return False if the pressed key was not configured (might be accidental press)
   return false;
-}
-
-void InputHandler::setCallableObjects(
-        void* object,
-        std::initializer_list<InputEvents> events) {
-  for(auto it = events.begin(); it != events.end(); ++it)
-    _callable_objects[*it] = object;
 }
 
 void InputHandler::addKeyToInputEvents(

@@ -87,13 +87,13 @@ void Music::draw() {
 }
 
 void Music::bindCallbacks(InputHandler* input) {
-  input->setMusicIncreaseGainCallback(&Music::increaseGain);
-  input->setMusicDecreaseGainCallback(&Music::decreaseGain);
-  input->setMusicPauseCallback(&Music::pauseResume);
-  input->setCallableObjects(
-          static_cast<void*>(this),
-          { InputEvents::music_increase_gain,
-            InputEvents::music_decrease_gain,
-            InputEvents::music_pause}
-          );
+  input->setMusicCallbacks(
+      static_cast<void*>(this),
+      ObjectType::music,
+      {
+          std::make_pair(&Music::increaseGain,InputEvents::music_increase_gain),
+          std::make_pair(&Music::decreaseGain,InputEvents::music_decrease_gain),
+          std::make_pair(&Music::pauseResume,InputEvents::music_pause)
+      }
+  );
 }

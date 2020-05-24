@@ -13,17 +13,19 @@ class OpenFF_Main;
 namespace OpenFF {
 
 class Music;
+class MusicMenu;
 
 typedef Magnum::Platform::Sdl2Application::KeyEvent KeyEvent;
 
 enum InputEvents {
+  ie_undefined,
   app_close,
   music_increase_gain,
   music_decrease_gain,
   music_pause,
   INPUT_EVENTS_MAX = music_pause
 };
-typedef Iterator<InputEvents, InputEvents::app_close, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
+typedef Iterator<InputEvents, InputEvents::ie_undefined, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {
   key_press,
   key_release,
@@ -35,46 +37,65 @@ enum ModifierType {
   ctrl,
   MODIFIER_TYPE_MAX = ctrl
 };
+enum ObjectType {
+  ot_undefined,
+  main_app,
+  music,
+  menu_music,
+  OBJECT_TYPE_MAX = menu_music
+};
+struct CalledObject {
+  explicit CalledObject() {};
+  explicit CalledObject(InputEvents event) {
+    _event = event;
+  }
+  explicit CalledObject(InputEvents event, ObjectType type, void* object) {
+    _event = event;
+    _type = type;
+    _object = object;
+  }
+  void call();
+  // For each ObjectType, define a call()-function
+  void callMainApp();
+  void callMusic();
+  void callMenuMusic();
+
+  InputEvents                       _event          = InputEvents::ie_undefined;
+  ObjectType                        _type            = ObjectType::ot_undefined;
+  void*                             _object                           = nullptr;
+  // For each ObjectType, define a _callback member std::function
+  std::function<void(OpenFF_Main&)> _callback_main_app                = nullptr;
+  std::function<void(Music&)>       _callback_music                   = nullptr;
+  std::function<void(MusicMenu&)>   _callback_menu_music              = nullptr;
+};
 
 class InputHandler{
   public:
     explicit InputHandler();
-    explicit InputHandler(OpenFF_Main*);
 
     bool processKeyReleaseEvent(KeyEvent& event);
 
-    // callback setters
-    void setCallableObjects(void*, std::initializer_list<InputEvents>);
-    void setMainExitCallback(std::function<void(OpenFF_Main&)> f) {_mainExit = f;};
-    void setMusicIncreaseGainCallback(std::function<void(Music&)> f) {_musicIncreaseGain = f;};
-    void setMusicDecreaseGainCallback(std::function<void(Music&)> f) {_musicDecreaseGain = f;};
-    void setMusicPauseCallback(std::function<void(Music&)> f) {_musicPause = f;}
+    // For each ObjectType, define a setCallback()-function
+    void setMainAppCallbacks(
+            void*, ObjectType,
+            std::initializer_list<std::pair
+                    <std::function<void(OpenFF_Main&)>,InputEvents>> events);
+    void setMusicCallbacks(
+            void*, ObjectType,
+            std::initializer_list<std::pair
+                    <std::function<void(Music&)>,InputEvents>> events);
 
     void addKeyToInputEvents(KeyEvent::Key, ModifierType, InputEvents event);
     void removeKeyFromInputEvents(KeyEvent::Key, ModifierType);
 
   private:
-    // callbacks
-    void doMainExit(void* app) {_mainExit(*static_cast<OpenFF_Main*>(app));};
-    void doMusicIncreaseGain(void* music) {_musicIncreaseGain(*static_cast<Music*>(music));}
-    void doMusicDecreaseGain(void* music) {_musicDecreaseGain(*static_cast<Music*>(music));}
-    void doMusicPause(void* music) {_musicPause(*static_cast<Music*>(music));}
-
     std::map<KeyEvent::Key,OpenFF::InputEvents>*
             determineInputEventMap(ModifierType modifier);
 
-    typedef std::map<OpenFF::InputEvents,
-                     std::function<void(InputHandler&,void*)>> ec_map;
-    ec_map _event_callbacks;
-    std::map<OpenFF::InputEvents,void*>         _callable_objects;
+    std::map<OpenFF::InputEvents,CalledObject>  _callback_functions;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_unmodified;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_shift;
     std::map<KeyEvent::Key,OpenFF::InputEvents> _input_events_ctrl;
-
-    std::function<void(OpenFF_Main&)>  _mainExit;
-    std::function<void(Music&)>        _musicIncreaseGain;
-    std::function<void(Music&)>        _musicDecreaseGain;
-    std::function<void(Music&)>        _musicPause;
 };
 
 }
