@@ -6,8 +6,12 @@
 #include <Magnum/Trade/AbstractImporter.h>
 #include <Magnum/Trade/ImageData.h>
 
+#include <Magnum/GL/TextureFormat.h>
+#include <Magnum/Shaders/Flat.h>
+#include <Magnum/Shaders/DistanceFieldVector.h>
 #include <Magnum/Text/AbstractFont.h>
 #include <Magnum/Text/GlyphCache.h>
+#include <Magnum/Text/Renderer.h>
 
 #include <functional>
 
@@ -43,6 +47,11 @@ class OpenFF_Main: public Platform::Application {
     PluginManager::Manager<Text::AbstractFont> _font_manager;
     Containers::Pointer<Text::AbstractFont> _font;
     Text::GlyphCache*                       _glyph_cache;
+    Shaders::DistanceFieldVector2D _text_shader;
+//    Shaders::Flat2D _text_shader;
+    GL::Buffer        _vertex_buffer, _index_buffer;
+    GL::Mesh          _mesh;
+    GL::Texture2D*    _glyph_texture;
 };
 
 OpenFF_Main::OpenFF_Main(const Arguments& arguments):
@@ -66,9 +75,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 
   // Menus
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
-  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 16.0f))
+  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 18.0f))
       Fatal{} << "Can't open font with StbTrueTypeFont";
-  _glyph_cache = new Text::GlyphCache{Vector2i{512}};
   std::string base_glyphs =
           "abcdefghijklmnopqrstuvwxyz"
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -103,8 +111,19 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
           "ÛûŪūŸÿ“„";
   std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs;
+  _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*1.5)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 
+//  _text_shader = Shaders::Flat2D{Shaders::Flat3D::Flag::Textured};
+  _glyph_texture = &_glyph_cache->texture();
+  _glyph_texture->setMinificationFilter(SamplerFilter::Nearest);
+  _glyph_texture->setMagnificationFilter(SamplerFilter::Nearest);
+  std::tie(_mesh, std::ignore) = Text::Renderer2D::render(
+          *_font, *_glyph_cache, 1.0f,
+          "Hello World!", _vertex_buffer, _index_buffer,
+          GL::BufferUsage::StaticDraw, Text::Alignment::LineCenter);
+
+/*
   _music_menu = new OpenFF::MusicMenu(
           _font.get(), _glyph_cache,
           Platform::Sdl2Application::windowSize(),
@@ -112,6 +131,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           Platform::Sdl2Application::framebufferSize(),
           _music);
   _music_menu->bindCallbacks(_input);
+*/
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -154,7 +174,24 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
-  _music_menu->draw();
+  GL::Renderer::enable(GL::Renderer::Feature::Blending);
+  GL::Renderer::setBlendFunction(
+          GL::Renderer::BlendFunction::One,
+          GL::Renderer::BlendFunction::OneMinusSourceAlpha);
+  using namespace Math::Literals;
+  _text_shader.setTransformationProjectionMatrix(Matrix3::projection(Vector2(10.0f)))
+//              .setColor(0xffffffff_rgbaf)
+//              .bindTexture(_glyph_cache->texture())
+              .setSmoothness(0.0f)
+//              .setOutlineRange(0.5f,0.5f)
+              .bindVectorTexture(*_glyph_texture)
+              .draw(_mesh);
+  GL::Renderer::setBlendFunction(
+          GL::Renderer::BlendFunction::One,
+          GL::Renderer::BlendFunction::One);
+  GL::Renderer::disable(GL::Renderer::Feature::Blending);
+
+//  _music_menu->draw();
 
   _debug_box->draw();
 
