@@ -33,6 +33,8 @@ class Music{
     void draw();
     void bindCallbacks(InputHandler*);
 
+    std::string getCurrentTrackName();
+
     Music& playNextTrack();
     Music& increaseGain();
     Music& decreaseGain();

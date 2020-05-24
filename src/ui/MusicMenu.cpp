@@ -37,7 +37,10 @@ MusicMenu::MusicMenu(
                 MusicMenu::MusicMenu(
                         window_size,
                         dpi_scaling,
-                        framebuffer_size) { _music = music; }
+                        framebuffer_size) {
+  _music = music;
+  _label->setText(_music->getCurrentTrackName());
+}
 MusicMenu::MusicMenu(
         Text::AbstractFont* font,
         Text::GlyphCache* glyph_cache,
@@ -50,7 +53,10 @@ MusicMenu::MusicMenu(
                         glyph_cache,
                         window_size,
                         dpi_scaling,
-                        framebuffer_size) { _music = music; }
+                        framebuffer_size) {
+  _music = music;
+  _label->setText(_music->getCurrentTrackName());
+}
 
 void MusicMenu::initialise_ui(
         Magnum::Vector2i window_size,
@@ -77,7 +83,6 @@ void MusicMenu::initialise_ui(
 }
 
 void MusicMenu::draw() {
-  _label->setText("bla");
   GL::Renderer::enable(GL::Renderer::Feature::Blending);
   GL::Renderer::setBlendFunction(
           GL::Renderer::BlendFunction::One,

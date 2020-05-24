@@ -41,6 +41,12 @@ Music::Music(Configuration* config, InputHandler* input) : Music::Music(config) 
   this->bindCallbacks(input);
 }
 
+std::string Music::getCurrentTrackName() {
+  std::string name;
+  _config->getMusicName(name, _current_track_name);
+  return name;
+}
+
 Music& Music::playNextTrack() {
   std::string track_location;
   if(_config->getMusicLocation(track_location, _current_track_name))
