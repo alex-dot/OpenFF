@@ -76,14 +76,18 @@ class InputHandler{
     bool processKeyReleaseEvent(KeyEvent& event);
 
     // For each ObjectType, define a setCallback()-function
-    void setMainAppCallbacks(
-            void*, ObjectType,
+    void setCallbacks(
+            OpenFF_Main&, ObjectType,
             std::initializer_list<std::pair
                     <std::function<void(OpenFF_Main&)>,InputEvents>> events);
-    void setMusicCallbacks(
-            void*, ObjectType,
+    void setCallbacks(
+            Music&, ObjectType,
             std::initializer_list<std::pair
                     <std::function<void(Music&)>,InputEvents>> events);
+    void setCallbacks(
+            MusicMenu&, ObjectType,
+            std::initializer_list<std::pair
+                    <std::function<void(MusicMenu&)>,InputEvents>> events);
 
     void addKeyToInputEvents(KeyEvent::Key, ModifierType, InputEvents event);
     void removeKeyFromInputEvents(KeyEvent::Key, ModifierType);

@@ -87,8 +87,8 @@ void Music::draw() {
 }
 
 void Music::bindCallbacks(InputHandler* input) {
-  input->setMusicCallbacks(
-      static_cast<void*>(this),
+  input->setCallbacks(
+      *this,
       ObjectType::music,
       {
           std::make_pair(&Music::increaseGain,InputEvents::music_increase_gain),

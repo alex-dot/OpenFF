@@ -57,9 +57,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _config = new OpenFF::Configuration(_input);
 
   // populate main application callbacks
-  _input->setMainAppCallbacks(
-          static_cast<void*>(this),
-          OpenFF::ObjectType::main_app,
+  _input->setCallbacks(
+          *this, OpenFF::ObjectType::main_app,
           {std::make_pair(&OpenFF_Main::exitMain,OpenFF::InputEvents::app_close)});
 
   // Music object
@@ -78,6 +77,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           Platform::Sdl2Application::dpiScaling(),
           Platform::Sdl2Application::framebufferSize(),
           _music);
+  _music_menu->bindCallbacks(_input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =

@@ -33,12 +33,12 @@ class Music{
     void draw();
     void bindCallbacks(InputHandler*);
 
-  private:
     Music& playNextTrack();
     Music& increaseGain();
     Music& decreaseGain();
     Music& pauseResume();
 
+  private:
     PluginManager::Manager<Audio::AbstractImporter> _manager;
     Containers::Pointer<Audio::AbstractImporter>    _importer;
     OpenFF::Configuration*        _config;

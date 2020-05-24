@@ -8,6 +8,7 @@
 #include <Magnum/Text/AbstractFont.h>
 #include <Magnum/Text/GlyphCache.h>
 
+#include "../audio/Music.h"
 #include "../utilities/InputHandler.h"
 
 using namespace Magnum;
@@ -27,7 +28,6 @@ class MusicMenu{
             Magnum::Vector2i window_size,
             Magnum::Vector2 dpi_scaling,
             Magnum::Vector2i framebuffer_size);
-    explicit MusicMenu(OpenFF::Music*);
     explicit MusicMenu(
             Magnum::Vector2i window_size,
             Magnum::Vector2 dpi_scaling,
@@ -42,7 +42,7 @@ class MusicMenu{
             OpenFF::Music*);
 
     void draw();
-//    void bindCallbacks(InputHandler*);
+    void bindCallbacks(InputHandler*);
 
   private:
     void initialise_ui(

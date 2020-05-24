@@ -84,30 +84,40 @@ InputHandler::InputHandler() {
 }
 
 // For each ObjectType, define a setCallback()-function
-// They only differ in the header and the second to last line,
-// still, this isn't worse than overloading
-void InputHandler::setMainAppCallbacks(
-        void* object, ObjectType type,
+void InputHandler::setCallbacks(
+        OpenFF_Main& object, ObjectType type,
         std::initializer_list<std::pair
                 <std::function<void(OpenFF_Main&)>,InputEvents>> events) {
   for(auto it = events.begin(); it != events.end(); ++it) {
     _callback_functions[it->second]._type = type;
-    _callback_functions[it->second]._object = static_cast<void*>(object);
+    _callback_functions[it->second]._object = static_cast<void*>(&object);
     _callback_functions[it->second]._callback_main_app = it->first;
     _callback_functions[it->second]._callback_music = nullptr;
     _callback_functions[it->second]._callback_menu_music = nullptr;
   }
 }
-void InputHandler::setMusicCallbacks(
-        void* object, ObjectType type,
+void InputHandler::setCallbacks(
+        Music& object, ObjectType type,
         std::initializer_list<std::pair
                 <std::function<void(Music&)>,InputEvents>> events) {
   for(auto it = events.begin(); it != events.end(); ++it) {
     _callback_functions[it->second]._type = type;
-    _callback_functions[it->second]._object = static_cast<void*>(object);
+    _callback_functions[it->second]._object = static_cast<void*>(&object);
     _callback_functions[it->second]._callback_main_app = nullptr;
     _callback_functions[it->second]._callback_music = it->first;
     _callback_functions[it->second]._callback_menu_music = nullptr;
+  }
+}
+void InputHandler::setCallbacks(
+        MusicMenu& object, ObjectType type,
+        std::initializer_list<std::pair
+                <std::function<void(MusicMenu&)>,InputEvents>> events) {
+  for(auto it = events.begin(); it != events.end(); ++it) {
+    _callback_functions[it->second]._type = type;
+    _callback_functions[it->second]._object = static_cast<void*>(&object);
+    _callback_functions[it->second]._callback_main_app = nullptr;
+    _callback_functions[it->second]._callback_music = nullptr;
+    _callback_functions[it->second]._callback_menu_music = it->first;
   }
 }
 

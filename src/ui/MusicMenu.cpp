@@ -29,7 +29,6 @@ MusicMenu::MusicMenu(
 {
   this->initialise_ui(window_size, dpi_scaling, framebuffer_size, font, glyph_cache);
 }
-MusicMenu::MusicMenu(Music* music) : MusicMenu::MusicMenu() { _music = music; }
 MusicMenu::MusicMenu(
         Magnum::Vector2i window_size,
         Magnum::Vector2  dpi_scaling,
@@ -91,24 +90,26 @@ void MusicMenu::draw() {
 }
 
 MusicMenu& MusicMenu::increaseGain() {
+  _music->increaseGain();
   return *this;
 }
 MusicMenu& MusicMenu::decreaseGain() {
+  _music->decreaseGain();
   return *this;
 }
 MusicMenu& MusicMenu::pauseResume() {
+  _music->pauseResume();
   return *this;
 }
-/*
+
 void MusicMenu::bindCallbacks(InputHandler* input) {
-//  input->setMusicIncreaseGainCallback(&MusicMenu::increaseGain);
-//  input->setMusicDecreaseGainCallback(&MusicMenu::decreaseGain);
-//  input->setMusicPauseCallback(&MusicMenu::pauseResume);
-  input->setCallableObjects(
-          static_cast<void*>(this),
-          ObjectTypes::menu_music,
-          { InputEvents::music_increase_gain,
-            InputEvents::music_decrease_gain,
-            InputEvents::music_pause}
-          );
-}*/
+  input->setCallbacks(
+      *this,
+      ObjectType::menu_music,
+      {
+          std::make_pair(&MusicMenu::increaseGain,InputEvents::music_increase_gain),
+          std::make_pair(&MusicMenu::decreaseGain,InputEvents::music_decrease_gain),
+          std::make_pair(&MusicMenu::pauseResume,InputEvents::music_pause)
+      }
+  );
+}
