@@ -58,7 +58,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   Platform::Application{arguments,
                         Configuration{}
                                 .setTitle("OpenFF_Main")
-                                .setWindowFlags(Configuration::WindowFlag::Resizable)}
+                                .setWindowFlags(Configuration::WindowFlag::Resizable)
+                                .setSize(Vector2i(960,540))}
 {
   _input = new OpenFF::InputHandler();
 
@@ -119,8 +120,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _glyph_texture->setMinificationFilter(SamplerFilter::Nearest);
   _glyph_texture->setMagnificationFilter(SamplerFilter::Nearest);
   std::tie(_mesh, std::ignore) = Text::Renderer2D::render(
-          *_font, *_glyph_cache, 1.0f,
-          "Hello World!", _vertex_buffer, _index_buffer,
+          *_font, *_glyph_cache, 1.225f, // pixel perfect
+          "Cloud: Hello World!", _vertex_buffer, _index_buffer,
           GL::BufferUsage::StaticDraw, Text::Alignment::LineCenter);
 
 /*
@@ -179,7 +180,7 @@ void OpenFF_Main::drawEvent() {
           GL::Renderer::BlendFunction::One,
           GL::Renderer::BlendFunction::OneMinusSourceAlpha);
   using namespace Math::Literals;
-  _text_shader.setTransformationProjectionMatrix(Matrix3::projection(Vector2(10.0f)))
+  _text_shader.setTransformationProjectionMatrix(Matrix3::projection(Vector2(61.25f,33.75f)))
 //              .setColor(0xffffffff_rgbaf)
 //              .bindTexture(_glyph_cache->texture())
               .setSmoothness(0.0f)
