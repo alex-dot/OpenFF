@@ -7,7 +7,6 @@
 #include <Magnum/Trade/ImageData.h>
 
 #include <Magnum/GL/TextureFormat.h>
-#include <Magnum/Shaders/Flat.h>
 #include <Magnum/Shaders/DistanceFieldVector.h>
 #include <Magnum/Text/AbstractFont.h>
 #include <Magnum/Text/GlyphCache.h>
@@ -48,10 +47,11 @@ class OpenFF_Main: public Platform::Application {
     Containers::Pointer<Text::AbstractFont> _font;
     Text::GlyphCache*                       _glyph_cache;
     Shaders::DistanceFieldVector2D _text_shader;
-//    Shaders::Flat2D _text_shader;
     GL::Buffer        _vertex_buffer, _index_buffer;
     GL::Mesh          _mesh;
     GL::Texture2D*    _glyph_texture;
+    Matrix3           _text_projection_matrix, _text_translation_matrix, _text_scaling_matrix;
+    Vector2           _text_window_size_vector;
 };
 
 OpenFF_Main::OpenFF_Main(const Arguments& arguments):
@@ -59,7 +59,9 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
                         Configuration{}
                                 .setTitle("OpenFF_Main")
                                 .setWindowFlags(Configuration::WindowFlag::Resizable)
-                                .setSize(Vector2i(960,540))}
+                                //.setSize(Vector2i(960,540))}
+                                //.setSize(Vector2i(320,240))}
+                                .setSize(Vector2i(640,480))}
 {
   _input = new OpenFF::InputHandler();
 
@@ -74,6 +76,20 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // Music object
   _music = new OpenFF::Music(_config, _input);
 
+  PluginManager::Manager<Trade::AbstractImporter> manager;
+  Containers::Pointer<Trade::AbstractImporter> png_importer =
+    manager.loadAndInstantiate("PngImporter");
+  if(!png_importer) std::exit(1);
+
+  if(!png_importer->openFile(_config->getBackgroundLocation())) std::exit(2);
+  Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
+  CORRADE_INTERNAL_ASSERT(image);
+
+  // initialise background billboard
+  _bb = new OpenFF::BackgroundBillboard();
+  _bb->setBackground(image);
+  _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
+
   // Menus
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
   if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 18.0f))
@@ -85,7 +101,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   std::string base_sign_glyphs = "!?#$&%()*+-/,.^~:;<>'\"";
   std::string extended_sign_glyphs =
           "¡¢£¤¥€¦§¨©ª«¬®¯°±´µ¶·¸º»¿@[]"
-          "‐–—―\\_`{}|…†‡‰÷×‸※‽‾⁋⁖℅™⌘";
+          "‐–—―\\_`{}|…†‡‰÷×‸※‽‾⁋⁖℅™⌘“„";
   std::string super_subscript_glyphs =
           "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿ"
           "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐ"
@@ -110,19 +126,23 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           "ÄäÖöÜüßÁáÀàÂâåÃãĀāÆæÇç"  // ĂăÅ
           "ÉéÈèÊêËëĒēÍíÌìÎîÏïİ"     // ĔĕĞğĬĭ
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
-          "ÛûŪūŸÿ“„";
-  std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs;
-  _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*1.5)}};
+          "ÛûŪūŸÿ";
+  std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs;
+  _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 
-//  _text_shader = Shaders::Flat2D{Shaders::Flat3D::Flag::Textured};
+  _text_translation_matrix = Matrix3::translation(Vector2(0.006f,-0.1825f)*_bb->getRelativeBillboardRatio());
+  _text_scaling_matrix = Matrix3::scaling(Vector2(0.023,0.03)*_bb->getRelativeBillboardRatio());
+  _text_projection_matrix = Matrix3::projection(Vector2(1.0f))
+          *_text_translation_matrix
+          *_text_scaling_matrix;
   _glyph_texture = &_glyph_cache->texture();
-  _glyph_texture->setMinificationFilter(SamplerFilter::Nearest);
-  _glyph_texture->setMagnificationFilter(SamplerFilter::Nearest);
+  _glyph_texture->setMinificationFilter(SamplerFilter::Nearest)
+                 .setMagnificationFilter(SamplerFilter::Nearest);
   std::tie(_mesh, std::ignore) = Text::Renderer2D::render(
-          *_font, *_glyph_cache, 1.225f, // pixel perfect
-          "Cloud: Hello World!", _vertex_buffer, _index_buffer,
-          GL::BufferUsage::StaticDraw, Text::Alignment::LineCenter);
+          *_font, *_glyph_cache, 1.225f, // 1.225f pixel perfect
+          "Cloud: Hello World!\n“Aeris?“", _vertex_buffer, _index_buffer,
+          GL::BufferUsage::StaticDraw);
 
 /*
   _music_menu = new OpenFF::MusicMenu(
@@ -133,20 +153,6 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           _music);
   _music_menu->bindCallbacks(_input);
 */
-
-  PluginManager::Manager<Trade::AbstractImporter> manager;
-  Containers::Pointer<Trade::AbstractImporter> png_importer =
-    manager.loadAndInstantiate("PngImporter");
-  if(!png_importer) std::exit(1);
-
-  if(!png_importer->openFile(_config->getBackgroundLocation())) std::exit(2);
-  Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
-  CORRADE_INTERNAL_ASSERT(image);
-
-  // initialise background billboard
-  _bb = new OpenFF::BackgroundBillboard();
-  _bb->setBackground(image);
-  _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
   _debug_box = new OpenFF::DebugBox();
 
@@ -164,6 +170,23 @@ void OpenFF_Main::drawEvent() {
           .bind();
   _bb->draw();
 
+  // Text rendering
+  using namespace Math::Literals;
+  GL::Renderer::enable(GL::Renderer::Feature::Blending);
+  GL::Renderer::setBlendFunction(
+          GL::Renderer::BlendFunction::DestinationAlpha,
+          GL::Renderer::BlendFunction::OneMinusSourceAlpha);
+  _text_shader.setTransformationProjectionMatrix(_text_projection_matrix*Matrix3::translation(Vector2(0.1,-0.1)))
+              .setColor(0x000000ff_rgbaf)
+              .setSmoothness(0.0f)
+              .bindVectorTexture(*_glyph_texture)
+              .draw(_mesh);
+  GL::Renderer::setBlendFunction(
+          GL::Renderer::BlendFunction::One,
+          GL::Renderer::BlendFunction::One);
+  GL::Renderer::disable(GL::Renderer::Feature::Blending);
+
+
   // then bind the default framebuffer and blit the backgrounds framebuffer to it
   GL::defaultFramebuffer
           .clear(GL::FramebufferClear::Color|GL::FramebufferClear::Depth)
@@ -177,16 +200,13 @@ void OpenFF_Main::drawEvent() {
 
   GL::Renderer::enable(GL::Renderer::Feature::Blending);
   GL::Renderer::setBlendFunction(
-          GL::Renderer::BlendFunction::One,
+          GL::Renderer::BlendFunction::DestinationAlpha,
           GL::Renderer::BlendFunction::OneMinusSourceAlpha);
-  using namespace Math::Literals;
-  _text_shader.setTransformationProjectionMatrix(Matrix3::projection(Vector2(61.25f,33.75f)))
-//              .setColor(0xffffffff_rgbaf)
-//              .bindTexture(_glyph_cache->texture())
-              .setSmoothness(0.0f)
-//              .setOutlineRange(0.5f,0.5f)
-              .bindVectorTexture(*_glyph_texture)
-              .draw(_mesh);
+  _text_shader.setTransformationProjectionMatrix(_text_projection_matrix)
+          .setColor(0xffffffff_rgbaf)
+          .setSmoothness(0.0f)
+          .bindVectorTexture(*_glyph_texture)
+          .draw(_mesh);
   GL::Renderer::setBlendFunction(
           GL::Renderer::BlendFunction::One,
           GL::Renderer::BlendFunction::One);
@@ -203,6 +223,11 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
+  _text_translation_matrix = Matrix3::translation(Vector2(0.006f,-0.1825f)*_bb->getRelativeBillboardRatio());
+  _text_scaling_matrix = Matrix3::scaling(Vector2(0.023,0.03)*_bb->getRelativeBillboardRatio());
+  _text_projection_matrix = Matrix3::projection(Vector2(1.0f))
+          *_text_translation_matrix
+          *_text_scaling_matrix;
 }
 
 void OpenFF_Main::exitMain() {

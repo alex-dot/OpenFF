@@ -64,7 +64,8 @@ void BackgroundBillboard::setRelativeBillboardRatio(Magnum::Vector2i windowSize)
     relative_billboard_ratio = Vector2(1.0f/relative_ratio, 1.0f);
   else
     relative_billboard_ratio = Vector2(1.0f, relative_ratio);
-  _shader.setRelativeBillboardRatio(relative_billboard_ratio);
+  _relative_billboard_ratio = relative_billboard_ratio;
+  _shader.setRelativeBillboardRatio(_relative_billboard_ratio);
 }
 
 void BackgroundBillboard::draw() {
