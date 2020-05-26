@@ -60,8 +60,8 @@ Music& Music::playNextTrack() {
 
   (new Audio::Playable2D{_sourceObject, &_playables})->source()
     .setBuffer(&_buffer)
-    .setLooping(true)
-    .play();
+    .setLooping(true);
+  _global_pause = true;
 
   return *this;
 }
