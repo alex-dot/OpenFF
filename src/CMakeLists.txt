@@ -19,6 +19,7 @@ add_executable(OpenFF MainApplication.cpp
     graphics/BackgroundBillboard.cpp
     graphics/DebugBox.cpp
     graphics/shaders/BillboardShader.cpp
+    ui/Font.cpp
     ui/MusicMenu.cpp
     utilities/Configuration.cpp
     utilities/InputHandler.cpp)
