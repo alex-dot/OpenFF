@@ -18,7 +18,9 @@ typedef Magnum::Platform::Sdl2Application::KeyEvent::Key Keycode;
 enum ConfigurationSettings {
   background_location,
   music_location,
-  CONFIGURATION_SETTINGS_MAX = music_location
+  default_font_location,
+  default_font_base_size,
+  CONFIGURATION_SETTINGS_MAX = default_font_base_size
 };
 typedef Iterator<ConfigurationSettings,
                  ConfigurationSettings::background_location,
@@ -39,9 +41,16 @@ class Configuration{
 
     void setBackgroundLocation(std::string);
     void setMusicLocation(std::string);
+    void setDefaultFontLocation(std::string);
+    void setDefaultFontBaseSize(std::string);
 
+    // generic getters
     std::string getBackgroundLocation() const;
     std::string getMusicLocation() const;
+    std::string getDefaultFontLocation() const;
+    int getDefaultFontBaseSize() const;
+
+    // specialized getters
     bool getMusicLocation(std::string&, std::string) const;
     bool getMusicName(std::string&, std::string) const;
     std::string getRandomMusic() const;
@@ -60,6 +69,8 @@ class Configuration{
 
     std::string   _background_location;
     std::string   _music_location;
+    std::string   _default_font_location;
+    std::string   _default_font_base_size;
 
     typedef std::map<OpenFF::ConfigurationSettings,
                      std::function<void(Configuration&,std::string)>> csc_map;

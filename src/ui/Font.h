@@ -22,7 +22,7 @@ enum FontRenderType {
 
 class Font{
   public:
-    explicit Font();
+    explicit Font(std::string, int);
 
     // Font has no extra Framebuffer and renders to previously bound FB
     void draw(FontRenderType = normal);

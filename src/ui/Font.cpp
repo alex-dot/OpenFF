@@ -6,9 +6,9 @@
 
 using namespace OpenFF;
 
-Font::Font() {
+Font::Font(std::string font_location, int font_size) {
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
-  if(!_font || !_font->openFile("../ressources/CaverasReactor7Font/Reactor7.ttf", 18.0f))
+  if(!_font || !_font->openFile(font_location, font_size))
       Fatal{} << "Can't open font with StbTrueTypeFont";
   std::string base_glyphs =
           "abcdefghijklmnopqrstuvwxyz"
