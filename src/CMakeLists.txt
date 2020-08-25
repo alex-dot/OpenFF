@@ -17,8 +17,10 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 add_executable(OpenFF MainApplication.cpp
     audio/Music.cpp
     graphics/BackgroundBillboard.cpp
+    graphics/TextBox.cpp
     graphics/DebugBox.cpp
     graphics/shaders/BillboardShader.cpp
+    graphics/shaders/TextBoxShader.cpp
     ui/Font.cpp
     ui/MusicMenu.cpp
     utilities/Configuration.cpp

@@ -8,8 +8,11 @@
 
 #include <functional>
 
+#include "graphics/shaders/TextBoxShader.h"
+
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
+#include "graphics/TextBox.h"
 #include "graphics/DebugBox.h"
 #include "ui/Font.h"
 #include "ui/MusicMenu.h"
@@ -35,6 +38,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
+    OpenFF::TextBox*              _textbox;
     OpenFF::Font*                 _font;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
@@ -57,7 +61,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           {std::make_pair(&OpenFF_Main::exitMain,OpenFF::InputEvents::app_close)});
 
   // Music object
-  _music = new OpenFF::Music(_config, _input);
+  //_music = new OpenFF::Music(_config, _input);
 
   PluginManager::Manager<Trade::AbstractImporter> manager;
   Containers::Pointer<Trade::AbstractImporter> png_importer =
@@ -77,6 +81,21 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _font = new OpenFF::Font(_config->getDefaultFontLocation(), _config->getDefaultFontBaseSize());
   _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
+
+  if(!png_importer->openFile("../ressources/borders.png")) std::exit(2);
+  Containers::Optional<Trade::ImageData2D> image_textbox = png_importer->image2D(0);
+  CORRADE_INTERNAL_ASSERT(image_textbox);
+
+  // Textbox
+  _textbox = new OpenFF::TextBox();
+  _textbox->setBorder(image_textbox);
+  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _textbox->setViewportSize(Vector2i(320,240));
+  _textbox->setBoxSize(Vector2i(158,40));
+  _textbox->setOffset(Vector2i(154,148));
+  using namespace Magnum::Math::Literals;
+  _textbox->setColor(0x0000ff_rgbf);
+
   // Menus
 /*
   _music_menu = new OpenFF::MusicMenu(
@@ -91,21 +110,33 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _debug_box = new OpenFF::DebugBox();
 
   // set rendering
-  GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
-  GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
   setSwapInterval(0);
   setMinimalLoopPeriod(16);
 }
 
 void OpenFF_Main::drawEvent() {
+  GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
+  GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+  GL::Renderer::enable(GL::Renderer::Feature::Blending);
+  GL::Renderer::setBlendFunction(
+          GL::Renderer::BlendFunction::SourceAlpha,
+          GL::Renderer::BlendFunction::OneMinusSourceAlpha);
+
   // first render the background to its own framebuffer
   _bb->getFramebuffer()
           .clear(GL::FramebufferClear::Color)
           .bind();
   _bb->draw();
 
+  // Textboxes
+  _textbox->draw();
+
   // Text Shadow rendering
   _font->draw(OpenFF::FontRenderType::shadow);
+  // Text rendering
+  _font->draw();
+
+//  _music_menu->draw();
 
   // then bind the default framebuffer and blit the backgrounds framebuffer to it
   GL::defaultFramebuffer
@@ -118,11 +149,6 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
-  // Text rendering
-  _font->draw();
-
-//  _music_menu->draw();
-
   _debug_box->draw();
 
   swapBuffers();
@@ -133,10 +159,10 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
   _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 }
 
 void OpenFF_Main::exitMain() {
-  delete(_music);
   exit();
   redraw();
 }
