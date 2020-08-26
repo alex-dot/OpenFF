@@ -94,7 +94,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _textbox->setBoxSize(Vector2i(158,40));
   _textbox->setOffset(Vector2i(154,148));
   using namespace Magnum::Math::Literals;
-  _textbox->setColor(0x0000ff_rgbf);
+  //_textbox->setColor(0xff00ff_rgbf);
+  _textbox->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
 
   // Menus
 /*

@@ -6,6 +6,8 @@
 #include <Magnum/GL/Shader.h>
 #include <Magnum/GL/Version.h>
 
+namespace OpenFF {
+
 TextBoxShader::TextBoxShader() {
   MAGNUM_ASSERT_GL_VERSION_SUPPORTED(GL::Version::GL330);
 
@@ -25,7 +27,12 @@ TextBoxShader::TextBoxShader() {
 
   setUniform(uniformLocation("textureData"), TextureUnit);
 
-  _color_uniform = uniformLocation("boxColor");
+  _color_mode_uniform = uniformLocation("boxColorMode");
+  _uni_color_uniform = uniformLocation("boxUniColor");
+  _top_left_color_uniform = uniformLocation("boxTopLeftColor");
+  _top_right_color_uniform = uniformLocation("boxTopRightColor");
+  _bottom_left_color_uniform = uniformLocation("boxBottomLeftColor");
+  _bottom_right_color_uniform = uniformLocation("boxBottomRightColor");
   _viewport_uniform = uniformLocation("viewportSize");
   _box_size_uniform = uniformLocation("boxSize");
   _offset_uniform = uniformLocation("boxOffset");
@@ -46,4 +53,6 @@ TextBoxShader::TextBoxShader(
   setViewportSize(viewport_size);
   setBoxSize(box_size);
   setOffset(offset);
+}
+
 }

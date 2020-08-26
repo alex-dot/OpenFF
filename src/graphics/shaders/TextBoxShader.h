@@ -7,6 +7,14 @@
 
 #include "../../misc/TerminalOutput.h"
 
+namespace OpenFF {
+
+enum ColorMode {
+  unicolor = 0,
+  gradient = 1,
+  COLOR_MODE_MAX = gradient
+};
+
 using namespace Magnum;
 
 class TextBoxShader: public GL::AbstractShaderProgram {
@@ -26,8 +34,30 @@ class TextBoxShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
-    TextBoxShader& setColor(Color3 color) {
-      setUniform(_color_uniform, color);
+    TextBoxShader& setColorMode(ColorMode mode) {
+      setUniform(_color_mode_uniform, mode);
+      return *this;
+    }
+
+    TextBoxShader& setUniColor(Color3 color) {
+      setUniform(_uni_color_uniform, color);
+      return *this;
+    }
+
+    TextBoxShader& setTopLeftColor(Color3 color) {
+      setUniform(_top_left_color_uniform, color);
+      return *this;
+    }
+    TextBoxShader& setTopRightColor(Color3 color) {
+      setUniform(_top_right_color_uniform, color);
+      return *this;
+    }
+    TextBoxShader& setBottomLeftColor(Color3 color) {
+      setUniform(_bottom_left_color_uniform, color);
+      return *this;
+    }
+    TextBoxShader& setBottomRightColor(Color3 color) {
+      setUniform(_bottom_right_color_uniform, color);
       return *this;
     }
 
@@ -54,9 +84,16 @@ class TextBoxShader: public GL::AbstractShaderProgram {
   private:
     enum: int { TextureUnit = 0 };
 
-    int _color_uniform;
+    int _color_mode_uniform;
+    int _uni_color_uniform;
+    int _top_left_color_uniform;
+    int _top_right_color_uniform;
+    int _bottom_left_color_uniform;
+    int _bottom_right_color_uniform;
     int _viewport_uniform;
     int _box_size_uniform;
     int _offset_uniform;
     int _relative_billboard_ratio_uniform;
 };
+
+}

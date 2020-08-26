@@ -36,7 +36,7 @@ void main() {
 
   // Prepare in-box coordinates for [0.0;1.0] dimensions, starting top-left
   coords.x = (position.x+1.0)/2.0;
-  coords.y = (position.y+1.0)/2.0;
+  coords.y = 1.0-(position.y+1.0)/2.0;
 
   gl_Position = vec4(mvp*vec4(position,0.0,1.0));
 }

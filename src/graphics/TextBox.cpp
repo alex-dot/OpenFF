@@ -45,6 +45,23 @@ void TextBox::setBorder(Containers::Optional<Trade::ImageData2D> &image) {
           .setSubImage(0, {}, *image);
 }
 
+void TextBox::setColor(Color3 color) {
+  _shader.setColorMode(OpenFF::ColorMode::unicolor)
+         .setUniColor(color);
+}
+
+void TextBox::setColor(
+        Color3 top_left_color,
+        Color3 top_right_color,
+        Color3 bottom_right_color,
+        Color3 bottom_left_color) {
+  _shader.setColorMode(OpenFF::ColorMode::gradient)
+         .setTopLeftColor(top_left_color)
+         .setTopRightColor(top_right_color)
+         .setBottomRightColor(bottom_right_color)
+         .setBottomLeftColor(bottom_left_color);
+}
+
 void TextBox::draw() {
   _shader.bindTexture(_texture)
          .draw(_box);

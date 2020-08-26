@@ -16,7 +16,10 @@ class TextBox{
     void setBorder(Containers::Optional<Trade::ImageData2D> &image);
     void setRelativeBillboardRatio(Magnum::Vector2 relative_billboard_ratio)
             {_shader.setRelativeBillboardRatio(relative_billboard_ratio);}
-    void setColor(Color3 color) {_shader.setColor(color);}
+    // set uniform color
+    void setColor(Color3);
+    // set color gradient, starting top-left going clockwise
+    void setColor(Color3, Color3, Color3, Color3);
     void setViewportSize(Vector2i size) {_shader.setViewportSize(size);}
     void setBoxSize(Vector2i size) {_shader.setBoxSize(size);}
     void setOffset(Vector2i coordinates) {_shader.setOffset(coordinates);}
