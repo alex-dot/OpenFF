@@ -17,66 +17,66 @@ enum ColorMode {
 
 using namespace Magnum;
 
-class TextBoxShader: public GL::AbstractShaderProgram {
+class WindowShader: public GL::AbstractShaderProgram {
   public:
     typedef GL::Attribute<0, Vector2> Position;
     typedef GL::Attribute<1, Vector2> TextureCoordinates;
 
-    explicit TextBoxShader();
-    explicit TextBoxShader(Vector2i viewportSize);
-    explicit TextBoxShader(
+    explicit WindowShader();
+    explicit WindowShader(Vector2i viewportSize);
+    explicit WindowShader(
             Vector2i viewportSize,
-            Vector2i boxSize,
+            Vector2i windowSize,
             Vector2i offset);
 
-    TextBoxShader& bindTexture(GL::Texture2D& texture) {
+    WindowShader& bindTexture(GL::Texture2D& texture) {
       texture.bind(TextureUnit);
       return *this;
     }
 
-    TextBoxShader& setColorMode(ColorMode mode) {
+    WindowShader& setColorMode(ColorMode mode) {
       setUniform(_color_mode_uniform, mode);
       return *this;
     }
 
-    TextBoxShader& setUniColor(Color3 color) {
+    WindowShader& setUniColor(Color3 color) {
       setUniform(_uni_color_uniform, color);
       return *this;
     }
 
-    TextBoxShader& setTopLeftColor(Color3 color) {
+    WindowShader& setTopLeftColor(Color3 color) {
       setUniform(_top_left_color_uniform, color);
       return *this;
     }
-    TextBoxShader& setTopRightColor(Color3 color) {
+    WindowShader& setTopRightColor(Color3 color) {
       setUniform(_top_right_color_uniform, color);
       return *this;
     }
-    TextBoxShader& setBottomLeftColor(Color3 color) {
+    WindowShader& setBottomLeftColor(Color3 color) {
       setUniform(_bottom_left_color_uniform, color);
       return *this;
     }
-    TextBoxShader& setBottomRightColor(Color3 color) {
+    WindowShader& setBottomRightColor(Color3 color) {
       setUniform(_bottom_right_color_uniform, color);
       return *this;
     }
 
-    TextBoxShader& setViewportSize(Vector2i size) {
+    WindowShader& setViewportSize(Vector2i size) {
       setUniform(_viewport_uniform, size);
       return *this;
     }
 
-    TextBoxShader& setBoxSize(Vector2i size) {
-      setUniform(_box_size_uniform, size);
+    WindowShader& setBoxSize(Vector2i size) {
+      setUniform(_window_size_uniform, size);
       return *this;
     }
 
-    TextBoxShader& setOffset(Vector2i coordinates) {
+    WindowShader& setOffset(Vector2i coordinates) {
       setUniform(_offset_uniform, coordinates);
       return *this;
     }
 
-    TextBoxShader& setRelativeBillboardRatio(const Vector2& ratio) {
+    WindowShader& setRelativeBillboardRatio(const Vector2& ratio) {
       setUniform(_relative_billboard_ratio_uniform, ratio);
       return *this;
     }
@@ -91,7 +91,7 @@ class TextBoxShader: public GL::AbstractShaderProgram {
     int _bottom_left_color_uniform;
     int _bottom_right_color_uniform;
     int _viewport_uniform;
-    int _box_size_uniform;
+    int _window_size_uniform;
     int _offset_uniform;
     int _relative_billboard_ratio_uniform;
 };

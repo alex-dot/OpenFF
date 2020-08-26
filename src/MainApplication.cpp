@@ -8,11 +8,9 @@
 
 #include <functional>
 
-#include "graphics/shaders/TextBoxShader.h"
-
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
-#include "graphics/TextBox.h"
+#include "graphics/Window.h"
 #include "graphics/DebugBox.h"
 #include "ui/Font.h"
 #include "ui/MusicMenu.h"
@@ -38,7 +36,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
-    OpenFF::TextBox*              _textbox;
+    OpenFF::Window*              _window;
     OpenFF::Font*                 _font;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
@@ -83,19 +81,19 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 
 
   if(!png_importer->openFile(_config->getBorderLocation())) std::exit(2);
-  Containers::Optional<Trade::ImageData2D> image_textbox = png_importer->image2D(0);
-  CORRADE_INTERNAL_ASSERT(image_textbox);
+  Containers::Optional<Trade::ImageData2D> image_window = png_importer->image2D(0);
+  CORRADE_INTERNAL_ASSERT(image_window);
 
   // Textbox
-  _textbox = new OpenFF::TextBox();
-  _textbox->setBorder(image_textbox);
-  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _textbox->setViewportSize(Vector2i(320,240));
-  _textbox->setBoxSize(Vector2i(158,40));
-  _textbox->setOffset(Vector2i(154,148));
+  _window = new OpenFF::Window();
+  _window->setBorder(image_window);
+  _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _window->setViewportSize(Vector2i(320,240));
+  _window->setBoxSize(Vector2i(158,40));
+  _window->setOffset(Vector2i(154,148));
   using namespace Magnum::Math::Literals;
-  //_textbox->setColor(0xff00ff_rgbf);
-  _textbox->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
+  //_window->setColor(0xff00ff_rgbf);
+  _window->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
 
   // Menus
 /*
@@ -130,7 +128,7 @@ void OpenFF_Main::drawEvent() {
   _bb->draw();
 
   // Textboxes
-  _textbox->draw();
+  _window->draw();
 
   // Text Shadow rendering
   _font->draw(OpenFF::FontRenderType::shadow);
@@ -161,7 +159,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
   _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 }
 
 void OpenFF_Main::exitMain() {

@@ -1,4 +1,4 @@
-#include "TextBoxShader.h"
+#include "WindowShader.h"
 
 #include <Corrade/Containers/Reference.h>
 #include <Corrade/Utility/Resource.h>
@@ -8,7 +8,7 @@
 
 namespace OpenFF {
 
-TextBoxShader::TextBoxShader() {
+WindowShader::WindowShader() {
   MAGNUM_ASSERT_GL_VERSION_SUPPORTED(GL::Version::GL330);
 
   using namespace Magnum;
@@ -16,8 +16,8 @@ TextBoxShader::TextBoxShader() {
   GL::Shader vert{GL::Version::GL330, GL::Shader::Type::Vertex};
   GL::Shader frag{GL::Version::GL330, GL::Shader::Type::Fragment};
 
-  vert.addFile("../src/graphics/shaders/TextBoxShader.vert");
-  frag.addFile("../src/graphics/shaders/TextBoxShader.frag");
+  vert.addFile("../src/graphics/shaders/WindowShader.vert");
+  frag.addFile("../src/graphics/shaders/WindowShader.frag");
 
   CORRADE_INTERNAL_ASSERT_OUTPUT(GL::Shader::compile({vert, frag}));
 
@@ -27,31 +27,31 @@ TextBoxShader::TextBoxShader() {
 
   setUniform(uniformLocation("textureData"), TextureUnit);
 
-  _color_mode_uniform = uniformLocation("boxColorMode");
-  _uni_color_uniform = uniformLocation("boxUniColor");
-  _top_left_color_uniform = uniformLocation("boxTopLeftColor");
-  _top_right_color_uniform = uniformLocation("boxTopRightColor");
-  _bottom_left_color_uniform = uniformLocation("boxBottomLeftColor");
-  _bottom_right_color_uniform = uniformLocation("boxBottomRightColor");
+  _color_mode_uniform = uniformLocation("windowColorMode");
+  _uni_color_uniform = uniformLocation("windowUniColor");
+  _top_left_color_uniform = uniformLocation("windowTopLeftColor");
+  _top_right_color_uniform = uniformLocation("windowTopRightColor");
+  _bottom_left_color_uniform = uniformLocation("windowBottomLeftColor");
+  _bottom_right_color_uniform = uniformLocation("windowBottomRightColor");
   _viewport_uniform = uniformLocation("viewportSize");
-  _box_size_uniform = uniformLocation("boxSize");
-  _offset_uniform = uniformLocation("boxOffset");
+  _window_size_uniform = uniformLocation("windowSize");
+  _offset_uniform = uniformLocation("windowOffset");
   _relative_billboard_ratio_uniform = uniformLocation("relativeBillboardRatio");
   setUniform(_relative_billboard_ratio_uniform, Vector2(1.0f));
 }
 
-TextBoxShader::TextBoxShader(Vector2i viewport_size)
-        : TextBoxShader::TextBoxShader() {
+WindowShader::WindowShader(Vector2i viewport_size)
+        : WindowShader::WindowShader() {
   setViewportSize(viewport_size);
 }
 
-TextBoxShader::TextBoxShader(
+WindowShader::WindowShader(
         Vector2i viewport_size,
-        Vector2i box_size,
+        Vector2i window_size,
         Vector2i offset)
-        : TextBoxShader::TextBoxShader() {
+        : WindowShader::WindowShader() {
   setViewportSize(viewport_size);
-  setBoxSize(box_size);
+  setBoxSize(window_size);
   setOffset(offset);
 }
 

@@ -4,13 +4,13 @@
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/Shaders/VertexColor.h>
 
-#include "shaders/TextBoxShader.h"
+#include "shaders/WindowShader.h"
 
 namespace OpenFF {
 
-class TextBox{
+class Window{
   public:
-    explicit TextBox();
+    explicit Window();
 
     void draw();
     void setBorder(Containers::Optional<Trade::ImageData2D> &image);
@@ -25,9 +25,9 @@ class TextBox{
     void setOffset(Vector2i coordinates) {_shader.setOffset(coordinates);}
 
   private:
-    TextBoxShader                     _shader;
-    Magnum::GL::Mesh                  _box;
-    Magnum::GL::Texture2D             _texture;
+    WindowShader             _shader;
+    Magnum::GL::Mesh         _box;
+    Magnum::GL::Texture2D    _texture;
 };
 
 }

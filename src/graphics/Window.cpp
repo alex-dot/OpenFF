@@ -13,11 +13,11 @@
 #include <Magnum/Trade/ImageData.h>
 #include <Magnum/Trade/MeshData.h>
 
-#include "TextBox.h"
+#include "Window.h"
 
 using namespace OpenFF;
 
-TextBox::TextBox() {
+Window::Window() {
     struct QuadVertex {
       Vector2 position;
       Vector2 textureCoordinates;
@@ -33,11 +33,11 @@ TextBox::TextBox() {
     _box.setPrimitive(MeshPrimitive::TriangleStrip)
             .setCount(4)
             .addVertexBuffer(std::move(box_buffer), 0,
-                    TextBoxShader::Position{},
-                    TextBoxShader::TextureCoordinates{});
+                    WindowShader::Position{},
+                    WindowShader::TextureCoordinates{});
 }
 
-void TextBox::setBorder(Containers::Optional<Trade::ImageData2D> &image) {
+void Window::setBorder(Containers::Optional<Trade::ImageData2D> &image) {
   _texture.setWrapping(GL::SamplerWrapping::ClampToEdge)
           .setMagnificationFilter(GL::SamplerFilter::Nearest)
           .setMinificationFilter(GL::SamplerFilter::Nearest)
@@ -45,12 +45,12 @@ void TextBox::setBorder(Containers::Optional<Trade::ImageData2D> &image) {
           .setSubImage(0, {}, *image);
 }
 
-void TextBox::setColor(Color3 color) {
+void Window::setColor(Color3 color) {
   _shader.setColorMode(OpenFF::ColorMode::unicolor)
          .setUniColor(color);
 }
 
-void TextBox::setColor(
+void Window::setColor(
         Color3 top_left_color,
         Color3 top_right_color,
         Color3 bottom_right_color,
@@ -62,7 +62,7 @@ void TextBox::setColor(
          .setBottomLeftColor(bottom_left_color);
 }
 
-void TextBox::draw() {
+void Window::draw() {
   _shader.bindTexture(_texture)
          .draw(_box);
 }
