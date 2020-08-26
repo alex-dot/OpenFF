@@ -50,7 +50,7 @@ void BackgroundBillboard::setBackground(Containers::Optional<Trade::ImageData2D>
     _texture.setWrapping(GL::SamplerWrapping::ClampToEdge)
       .setMagnificationFilter(GL::SamplerFilter::Linear)
       .setMinificationFilter(GL::SamplerFilter::Linear)
-      .setStorage(1, GL::textureFormat(image->format()), image->size())
+      .setStorage(1 , GL::textureFormat(image->format()), image->size())
       .setSubImage(0, {}, *image);
     _backgroundSize = image->size();
     this->setRelativeBillboardRatio(_framebuffer.viewport().size());

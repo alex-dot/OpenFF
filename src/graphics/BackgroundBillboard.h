@@ -25,7 +25,7 @@ class BackgroundBillboard{
     Magnum::GL::Mesh                  _billboard;
     Magnum::GL::Texture2D             _texture;
     Magnum::GL::Texture2D             _color;
-    Magnum::GL::Framebuffer   _framebuffer;
+    Magnum::GL::Framebuffer           _framebuffer;
     Magnum::Vector2i                  _backgroundSize;
     Magnum::Vector2                   _relative_billboard_ratio;
 };
