@@ -152,6 +152,7 @@ void OpenFF_Main::drawEvent() {
   _debug_box->draw();
 
   swapBuffers();
+  redraw();
 }
 
 void OpenFF_Main::viewportEvent(ViewportEvent& event) {
