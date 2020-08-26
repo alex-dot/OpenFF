@@ -78,7 +78,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
   // Font object
-  _font = new OpenFF::Font(_config->getDefaultFontLocation(), _config->getDefaultFontBaseSize());
+  _font = new OpenFF::Font(_config->getFontLocation(), _config->getFontBaseSize());
   _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
 

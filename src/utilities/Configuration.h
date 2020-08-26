@@ -19,9 +19,9 @@ enum ConfigurationSettings {
   background_location,
   music_location,
   border_location,
-  default_font_location,
-  default_font_base_size,
-  CONFIGURATION_SETTINGS_MAX = default_font_base_size
+  font_location,
+  font_base_size,
+  CONFIGURATION_SETTINGS_MAX = font_base_size
 };
 typedef Iterator<ConfigurationSettings,
                  ConfigurationSettings::background_location,
@@ -43,15 +43,15 @@ class Configuration{
     void setBackgroundLocation(std::string);
     void setMusicLocation(std::string);
     void setBorderLocation(std::string);
-    void setDefaultFontLocation(std::string);
-    void setDefaultFontBaseSize(std::string);
+    void setFontLocation(std::string);
+    void setFontBaseSize(std::string);
 
     // generic getters
     std::string getBackgroundLocation() const;
     std::string getMusicLocation() const;
     std::string getBorderLocation() const;
-    std::string getDefaultFontLocation() const;
-    int getDefaultFontBaseSize() const;
+    std::string getFontLocation() const;
+    int getFontBaseSize() const;
 
     // specialized getters
     bool getMusicLocation(std::string&, std::string) const;
@@ -73,8 +73,8 @@ class Configuration{
     std::string   _background_location;
     std::string   _music_location;
     std::string   _border_location;
-    std::string   _default_font_location;
-    std::string   _default_font_base_size;
+    std::string   _font_location;
+    std::string   _font_base_size;
 
     typedef std::map<OpenFF::ConfigurationSettings,
                      std::function<void(Configuration&,std::string)>> csc_map;

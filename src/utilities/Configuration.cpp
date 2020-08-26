@@ -44,10 +44,10 @@ Configuration::Configuration(InputHandler* input_handler) :
           = &Configuration::setMusicLocation;
   _configuration_setting_callbacks[ConfigurationSettings::border_location]
           = &Configuration::setBorderLocation;
-  _configuration_setting_callbacks[ConfigurationSettings::default_font_location]
-          = &Configuration::setDefaultFontLocation;
-  _configuration_setting_callbacks[ConfigurationSettings::default_font_base_size]
-          = &Configuration::setDefaultFontBaseSize;
+  _configuration_setting_callbacks[ConfigurationSettings::font_location]
+          = &Configuration::setFontLocation;
+  _configuration_setting_callbacks[ConfigurationSettings::font_base_size]
+          = &Configuration::setFontBaseSize;
   validateEnumCallbackMaps<csc_map>
           (&_configuration_setting_callbacks,
           "configuration settings callback",
@@ -57,8 +57,8 @@ Configuration::Configuration(InputHandler* input_handler) :
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
   _configuration_settings["music_location"] = ConfigurationSettings::music_location;
   _configuration_settings["border_location"] = ConfigurationSettings::border_location;
-  _configuration_settings["default_font_location"] = ConfigurationSettings::default_font_location;
-  _configuration_settings["default_font_base_size"] = ConfigurationSettings::default_font_base_size;
+  _configuration_settings["font_location"] = ConfigurationSettings::font_location;
+  _configuration_settings["font_base_size"] = ConfigurationSettings::font_base_size;
   validateStringEnumMaps<std::map<std::string,OpenFF::ConfigurationSettings>>
           (&_configuration_settings,
           "configuration settings",
@@ -168,11 +168,11 @@ void Configuration::setMusicLocation(std::string new_loc) {
 void Configuration::setBorderLocation(std::string new_loc) {
   _border_location = new_loc;
 }
-void Configuration::setDefaultFontLocation(std::string new_loc) {
-  _default_font_location = new_loc;
+void Configuration::setFontLocation(std::string new_loc) {
+  _font_location = new_loc;
 }
-void Configuration::setDefaultFontBaseSize(std::string new_size) {
-  _default_font_base_size = new_size;
+void Configuration::setFontBaseSize(std::string new_size) {
+  _font_base_size = new_size;
 }
 
 std::string Configuration::getBackgroundLocation() const {
@@ -184,11 +184,11 @@ std::string Configuration::getMusicLocation() const {
 std::string Configuration::getBorderLocation() const {
   return _border_location;
 }
-std::string Configuration::getDefaultFontLocation() const {
-  return _default_font_location;
+std::string Configuration::getFontLocation() const {
+  return _font_location;
 }
-int Configuration::getDefaultFontBaseSize() const {
-  return std::stoi(_default_font_base_size);
+int Configuration::getFontBaseSize() const {
+  return std::stoi(_font_base_size);
 }
 bool Configuration::getMusicLocation(
         std::string& location,
