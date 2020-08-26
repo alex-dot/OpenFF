@@ -89,6 +89,65 @@ Configuration::Configuration(InputHandler* input_handler) :
           ModifierType::shift);
 }
 
+// generic setters
+void Configuration::setBackgroundLocation(std::string new_loc) {
+  _background_location = new_loc;
+}
+void Configuration::setMusicLocation(std::string new_loc) {
+  _music_location = new_loc;
+}
+void Configuration::setBorderLocation(std::string new_loc) {
+  _border_location = new_loc;
+}
+void Configuration::setFontLocation(std::string new_loc) {
+  _font_location = new_loc;
+}
+void Configuration::setFontBaseSize(std::string new_size) {
+  _font_base_size = new_size;
+}
+
+// generic getters
+std::string Configuration::getBackgroundLocation() const {
+  return _background_location;
+}
+std::string Configuration::getMusicLocation() const {
+  return _music_location;
+}
+std::string Configuration::getBorderLocation() const {
+  return _border_location;
+}
+std::string Configuration::getFontLocation() const {
+  return _font_location;
+}
+int Configuration::getFontBaseSize() const {
+  return std::stoi(_font_base_size);
+}
+
+// specialized getters
+bool Configuration::getMusicLocation(
+        std::string& location,
+        std::string short_name) const {
+  auto it = _music_location_map.find(short_name);
+  if( it != _music_location_map.end() ) {
+    location = it->second;
+    return true;
+  }
+  return false;
+}
+bool Configuration::getMusicName(
+        std::string& name,
+        std::string short_name) const {
+  auto it = _music_name_map.find(short_name);
+  if( it != _music_name_map.end() ) {
+    name = it->second;
+    return true;
+  }
+  return false;
+}
+std::string Configuration::getRandomMusic() const {
+  return _music_name_map.find("tb")->first;
+}
+
 // This is where valid section names for the ini-file are defined
 // Could be generalised and put into enum?
 void Configuration::processIniConfigSections() {
@@ -157,61 +216,6 @@ void Configuration::processInputEventsFromConfig(std::string option, std::string
     Err<std::string>("Parsing INI: Value  \""+key+"\" unsupported for "+option+".");
     Err<std::string>("Parsing INI: Look at TODO for a list of valid keys.");
   }
-}
-
-void Configuration::setBackgroundLocation(std::string new_loc) {
-  _background_location = new_loc;
-}
-void Configuration::setMusicLocation(std::string new_loc) {
-  _music_location = new_loc;
-}
-void Configuration::setBorderLocation(std::string new_loc) {
-  _border_location = new_loc;
-}
-void Configuration::setFontLocation(std::string new_loc) {
-  _font_location = new_loc;
-}
-void Configuration::setFontBaseSize(std::string new_size) {
-  _font_base_size = new_size;
-}
-
-std::string Configuration::getBackgroundLocation() const {
-  return _background_location;
-}
-std::string Configuration::getMusicLocation() const {
-  return _music_location;
-}
-std::string Configuration::getBorderLocation() const {
-  return _border_location;
-}
-std::string Configuration::getFontLocation() const {
-  return _font_location;
-}
-int Configuration::getFontBaseSize() const {
-  return std::stoi(_font_base_size);
-}
-bool Configuration::getMusicLocation(
-        std::string& location,
-        std::string short_name) const {
-  auto it = _music_location_map.find(short_name);
-  if( it != _music_location_map.end() ) {
-    location = it->second;
-    return true;
-  }
-  return false;
-}
-bool Configuration::getMusicName(
-        std::string& name,
-        std::string short_name) const {
-  auto it = _music_name_map.find(short_name);
-  if( it != _music_name_map.end() ) {
-    name = it->second;
-    return true;
-  }
-  return false;
-}
-std::string Configuration::getRandomMusic() const {
-  return _music_name_map.find("tb")->first;
 }
 
 void Configuration::buildMusicMap() {
