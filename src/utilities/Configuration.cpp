@@ -30,6 +30,8 @@ Configuration::Configuration(InputHandler* input_handler) :
         _input_handler(input_handler),
         _ini(),
         _background_location(""),
+        _music_location(""),
+        _border_location(""),
         _configuration_settings(),
         _input_event_settings() {
 
@@ -40,6 +42,8 @@ Configuration::Configuration(InputHandler* input_handler) :
           = &Configuration::setBackgroundLocation;
   _configuration_setting_callbacks[ConfigurationSettings::music_location]
           = &Configuration::setMusicLocation;
+  _configuration_setting_callbacks[ConfigurationSettings::border_location]
+          = &Configuration::setBorderLocation;
   _configuration_setting_callbacks[ConfigurationSettings::default_font_location]
           = &Configuration::setDefaultFontLocation;
   _configuration_setting_callbacks[ConfigurationSettings::default_font_base_size]
@@ -52,6 +56,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   // All configuration settings, len(_configuration_settings) === len(ConfigurationSettings-1)
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
   _configuration_settings["music_location"] = ConfigurationSettings::music_location;
+  _configuration_settings["border_location"] = ConfigurationSettings::border_location;
   _configuration_settings["default_font_location"] = ConfigurationSettings::default_font_location;
   _configuration_settings["default_font_base_size"] = ConfigurationSettings::default_font_base_size;
   validateStringEnumMaps<std::map<std::string,OpenFF::ConfigurationSettings>>
@@ -85,6 +90,7 @@ Configuration::Configuration(InputHandler* input_handler) :
 }
 
 // This is where valid section names for the ini-file are defined
+// Could be generalised and put into enum?
 void Configuration::processIniConfigSections() {
   for( auto &sect : _ini ) {
     if( sect.get_name() == "Display" || sect.get_name() == "Music" ) {
@@ -159,6 +165,9 @@ void Configuration::setBackgroundLocation(std::string new_loc) {
 void Configuration::setMusicLocation(std::string new_loc) {
   _music_location = new_loc;
 }
+void Configuration::setBorderLocation(std::string new_loc) {
+  _border_location = new_loc;
+}
 void Configuration::setDefaultFontLocation(std::string new_loc) {
   _default_font_location = new_loc;
 }
@@ -171,6 +180,9 @@ std::string Configuration::getBackgroundLocation() const {
 }
 std::string Configuration::getMusicLocation() const {
   return _music_location;
+}
+std::string Configuration::getBorderLocation() const {
+  return _border_location;
 }
 std::string Configuration::getDefaultFontLocation() const {
   return _default_font_location;

@@ -18,6 +18,7 @@ typedef Magnum::Platform::Sdl2Application::KeyEvent::Key Keycode;
 enum ConfigurationSettings {
   background_location,
   music_location,
+  border_location,
   default_font_location,
   default_font_base_size,
   CONFIGURATION_SETTINGS_MAX = default_font_base_size
@@ -41,12 +42,14 @@ class Configuration{
 
     void setBackgroundLocation(std::string);
     void setMusicLocation(std::string);
+    void setBorderLocation(std::string);
     void setDefaultFontLocation(std::string);
     void setDefaultFontBaseSize(std::string);
 
     // generic getters
     std::string getBackgroundLocation() const;
     std::string getMusicLocation() const;
+    std::string getBorderLocation() const;
     std::string getDefaultFontLocation() const;
     int getDefaultFontBaseSize() const;
 
@@ -69,6 +72,7 @@ class Configuration{
 
     std::string   _background_location;
     std::string   _music_location;
+    std::string   _border_location;
     std::string   _default_font_location;
     std::string   _default_font_base_size;
 

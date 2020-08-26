@@ -82,7 +82,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
 
-  if(!png_importer->openFile("../ressources/borders.png")) std::exit(2);
+  if(!png_importer->openFile(_config->getBorderLocation())) std::exit(2);
   Containers::Optional<Trade::ImageData2D> image_textbox = png_importer->image2D(0);
   CORRADE_INTERNAL_ASSERT(image_textbox);
 
