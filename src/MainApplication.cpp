@@ -1,5 +1,6 @@
 #include <Corrade/Containers/Optional.h>
 #include <Corrade/PluginManager/Manager.h>
+#include <Magnum/Timeline.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Renderer.h>
 #include <Magnum/Platform/Sdl2Application.h>
@@ -31,6 +32,8 @@ class OpenFF_Main: public Platform::Application {
     void keyReleaseEvent(KeyEvent& event) override;
 
     void exitMain();
+
+    Timeline*                     _timeline;
 
     OpenFF::BackgroundBillboard*  _bb;
     OpenFF::Music*                _music;
@@ -78,6 +81,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // Text object
   _text = new OpenFF::Text(_config->getFontLocation(), _config->getFontBaseSize());
   _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _text->setText("Cloud:\n“Aeris?“");
 
 
   if(!png_importer->openFile(_config->getBorderLocation())) std::exit(2);
@@ -112,6 +116,9 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // set rendering
   setSwapInterval(0);
   setMinimalLoopPeriod(16);
+
+  _timeline = new Timeline();
+  _timeline->start();
 }
 
 void OpenFF_Main::drawEvent() {
@@ -131,6 +138,12 @@ void OpenFF_Main::drawEvent() {
   // Textboxes
   _window->draw();
 
+  if( int(floor(_timeline->previousFrameTime()))%3 == 0 )
+    _text->setText("Cloud:\n“Aeris.“");
+  else if( int(floor(_timeline->previousFrameTime()))%3 == 1 )
+    _text->setText("Cloud:\n“Aeris..“");
+  else if( int(floor(_timeline->previousFrameTime()))%3 == 2 )
+    _text->setText("Cloud:\n“Aeris...“");
   // Text Shadow rendering
   _text->draw(OpenFF::TextRenderType::shadow);
   // Text rendering
@@ -153,6 +166,7 @@ void OpenFF_Main::drawEvent() {
 
   swapBuffers();
   redraw();
+  _timeline->nextFrame();
 }
 
 void OpenFF_Main::viewportEvent(ViewportEvent& event) {

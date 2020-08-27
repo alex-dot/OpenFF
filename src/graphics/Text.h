@@ -26,22 +26,20 @@ class Text{
     explicit Text(std::string location, int size);
     explicit Text(Font* font);
 
+    void setText(std::string text) { _text = text; }
     void draw(TextRenderType = normal);
     void setRelativeBillboardRatio(Vector2);
 
   private:
-
-    PluginManager::Manager<Magnum::Text::AbstractFont>  _text_manager;
-    Containers::Pointer<Magnum::Text::AbstractFont>     _text;
-    Magnum::Text::GlyphCache*                           _glyph_cache;
-    OpenFF::Font*                                 _font;
-    Shaders::DistanceFieldVector2D                _text_shader;
-    GL::Buffer                                    _vertex_buffer, _index_buffer;
-    GL::Mesh                                      _mesh;
-    GL::Texture2D*                                _glyph_texture;
-    Matrix3                                       _text_projection_matrix;
-    Matrix3                                       _text_translation_matrix;
-    Matrix3                                       _text_scaling_matrix;
+    std::string                       _text;
+    OpenFF::Font*                     _font;
+    Shaders::DistanceFieldVector2D    _text_shader;
+    GL::Buffer                        _vertex_buffer, _index_buffer;
+    GL::Mesh                          _mesh;
+    GL::Texture2D*                    _glyph_texture;
+    Matrix3                           _text_projection_matrix;
+    Matrix3                           _text_translation_matrix;
+    Matrix3                           _text_scaling_matrix;
 };
 
 }

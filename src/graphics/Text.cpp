@@ -18,8 +18,7 @@ void Text::draw(TextRenderType type) {
           _font->getFont(),
           _font->getGlyphCache(),
           _font->getFontSizeFactor(),
-          "Cloud: Hello World!\n“Aeris?“",
-          _vertex_buffer, _index_buffer,
+          _text, _vertex_buffer, _index_buffer,
           GL::BufferUsage::StaticDraw);
   _text_shader.setSmoothness(0.0f)
           .bindVectorTexture(_font->getGlyphTexture());
@@ -27,7 +26,7 @@ void Text::draw(TextRenderType type) {
   using namespace Math::Literals;
   GL::Renderer::enable(GL::Renderer::Feature::Blending);
   GL::Renderer::setBlendFunction(
-          GL::Renderer::BlendFunction::DestinationAlpha,
+          GL::Renderer::BlendFunction::SourceAlpha,
           GL::Renderer::BlendFunction::OneMinusSourceAlpha);
 
   switch(type) {
