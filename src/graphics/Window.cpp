@@ -54,6 +54,11 @@ void Window::setColor(Color3 color) {
   _shader.setColorMode(OpenFF::ColorMode::unicolor)
          .setUniColor(color);
 }
+void Window::setColor(Color4 color) {
+  _shader.setColorMode(OpenFF::ColorMode::unicolor)
+         .setUniColor(color.rgb())
+         .setBodyTransparency(color.a());
+}
 
 void Window::setColor(
         Color3 top_left_color,
@@ -65,6 +70,26 @@ void Window::setColor(
          .setTopRightColor(top_right_color)
          .setBottomRightColor(bottom_right_color)
          .setBottomLeftColor(bottom_left_color);
+}
+void Window::setColor(
+        Color3 top_left_color,
+        Color3 top_right_color,
+        Color3 bottom_right_color,
+        Color3 bottom_left_color,
+        float alpha) {
+  _shader.setColorMode(OpenFF::ColorMode::gradient)
+         .setTopLeftColor(top_left_color)
+         .setTopRightColor(top_right_color)
+         .setBottomRightColor(bottom_right_color)
+         .setBottomLeftColor(bottom_left_color)
+         .setBodyTransparency(alpha);
+}
+
+void Window::setBodyTransparency(float alpha) {
+  _shader.setBodyTransparency(alpha);
+}
+void Window::setBorderTransparency(float alpha) {
+  _shader.setBorderTransparency(alpha);
 }
 
 void Window::draw() {

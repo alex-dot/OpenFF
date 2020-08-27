@@ -7,13 +7,8 @@ uniform ivec2 windowOffset;
 uniform lowp vec2 relativeBillboardRatio;
 
 out lowp vec2 coords;
-out lowp vec2 windowSizeFrag;
-out lowp vec2 relativeBillboardRatioFrag;
 
 void main() {
-  windowSizeFrag = vec2(windowSize);
-  relativeBillboardRatioFrag = relativeBillboardRatio;
-
   // Convert size from pixels to cartesian and modify by billboardratio
   vec2 size = vec2(windowSize)/vec2(viewportSize)*relativeBillboardRatio;
 

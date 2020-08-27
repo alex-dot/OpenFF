@@ -33,6 +33,8 @@ WindowShader::WindowShader() {
   _top_right_color_uniform = uniformLocation("windowTopRightColor");
   _bottom_left_color_uniform = uniformLocation("windowBottomLeftColor");
   _bottom_right_color_uniform = uniformLocation("windowBottomRightColor");
+  _border_transparency_uniform = uniformLocation("windowBorderTransparency");
+  _body_transparency_uniform = uniformLocation("windowBodyTransparency");
   _viewport_uniform = uniformLocation("viewportSize");
   _window_size_uniform = uniformLocation("windowSize");
   _offset_uniform = uniformLocation("windowOffset");

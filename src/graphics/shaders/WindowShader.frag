@@ -1,15 +1,19 @@
 uniform sampler2D textureData;
 
-uniform int windowColorMode = 0;                         // 0=unicolor; 1=gradient
+uniform int windowColorMode = 0;                       // 0=unicolor; 1=gradient
 uniform lowp vec3 windowUniColor = vec3(0.0,0.0,0.8);
 uniform lowp vec3 windowTopLeftColor = vec3(1.0,0.0,0.0);
 uniform lowp vec3 windowTopRightColor = vec3(0.0,1.0,0.0);
 uniform lowp vec3 windowBottomLeftColor = vec3(0.0,0.0,0.0);
 uniform lowp vec3 windowBottomRightColor = vec3(0.0,0.0,1.0);
 
+uniform lowp float windowBorderTransparency = float(1.0);
+uniform lowp float windowBodyTransparency = float(1.0);
+
+uniform ivec2 windowSize;
+uniform lowp vec2 relativeBillboardRatio;
+
 in lowp vec2 coords;
-in lowp vec2 windowSizeFrag;
-in lowp vec2 relativeBillboardRatioFrag;
 
 out vec4 fragmentColor;
 
@@ -17,12 +21,12 @@ float lookupBorder(float, float, float);
 vec2  lookupBorder( vec2,  vec2,  vec2);
 
 void main() {
-  vec2 pixelRatio = 1.0/vec2(windowSizeFrag);
+  vec2 pixelRatio = 1.0/vec2(windowSize);
 
   // Not in border-area, draw prepared color
   if( coords.x >= 3.0*pixelRatio.x && coords.y >= 3.0*pixelRatio.y
-   && coords.x <= (windowSizeFrag.x-3.0)*pixelRatio.x
-   && coords.y <= (windowSizeFrag.y-3.0)*pixelRatio.y ) {
+   && coords.x <= (windowSize.x-3.0)*pixelRatio.x
+   && coords.y <= (windowSize.y-3.0)*pixelRatio.y ) {
 
     if(      windowColorMode == 0 ) fragmentColor.rgb = windowUniColor;
     else if( windowColorMode == 1 ) {
@@ -33,9 +37,11 @@ void main() {
     }
     else fragmentColor.rgb = vec3(0.0);
 
-    fragmentColor.a = 1.0;
+    fragmentColor.a = windowBodyTransparency;
+
   } else { // Draw border
-    fragmentColor = texture(textureData, lookupBorder(coords,pixelRatio,windowSizeFrag));
+    fragmentColor = texture(textureData, lookupBorder(coords,pixelRatio,windowSize));
+    fragmentColor.a -= (1.0-windowBorderTransparency);
   }
 }
 

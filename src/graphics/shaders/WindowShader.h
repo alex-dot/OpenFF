@@ -61,6 +61,15 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    WindowShader& setBorderTransparency(float alpha) {
+      setUniform(_border_transparency_uniform, alpha);
+      return *this;
+    }
+    WindowShader& setBodyTransparency(float alpha) {
+      setUniform(_body_transparency_uniform, alpha);
+      return *this;
+    }
+
     WindowShader& setViewportSize(Vector2i size) {
       setUniform(_viewport_uniform, size);
       return *this;
@@ -90,6 +99,9 @@ class WindowShader: public GL::AbstractShaderProgram {
     int _top_right_color_uniform;
     int _bottom_left_color_uniform;
     int _bottom_right_color_uniform;
+    int _transparency_mode_uniform;
+    int _border_transparency_uniform;
+    int _body_transparency_uniform;
     int _viewport_uniform;
     int _window_size_uniform;
     int _offset_uniform;

@@ -91,8 +91,10 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _window->setBoxSize(Vector2i(158,40));
   _window->setOffset(Vector2i(154,148));
   using namespace Magnum::Math::Literals;
-  //_window->setColor(0xff00ff_rgbf);
+  //_window->setColor(0xff0000a0_rgbaf);
   _window->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
+  //_window->setBodyTransparency(0.5);
+  //_window->setBorderTransparency(0.5);
 
   // Menus
 /*

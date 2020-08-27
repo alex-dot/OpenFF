@@ -19,8 +19,12 @@ class Window{
             {_shader.setRelativeBillboardRatio(relative_billboard_ratio);}
     // set uniform color
     void setColor(Color3);
+    void setColor(Color4);
     // set color gradient, starting top-left going clockwise
     void setColor(Color3, Color3, Color3, Color3);
+    void setColor(Color3, Color3, Color3, Color3, float);
+    void setBodyTransparency(float);
+    void setBorderTransparency(float);
     void setViewportSize(Vector2i size) {_shader.setViewportSize(size);}
     void setBoxSize(Vector2i size) {_shader.setBoxSize(size);}
     void setOffset(Vector2i coordinates) {_shader.setOffset(coordinates);}
