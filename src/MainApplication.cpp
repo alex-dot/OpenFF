@@ -85,10 +85,9 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   CORRADE_INTERNAL_ASSERT(image_window);
 
   // Textbox
-  _window = new OpenFF::Window();
+  _window = new OpenFF::Window(Vector2i(320,240));
   _window->setBorder(image_window);
   _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _window->setViewportSize(Vector2i(320,240));
   _window->setBoxSize(Vector2i(158,40));
   _window->setOffset(Vector2i(154,148));
   using namespace Magnum::Math::Literals;

@@ -18,23 +18,28 @@
 using namespace OpenFF;
 
 Window::Window() {
-    struct QuadVertex {
-      Vector2 position;
-      Vector2 textureCoordinates;
-    };
-    QuadVertex box_data[]{
-      {{-1.0f,  1.0f}, {0.0f, 0.0f}},
-      {{-1.0f, -1.0f}, {0.0f, 0.0f}},
-      {{ 1.0f,  1.0f}, {1.0f, 1.0f}},
-      {{ 1.0f, -1.0f}, {1.0f, 0.0f}}
-    };
-    GL::Buffer box_buffer;
-    box_buffer.setData(box_data);
-    _box.setPrimitive(MeshPrimitive::TriangleStrip)
-            .setCount(4)
-            .addVertexBuffer(std::move(box_buffer), 0,
-                    WindowShader::Position{},
-                    WindowShader::TextureCoordinates{});
+  struct QuadVertex {
+    Vector2 position;
+    Vector2 textureCoordinates;
+  };
+  QuadVertex box_data[]{
+    {{-1.0f,  1.0f}, {0.0f, 0.0f}},
+    {{-1.0f, -1.0f}, {0.0f, 0.0f}},
+    {{ 1.0f,  1.0f}, {1.0f, 1.0f}},
+    {{ 1.0f, -1.0f}, {1.0f, 0.0f}}
+  };
+  GL::Buffer box_buffer;
+  box_buffer.setData(box_data);
+  _box.setPrimitive(MeshPrimitive::TriangleStrip)
+          .setCount(4)
+          .addVertexBuffer(std::move(box_buffer), 0,
+                  WindowShader::Position{},
+                  WindowShader::TextureCoordinates{});
+}
+
+Window::Window(Vector2i viewport_size) :
+        Window::Window() {
+  this->setViewportSize(viewport_size);
 }
 
 void Window::setBorder(Containers::Optional<Trade::ImageData2D> &image) {

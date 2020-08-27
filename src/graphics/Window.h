@@ -11,6 +11,7 @@ namespace OpenFF {
 class Window{
   public:
     explicit Window();
+    explicit Window(Vector2i viewport_size);
 
     void draw();
     void setBorder(Containers::Optional<Trade::ImageData2D> &image);
