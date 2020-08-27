@@ -14,33 +14,22 @@ using namespace Magnum;
 
 namespace OpenFF {
 
-enum FontRenderType {
-  normal,
-  shadow,
-  FONT_RENDER_TYPE_MAX = shadow
-};
-
 class Font{
   public:
-    explicit Font(std::string, int);
+    explicit Font(std::string location, int size, float font_size_factor);
 
-    // Font has no extra Framebuffer and renders to previously bound FB
-    void draw(FontRenderType = normal);
-//    void bindCallbacks(InputHandler*);
-    void setRelativeBillboardRatio(Magnum::Vector2);
+    Text::AbstractFont& getFont() { return *_font; }
+    Text::GlyphCache& getGlyphCache() const { return *_glyph_cache; }
+    GL::Texture2D& getGlyphTexture() const { return *_glyph_texture; }
+    float getFontSizeFactor() const { return _font_size_factor; }
 
   private:
 
     PluginManager::Manager<Text::AbstractFont>  _font_manager;
     Containers::Pointer<Text::AbstractFont>     _font;
     Text::GlyphCache*                           _glyph_cache;
-    Shaders::DistanceFieldVector2D              _text_shader;
-    GL::Buffer                                  _vertex_buffer, _index_buffer;
-    GL::Mesh                                    _mesh;
     GL::Texture2D*                              _glyph_texture;
-    Matrix3                                     _text_projection_matrix;
-    Matrix3                                     _text_translation_matrix;
-    Matrix3                                     _text_scaling_matrix;
+    float                                       _font_size_factor;
 };
 
 }

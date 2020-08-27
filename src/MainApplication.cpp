@@ -11,9 +11,9 @@
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
 #include "graphics/Window.h"
+#include "graphics/Text.h"
 #include "graphics/DebugBox.h"
-#include "ui/Font.h"
-#include "ui/MusicMenu.h"
+//#include "ui/MusicMenu.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
 
@@ -36,8 +36,8 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::InputHandler*         _input;
-    OpenFF::Window*              _window;
-    OpenFF::Font*                 _font;
+    OpenFF::Window*               _window;
+    OpenFF::Text*                 _text;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
 };
@@ -75,9 +75,9 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
-  // Font object
-  _font = new OpenFF::Font(_config->getFontLocation(), _config->getFontBaseSize());
-  _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  // Text object
+  _text = new OpenFF::Text(_config->getFontLocation(), _config->getFontBaseSize());
+  _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
 
   if(!png_importer->openFile(_config->getBorderLocation())) std::exit(2);
@@ -99,7 +99,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // Menus
 /*
   _music_menu = new OpenFF::MusicMenu(
-          _font.get(), _glyph_cache,
+          _text.get(), _glyph_cache,
           Platform::Sdl2Application::windowSize(),
           Platform::Sdl2Application::dpiScaling(),
           Platform::Sdl2Application::framebufferSize(),
@@ -132,9 +132,9 @@ void OpenFF_Main::drawEvent() {
   _window->draw();
 
   // Text Shadow rendering
-  _font->draw(OpenFF::FontRenderType::shadow);
+  _text->draw(OpenFF::TextRenderType::shadow);
   // Text rendering
-  _font->draw();
+  _text->draw();
 
 //  _music_menu->draw();
 
@@ -159,7 +159,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
-  _font->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
   _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 }
 

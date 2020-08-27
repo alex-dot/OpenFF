@@ -6,7 +6,8 @@
 
 using namespace OpenFF;
 
-Font::Font(std::string font_location, int font_size) {
+Font::Font(std::string font_location, int font_size, float font_size_factor)
+        : _font_size_factor(font_size_factor) {
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
   if(!_font || !_font->openFile(font_location, font_size))
       Fatal{} << "Can't open font with StbTrueTypeFont";
@@ -47,52 +48,7 @@ Font::Font(std::string font_location, int font_size) {
   _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 
-  _text_translation_matrix = Matrix3::translation(Vector2(0.006f,-0.1825f));
-  _text_scaling_matrix = Matrix3::scaling(Vector2(0.023,0.03));
-  _text_projection_matrix = Matrix3::projection(Vector2(1.0f))
-          *_text_translation_matrix
-          *_text_scaling_matrix;
   _glyph_texture = &_glyph_cache->texture();
   _glyph_texture->setMinificationFilter(SamplerFilter::Nearest)
                  .setMagnificationFilter(SamplerFilter::Nearest);
-  std::tie(_mesh, std::ignore) = Text::Renderer2D::render(
-          *_font, *_glyph_cache, 1.225f, // 1.225f pixel perfect
-          "Cloud: Hello World!\n“Aeris?“", _vertex_buffer, _index_buffer,
-          GL::BufferUsage::StaticDraw);
-}
-
-void Font::draw(FontRenderType type) {
-  using namespace Math::Literals;
-  GL::Renderer::enable(GL::Renderer::Feature::Blending);
-  GL::Renderer::setBlendFunction(
-          GL::Renderer::BlendFunction::DestinationAlpha,
-          GL::Renderer::BlendFunction::OneMinusSourceAlpha);
-
-  switch(type) {
-    case(FontRenderType::shadow):
-      _text_shader.setTransformationProjectionMatrix(
-              _text_projection_matrix*Matrix3::translation(Vector2(0.1,-0.1)))
-          .setColor(0x000000ff_rgbaf);
-      break;
-    case(FontRenderType::normal):
-    default:
-      _text_shader.setTransformationProjectionMatrix(_text_projection_matrix)
-          .setColor(0xffffffff_rgbaf);
-  }
-
-  _text_shader.setSmoothness(0.0f)
-          .bindVectorTexture(*_glyph_texture)
-          .draw(_mesh);
-  GL::Renderer::setBlendFunction(
-          GL::Renderer::BlendFunction::One,
-          GL::Renderer::BlendFunction::One);
-  GL::Renderer::disable(GL::Renderer::Feature::Blending);
-}
-
-void Font::setRelativeBillboardRatio(Magnum::Vector2 relative_billboard_ratio) {
-  _text_translation_matrix = Matrix3::translation(Vector2(0.006f,-0.1825f)*relative_billboard_ratio);
-  _text_scaling_matrix = Matrix3::scaling(Vector2(0.023,0.03)*relative_billboard_ratio);
-  _text_projection_matrix = Matrix3::projection(Vector2(1.0f))
-          *_text_translation_matrix
-          *_text_scaling_matrix;
 }
