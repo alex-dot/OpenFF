@@ -53,7 +53,7 @@ WindowShader::WindowShader(
         Vector2i offset)
         : WindowShader::WindowShader() {
   setViewportSize(viewport_size);
-  setBoxSize(window_size);
+  setWindowSize(window_size);
   setOffset(offset);
 }
 

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Corrade/Containers/Optional.h>
 #include <Magnum/GL/Framebuffer.h>
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/Shaders/VertexColor.h>
+#include <Magnum/Trade/ImageData.h>
 
 #include "shaders/WindowShader.h"
 

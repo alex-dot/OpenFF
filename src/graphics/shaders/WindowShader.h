@@ -75,7 +75,7 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
-    WindowShader& setBoxSize(Vector2i size) {
+    WindowShader& setWindowSize(Vector2i size) {
       setUniform(_window_size_uniform, size);
       return *this;
     }

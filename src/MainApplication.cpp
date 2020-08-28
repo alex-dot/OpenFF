@@ -8,10 +8,9 @@
 
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
-#include "graphics/Window.h"
-#include "graphics/Text.h"
 #include "graphics/DebugBox.h"
 //#include "ui/MusicMenu.h"
+#include "ui/Textbox.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
 #include "utilities/RessourceLoader.h"
@@ -38,8 +37,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::Configuration*        _config;
     OpenFF::RessourceLoader*      _ressource_loader;
     OpenFF::InputHandler*         _input;
-    OpenFF::Window*               _window;
-    OpenFF::Text*                 _text;
+    OpenFF::Textbox*              _textbox;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
 };
@@ -72,25 +70,14 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
 
-  // Text object
-  _text = new OpenFF::Text(_config->getFontLocation(), _config->getFontBaseSize());
-  _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _text->setViewportSize(Vector2i(320,240));
-  _text->setOffset(Vector2i(154,148));
-  _text->setText("Cloud:\n“Aeris?“");
-
   // Textbox
-  _ressource_loader->getImage(_config->getBorderLocation(), image);
-  _window = new OpenFF::Window(Vector2i(320,240));
-  _window->setBorder(image);
-  _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _window->setBoxSize(Vector2i(158,40));
-  _window->setOffset(Vector2i(154,148));
-  using namespace Magnum::Math::Literals;
-  //_window->setColor(0xff0000a0_rgbaf);
-  _window->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
-  //_window->setBodyTransparency(0.5);
-  //_window->setBorderTransparency(0.5);
+  _textbox = new OpenFF::Textbox(
+          _config,
+          _ressource_loader,
+          _bb->getRelativeBillboardRatio(),
+          Vector2i(158,40),
+          Vector2i(154,148));
+  _textbox->write("Cloud:\n“Aeris?“");
 
   // Menus
 /*
@@ -126,11 +113,10 @@ void OpenFF_Main::drawEvent() {
           .bind();
   _bb->draw();
 
-  // Textboxes
-  _window->draw();
-
-  // Text rendering
-  _text->draw();
+  // Textbox
+  int offset = int(floor(_timeline->previousFrameTime()*5));
+  _textbox->setOffset(Vector2i(offset));
+  _textbox->draw();
 
 //  _music_menu->draw();
 
@@ -156,8 +142,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
-  _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
-  _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 }
 
 void OpenFF_Main::exitMain() {
