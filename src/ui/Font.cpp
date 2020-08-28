@@ -44,7 +44,7 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
           "ÉéÈèÊêËëĒēÍíÌìÎîÏïİ"     // ĔĕĞğĬĭ
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
           "ÛûŪūŸÿ";
-  std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs;
+  std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs+geometric_glyphs;
   _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 

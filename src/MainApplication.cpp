@@ -81,6 +81,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // Text object
   _text = new OpenFF::Text(_config->getFontLocation(), _config->getFontBaseSize());
   _text->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _text->setViewportSize(Vector2i(320,240));
+  _text->setOffset(Vector2i(154,148));
   _text->setText("Cloud:\n“Aeris?“");
 
 
@@ -116,12 +118,6 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // set rendering
   setSwapInterval(0);
   setMinimalLoopPeriod(16);
-
-  _timeline = new Timeline();
-  _timeline->start();
-}
-
-void OpenFF_Main::drawEvent() {
   GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
   GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
   GL::Renderer::enable(GL::Renderer::Feature::Blending);
@@ -129,6 +125,11 @@ void OpenFF_Main::drawEvent() {
           GL::Renderer::BlendFunction::SourceAlpha,
           GL::Renderer::BlendFunction::OneMinusSourceAlpha);
 
+  _timeline = new Timeline();
+  _timeline->start();
+}
+
+void OpenFF_Main::drawEvent() {
   // first render the background to its own framebuffer
   _bb->getFramebuffer()
           .clear(GL::FramebufferClear::Color)
@@ -138,14 +139,6 @@ void OpenFF_Main::drawEvent() {
   // Textboxes
   _window->draw();
 
-  if( int(floor(_timeline->previousFrameTime()))%3 == 0 )
-    _text->setText("Cloud:\n“Aeris.“");
-  else if( int(floor(_timeline->previousFrameTime()))%3 == 1 )
-    _text->setText("Cloud:\n“Aeris..“");
-  else if( int(floor(_timeline->previousFrameTime()))%3 == 2 )
-    _text->setText("Cloud:\n“Aeris...“");
-  // Text Shadow rendering
-  _text->draw(OpenFF::TextRenderType::shadow);
   // Text rendering
   _text->draw();
 

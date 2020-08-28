@@ -13,10 +13,11 @@
 
 namespace OpenFF {
 
-enum TextRenderType {
-  normal,
-  shadow,
-  FONT_RENDER_TYPE_MAX = shadow
+enum ShadowTypes {
+  no_shadow,
+  simple_shadow,
+  full_shadow,
+  SHADOW_TYPES_MAX = full_shadow
 };
 
 using namespace Magnum;
@@ -26,20 +27,30 @@ class Text{
     explicit Text(std::string location, int size);
     explicit Text(Font* font);
 
-    void setText(std::string text) { _text = text; }
-    void draw(TextRenderType = normal);
+    void setText(std::string text);
+    void draw();
+    void draw(std::string);
+    void setShadowType(ShadowTypes);
     void setRelativeBillboardRatio(Vector2);
+    void setViewportSize(Vector2i);
+    void setOffset(Vector2i);
 
   private:
+    void recalculateMVP();
+
     std::string                       _text;
     OpenFF::Font*                     _font;
     Shaders::DistanceFieldVector2D    _text_shader;
     GL::Buffer                        _vertex_buffer, _index_buffer;
     GL::Mesh                          _mesh;
-    GL::Texture2D*                    _glyph_texture;
-    Matrix3                           _text_projection_matrix;
-    Matrix3                           _text_translation_matrix;
-    Matrix3                           _text_scaling_matrix;
+    Matrix3                           _mvp;
+    ShadowTypes                       _shadow;
+    Matrix3                           _shadow_mvp_x;
+    Matrix3                           _shadow_mvp_y;
+    Matrix3                           _shadow_mvp_xy;
+    Vector2                           _relative_billboard_ratio;
+    Vector2i                          _viewport_size;
+    Vector2i                          _offset;
 };
 
 }
