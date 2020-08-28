@@ -25,7 +25,8 @@ add_executable(OpenFF MainApplication.cpp
     ui/Font.cpp
     ui/MusicMenu.cpp
     utilities/Configuration.cpp
-    utilities/InputHandler.cpp)
+    utilities/InputHandler.cpp
+    utilities/RessourceLoader.cpp)
 
 add_dependencies(OpenFF
     Magnum::AnySceneImporter

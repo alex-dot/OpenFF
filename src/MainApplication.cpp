@@ -1,10 +1,7 @@
-#include <Corrade/Containers/Optional.h>
-#include <Corrade/PluginManager/Manager.h>
 #include <Magnum/Timeline.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Renderer.h>
 #include <Magnum/Platform/Sdl2Application.h>
-#include <Magnum/Trade/AbstractImporter.h>
 #include <Magnum/Trade/ImageData.h>
 
 #include <functional>
@@ -17,6 +14,7 @@
 //#include "ui/MusicMenu.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
+#include "utilities/RessourceLoader.h"
 
 using namespace Magnum;
 
@@ -38,6 +36,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::BackgroundBillboard*  _bb;
     OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
+    OpenFF::RessourceLoader*      _ressource_loader;
     OpenFF::InputHandler*         _input;
     OpenFF::Window*               _window;
     OpenFF::Text*                 _text;
@@ -55,6 +54,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 
   // initialise configuration
   _config = new OpenFF::Configuration(_input);
+  _ressource_loader = new OpenFF::RessourceLoader();
 
   // populate main application callbacks
   _input->setCallbacks(
@@ -64,16 +64,10 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   // Music object
   //_music = new OpenFF::Music(_config, _input);
 
-  PluginManager::Manager<Trade::AbstractImporter> manager;
-  Containers::Pointer<Trade::AbstractImporter> png_importer =
-    manager.loadAndInstantiate("PngImporter");
-  if(!png_importer) std::exit(1);
-
-  if(!png_importer->openFile(_config->getBackgroundLocation())) std::exit(2);
-  Containers::Optional<Trade::ImageData2D> image = png_importer->image2D(0);
-  CORRADE_INTERNAL_ASSERT(image);
+  Containers::Optional<Trade::ImageData2D> image;
 
   // initialise background billboard
+  _ressource_loader->getImage(_config->getBackgroundLocation(), image);
   _bb = new OpenFF::BackgroundBillboard();
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
@@ -85,14 +79,10 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _text->setOffset(Vector2i(154,148));
   _text->setText("Cloud:\n“Aeris?“");
 
-
-  if(!png_importer->openFile(_config->getBorderLocation())) std::exit(2);
-  Containers::Optional<Trade::ImageData2D> image_window = png_importer->image2D(0);
-  CORRADE_INTERNAL_ASSERT(image_window);
-
   // Textbox
+  _ressource_loader->getImage(_config->getBorderLocation(), image);
   _window = new OpenFF::Window(Vector2i(320,240));
-  _window->setBorder(image_window);
+  _window->setBorder(image);
   _window->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
   _window->setBoxSize(Vector2i(158,40));
   _window->setOffset(Vector2i(154,148));
