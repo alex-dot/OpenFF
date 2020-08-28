@@ -26,12 +26,12 @@ class Window{
     void setBodyTransparency(float);
     void setBorderTransparency(float);
     void setViewportSize(Vector2i size) {_shader.setViewportSize(size);}
-    void setBoxSize(Vector2i size) {_shader.setBoxSize(size);}
+    void setWindowSize(Vector2i size) {_shader.setWindowSize(size);}
     void setOffset(Vector2i coordinates) {_shader.setOffset(coordinates);}
 
   private:
     WindowShader             _shader;
-    Magnum::GL::Mesh         _box;
+    Magnum::GL::Mesh         _window;
     Magnum::GL::Texture2D    _texture;
 };
 

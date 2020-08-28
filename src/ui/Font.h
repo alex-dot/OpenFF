@@ -8,8 +8,6 @@
 #include <Magnum/Text/GlyphCache.h>
 #include <Magnum/Text/Renderer.h>
 
-#include "../utilities/InputHandler.h"
-
 using namespace Magnum;
 
 namespace OpenFF {

@@ -30,9 +30,9 @@ Window::Window() {
   };
   GL::Buffer box_buffer;
   box_buffer.setData(box_data);
-  _box.setPrimitive(MeshPrimitive::TriangleStrip)
-          .setCount(4)
-          .addVertexBuffer(std::move(box_buffer), 0,
+  _window.setPrimitive(MeshPrimitive::TriangleStrip)
+         .setCount(4)
+         .addVertexBuffer(std::move(box_buffer), 0,
                   WindowShader::Position{},
                   WindowShader::TextureCoordinates{});
 }
@@ -94,5 +94,5 @@ void Window::setBorderTransparency(float alpha) {
 
 void Window::draw() {
   _shader.bindTexture(_texture)
-         .draw(_box);
+         .draw(_window);
 }
