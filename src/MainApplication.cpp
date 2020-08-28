@@ -9,7 +9,7 @@
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
 #include "graphics/DebugBox.h"
-//#include "ui/MusicMenu.h"
+#include "ui/MusicMenu.h"
 #include "ui/Textbox.h"
 #include "utilities/Configuration.h"
 #include "utilities/InputHandler.h"
@@ -60,7 +60,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           {std::make_pair(&OpenFF_Main::exitMain,OpenFF::InputEvents::app_close)});
 
   // Music object
-  //_music = new OpenFF::Music(_config, _input);
+  _music = new OpenFF::Music(_config, _input);
 
   Containers::Optional<Trade::ImageData2D> image;
 
@@ -77,18 +77,15 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           _bb->getRelativeBillboardRatio(),
           Vector2i(158,40),
           Vector2i(154,148));
-  _textbox->write("Cloud:\n“Aeris?“");
+  _textbox->write("Cloud\n“Aerith?“");
 
   // Menus
-/*
   _music_menu = new OpenFF::MusicMenu(
-          _text.get(), _glyph_cache,
-          Platform::Sdl2Application::windowSize(),
-          Platform::Sdl2Application::dpiScaling(),
-          Platform::Sdl2Application::framebufferSize(),
+          _config,
+          _ressource_loader,
+          _bb->getRelativeBillboardRatio(),
           _music);
   _music_menu->bindCallbacks(_input);
-*/
 
   _debug_box = new OpenFF::DebugBox();
 
@@ -116,7 +113,7 @@ void OpenFF_Main::drawEvent() {
   // Textbox
   _textbox->draw();
 
-//  _music_menu->draw();
+  _music_menu->draw();
 
   // then bind the default framebuffer and blit the backgrounds framebuffer to it
   GL::defaultFramebuffer
@@ -141,6 +138,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
   _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _music_menu->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 }
 
 void OpenFF_Main::exitMain() {

@@ -10,7 +10,6 @@ find_package(Magnum REQUIRED
     AnySceneImporter
     AnyImageImporter)
 find_package(MagnumPlugins REQUIRED AssimpImporter)
-find_package(MagnumExtras REQUIRED Ui)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
@@ -54,6 +53,6 @@ target_link_libraries(OpenFF PRIVATE
     Magnum::Primitives
     Magnum::SceneGraph
     Magnum::Shaders
+    Magnum::Text
     Magnum::Trade
-    MagnumExtras::Ui
     inicpp)
