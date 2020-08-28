@@ -114,8 +114,6 @@ void OpenFF_Main::drawEvent() {
   _bb->draw();
 
   // Textbox
-  int offset = int(floor(_timeline->previousFrameTime()*5));
-  _textbox->setOffset(Vector2i(offset));
   _textbox->draw();
 
 //  _music_menu->draw();

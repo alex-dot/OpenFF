@@ -28,7 +28,19 @@ class Textbox{
     void draw(std::string);
     void write(std::string);
 
+    // customize font and text
     void setFont(Font*);
+    void setTextShadowType(OpenFF::ShadowTypes);
+    // customize window
+    // set uniform color
+    void setColor(Color3);
+    void setColor(Color4);
+    // set color gradient, starting top-left going clockwise
+    void setColor(Color3, Color3, Color3, Color3);
+    void setColor(Color3, Color3, Color3, Color3, float);
+    void setBodyTransparency(float);
+    void setBorderTransparency(float);
+    // set generic textbox variables
     void setRelativeBillboardRatio(Vector2);
     void setViewportSize(Vector2i);
     void setTextboxSize(Vector2i);

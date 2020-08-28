@@ -42,7 +42,7 @@ void Textbox::prepareWindow() {
   _window->setOffset(_offset);
 
   using namespace Magnum::Math::Literals;
-  //_window->setColor(0xff0000a0_rgbaf);
+  //_window->setColor(0x000080ff_rgbaf);
   _window->setColor(0x0000b0_rgbf,0x000080_rgbf,0x000020_rgbf,0x000050_rgbf);
   //_window->setBodyTransparency(0.5);
   //_window->setBorderTransparency(0.5);
@@ -78,6 +78,38 @@ void Textbox::setFont(Font* font) {
   _font = font;
   delete(_text);
   prepareText();
+}
+void Textbox::setTextShadowType(OpenFF::ShadowTypes type) {
+  _text->setShadowType(type);
+}
+
+void Textbox::setColor(Color3 color) {
+  _window->setColor(color);
+}
+void Textbox::setColor(Color4 color) {
+  _window->setColor(color);
+}
+// set color gradient, starting top-left going clockwise
+void Textbox::setColor(
+        Color3 top_left_color,
+        Color3 top_right_color,
+        Color3 bottom_right_color,
+        Color3 bottom_left_color) {
+  _window->setColor(top_left_color, top_right_color, bottom_right_color, bottom_left_color);
+}
+void Textbox::setColor(
+        Color3 top_left_color,
+        Color3 top_right_color,
+        Color3 bottom_right_color,
+        Color3 bottom_left_color,
+        float alpha) {
+  _window->setColor(top_left_color, top_right_color, bottom_right_color, bottom_left_color, alpha);
+}
+void Textbox::setBodyTransparency(float alpha) {
+  _window->setBodyTransparency(alpha);
+}
+void Textbox::setBorderTransparency(float alpha) {
+  _window->setBorderTransparency(alpha);
 }
 
 void Textbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
