@@ -12,6 +12,8 @@
 #include "utilities/InputHandler.h"
 #include "utilities/RessourceLoader.h"
 
+#include <chrono>
+
 using namespace Magnum;
 
 class OpenFF_Main: public Platform::Application {
@@ -45,6 +47,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
                                 .setTitle("OpenFF_Main")
                                 .setWindowFlags(Configuration::WindowFlag::Resizable)}
 {
+  auto t1 = std::chrono::high_resolution_clock::now();
   _input = new OpenFF::InputHandler();
 
   // initialise configuration
@@ -100,6 +103,10 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 
   _timeline = new Timeline();
   _timeline->start();
+
+  auto t2 = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+  Dbg{} << "Bootup time:" << duration << "μs";
 }
 
 void OpenFF_Main::drawEvent() {
