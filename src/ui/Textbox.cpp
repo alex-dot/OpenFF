@@ -16,6 +16,9 @@ Textbox::Textbox(Configuration* config, RessourceLoader* ressource_loader) :
         Textbox::Textbox() {
   _config = config;
   _ressource_loader = ressource_loader;
+  _font = ressource_loader->getFont(
+          _config->getFontLocation(),
+          _config->getFontBaseSize());
 }
 Textbox::Textbox(
         Configuration* config,
@@ -53,10 +56,7 @@ void Textbox::prepareWindow() {
   _window->setBorder(image);
 }
 void Textbox::prepareText() {
-  if( _font != nullptr )
-    _text = new Text(_font);
-  else
-    _text = new Text(_config->getFontLocation(), _config->getFontBaseSize());
+  _text = new Text(_font);
   _text->setRelativeBillboardRatio(_relative_billboard_ratio);
   _text->setViewportSize(_viewport_size);
   _text->setOffset(_offset);

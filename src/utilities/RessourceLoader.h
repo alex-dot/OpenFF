@@ -6,10 +6,10 @@
 #include <Magnum/Trade/ImageData.h>
 
 #include <string>
+#include <map>
 
+#include "../ui/Font.h"
 #include "../misc/TerminalOutput.h"
-
-class OpenFF_Main;
 
 namespace OpenFF {
 
@@ -20,10 +20,12 @@ class RessourceLoader{
     explicit RessourceLoader();
 
     void getImage(std::string, Containers::Optional<Trade::ImageData2D>&);
+    Font* getFont(std::string, int);
 
   private:
-    PluginManager::Manager<Trade::AbstractImporter>*    _manager;
+    PluginManager::Manager<Trade::AbstractImporter>*    _img_manager;
     Containers::Pointer<Trade::AbstractImporter>        _png_importer;
+    std::map<std::string,Font*>                         _font_manager;
 };
 
 }
