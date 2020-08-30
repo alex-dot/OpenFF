@@ -34,6 +34,7 @@ class Music{
     void bindCallbacks(InputHandler*);
 
     std::string getCurrentTrackName();
+    bool isPaused() { return _global_pause; }
 
     Music& playNextTrack();
     Music& increaseGain();
