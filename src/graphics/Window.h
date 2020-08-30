@@ -10,9 +10,9 @@
 
 namespace OpenFF {
 
-const int render_state_min = 0;
-const int render_state_step = 10;
-const int render_state_max = 100;
+const int window_render_state_min = 0;
+const int window_render_state_step = 10;
+const int window_render_state_max = 100;
 
 class Window{
   public:

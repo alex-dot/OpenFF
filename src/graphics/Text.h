@@ -19,6 +19,10 @@ enum ShadowTypes {
   full_shadow,
   SHADOW_TYPES_MAX = full_shadow
 };
+int getCharLength(const std::string&);
+
+const float text_render_state_min = 1.0;
+const float text_render_state_step = 1.0;
 
 using namespace Magnum;
 
@@ -27,16 +31,20 @@ class Text{
     explicit Text(std::string location, int size);
     explicit Text(Font* font);
 
-    void setText(std::string text);
     void draw();
     void draw(std::string);
+    void hide();
+    void setText(std::string text);
     void setShadowType(ShadowTypes);
     void setRelativeBillboardRatio(Vector2);
     void setViewportSize(Vector2i);
     void setOffset(Vector2i);
+    void enableInstantRendering();
+    void disableInstantRendering();
 
   private:
     void recalculateMVP();
+    void tieText(std::string);
 
     std::string                       _text;
     OpenFF::Font*                     _font;
@@ -51,6 +59,9 @@ class Text{
     Vector2                           _relative_billboard_ratio;
     Vector2i                          _viewport_size;
     Vector2i                          _offset;
+    bool                              _render_all_characters_instantly;
+    float                             _render_speed;
+    float                             _render_state;
 };
 
 }

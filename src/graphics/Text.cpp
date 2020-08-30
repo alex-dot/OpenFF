@@ -4,6 +4,9 @@
 #include "Text.h"
 #include "../misc/TerminalOutput.h"
 
+#include <sstream>
+#include <iomanip>
+
 namespace OpenFF {
 
 using namespace Magnum;
@@ -12,7 +15,10 @@ Text::Text(std::string text_location, int text_size) :
         _shadow(OpenFF::ShadowTypes::full_shadow),
         _relative_billboard_ratio(Vector2i(1)),
         _viewport_size(Vector2(1)),
-        _offset(Vector2(0)) {
+        _offset(Vector2(0)),
+        _render_all_characters_instantly(false),
+        _render_speed(text_render_state_step),
+        _render_state(text_render_state_min) {
   _font = new Font(text_location, text_size, 0.08f); // 0.08f FFVII pixel perfect
   setText("");
 }
@@ -21,23 +27,35 @@ Text::Text(Font* font) :
         _shadow(OpenFF::ShadowTypes::full_shadow),
         _relative_billboard_ratio(Vector2i(1)),
         _viewport_size(Vector2(1)),
-        _offset(Vector2(1)) {
+        _offset(Vector2(1)),
+        _render_all_characters_instantly(false),
+        _render_speed(text_render_state_step),
+        _render_state(text_render_state_min) {
   setText("");
 }
 
-void Text::setText(std::string text) {
-  _text = text;
-  std::tie(_mesh, std::ignore) = Magnum::Text::Renderer2D::render(
-          _font->getFont(),
-          _font->getGlyphCache(),
-          _font->getFontSizeFactor(),
-          _text, _vertex_buffer, _index_buffer,
-          GL::BufferUsage::StaticDraw);
-  _text_shader.setSmoothness(0.0f)
-          .bindVectorTexture(_font->getGlyphTexture());
+int getCharLength(const std::string& s)
+{
+    std::ostringstream ret;
+    ret << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(s[0]);
+    return ret.str().length()/2;
 }
 
 void Text::draw() {
+  if( !_render_all_characters_instantly && _render_state <= _text.length() ) {
+    // First, check the length of the unicode character and skip to its end
+    if( _render_state == text_render_state_min
+     || _render_state < floor(_render_state + _render_speed) ) {
+      int char_length = getCharLength(_text.substr(int(_render_state),1));
+      if( char_length > 1 ) _render_state = ceil(_render_state + char_length - 2);
+    }
+    // Substring to the current character
+    tieText(_text.substr(0,int(_render_state)));
+    // Advance the render state
+    _render_state = _render_state + _render_speed;
+    if( _render_state >= _text.length() ) _render_state = _text.length();
+  }
+
   using namespace Math::Literals;
 
   if( _shadow == OpenFF::ShadowTypes::full_shadow ) {
@@ -63,6 +81,24 @@ void Text::draw(std::string text) {
   draw();
 }
 
+void Text::tieText(std::string text) {
+  std::tie(_mesh, std::ignore) = Magnum::Text::Renderer2D::render(
+          _font->getFont(),
+          _font->getGlyphCache(),
+          _font->getFontSizeFactor(),
+          text, _vertex_buffer, _index_buffer,
+          GL::BufferUsage::StaticDraw);
+  _text_shader.setSmoothness(0.0f)
+          .bindVectorTexture(_font->getGlyphTexture());
+}
+
+void Text::setText(std::string text) {
+  _text = text;
+  if( _render_all_characters_instantly ) {
+    tieText(_text);
+  }
+}
+
 void Text::setShadowType(ShadowTypes shadow) {
   _shadow = shadow;
 }
@@ -78,6 +114,19 @@ void Text::setViewportSize(Vector2i viewport_size) {
 void Text::setOffset(Vector2i offset) {
   _offset = offset;
   recalculateMVP();
+}
+
+void Text::enableInstantRendering() {
+  _render_all_characters_instantly = true;
+  setText(_text);
+}
+void Text::disableInstantRendering() {
+  _render_all_characters_instantly = false;
+  setText(_text);
+}
+
+void Text::hide() {
+  _render_state = text_render_state_min;
 }
 
 void Text::recalculateMVP() {

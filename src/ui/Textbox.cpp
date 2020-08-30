@@ -81,6 +81,7 @@ void Textbox::show() {
 void Textbox::hide() {
   _hidden = true;
   _window->hide();
+  _text->hide();
 }
 
 void Textbox::setFont(Font* font) {
@@ -143,7 +144,9 @@ void Textbox::setOffset(Vector2i offset) {
 
 void Textbox::enableInstantRendering() {
   _window->enableInstantRendering();
+  _text->enableInstantRendering();
 }
 void Textbox::disableInstantRendering() {
   _window->disableInstantRendering();
+  _text->disableInstantRendering();
 }
