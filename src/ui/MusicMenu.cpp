@@ -20,6 +20,7 @@ MusicMenu::MusicMenu(
           Vector2i(314,24),
           Vector2i(3,200));
   setTitle(_music->getCurrentTrackName());
+  _songtitle->enableInstantRendering();
 }
 
 void MusicMenu::setTitle(std::string title) {

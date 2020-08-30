@@ -140,3 +140,10 @@ void Textbox::setOffset(Vector2i offset) {
   _window->setOffset(_offset);
   _text->setOffset(_offset);
 }
+
+void Textbox::enableInstantRendering() {
+  _window->enableInstantRendering();
+}
+void Textbox::disableInstantRendering() {
+  _window->disableInstantRendering();
+}

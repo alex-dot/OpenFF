@@ -48,6 +48,8 @@ class Textbox{
     void setViewportSize(Vector2i);
     void setTextboxSize(Vector2i);
     void setOffset(Vector2i);
+    void enableInstantRendering();
+    void disableInstantRendering();
 
   private:
     void prepareWindow();

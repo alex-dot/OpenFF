@@ -19,7 +19,8 @@ using namespace OpenFF;
 
 Window::Window() :
         _hidden(true),
-        _hide_state(hide_state_min) {
+        _render_instantly(false),
+        _render_state(render_state_min) {
   struct QuadVertex {
     Vector2 position;
     Vector2 textureCoordinates;
@@ -96,12 +97,20 @@ void Window::setBorderTransparency(float alpha) {
 }
 
 void Window::draw() {
-  if( !_hidden && _hide_state < hide_state_max ) {
-    _hide_state = _hide_state + hide_state_step;
-    _shader.setHiddenStateFactor(float(_hide_state)/float(hide_state_max));
-  } else if ( _hidden && _hide_state > hide_state_min ) {
-    _hide_state = _hide_state - hide_state_step;
-    _shader.setHiddenStateFactor(float(_hide_state)/float(hide_state_max));
+  if( !_render_instantly ) {
+    if( !_hidden && _render_state < render_state_max ) {
+      _render_state = _render_state + render_state_step;
+      _shader.setHiddenStateFactor(float(_render_state)/float(render_state_max));
+    } else if ( !_render_instantly && _hidden && _render_state > render_state_min ) {
+      _render_state = _render_state - render_state_step;
+      _shader.setHiddenStateFactor(float(_render_state)/float(render_state_max));
+    }
+  } else {
+    if( _hidden ) {
+      _shader.setHiddenStateFactor(0.0f);
+    } else {
+      _shader.setHiddenStateFactor(1.0f);
+    }
   }
 
   _shader.bindTexture(_texture)
@@ -110,13 +119,21 @@ void Window::draw() {
 
 void Window::show() {
   _hidden = false;
-  _hide_state = hide_state_min;
+  _render_state = render_state_min;
 }
 void Window::hide() {
   _hidden = true;
-  _hide_state = hide_state_max;
+  _render_state = render_state_max;
 }
 bool Window::isFullyShown() {
-  if( !_hidden && _hide_state == hide_state_max ) return true;
+  if( !_hidden && _render_state == render_state_max ) return true;
+  if( !_hidden && _render_instantly == true ) return true;
   return false;
+}
+
+void Window::enableInstantRendering() {
+  _render_instantly = true;
+}
+void Window::disableInstantRendering() {
+  _render_instantly = false;
 }
