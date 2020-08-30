@@ -47,8 +47,4 @@ set(WITH_STBVORBISAUDIOIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_STBTRUETYPEFONT ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum-plugins EXCLUDE_FROM_ALL)
 
-# Add Magnum-Extras as a subproject
-set(WITH_UI ON CACHE BOOL "" FORCE)
-add_subdirectory(libraries/magnum-extras EXCLUDE_FROM_ALL)
-
 add_subdirectory(src)

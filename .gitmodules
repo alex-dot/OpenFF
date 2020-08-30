@@ -13,9 +13,6 @@
 [submodule "libraries/assimp"]
 	path = libraries/assimp
 	url = https://github.com/assimp/assimp
-[submodule "libraries/magnum-extras"]
-	path = libraries/magnum-extras
-	url = https://github.com/mosra/magnum-extras.git
 [submodule "libraries/yaml-cpp"]
 	path = libraries/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
