@@ -2,7 +2,6 @@
 
 #include <Magnum/GL/Framebuffer.h>
 #include <Magnum/GL/Mesh.h>
-#include <Magnum/Shaders/VertexColor.h>
 
 #include "shaders/BillboardShader.h"
 

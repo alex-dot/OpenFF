@@ -1,4 +1,3 @@
-#include <Magnum/GL/Renderer.h>
 #include <Magnum/Math/Color.h>
 
 #include "Text.h"

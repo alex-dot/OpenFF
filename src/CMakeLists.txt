@@ -5,6 +5,7 @@ find_package(Magnum REQUIRED
     MeshTools
     Shaders
     SceneGraph
+    Text
     Trade
     Sdl2Application
     AnySceneImporter

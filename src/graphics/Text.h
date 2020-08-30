@@ -1,13 +1,5 @@
 #pragma once
 
-#include <Corrade/PluginManager/Manager.h>
-#include <Magnum/GL/TextureFormat.h>
-#include <Magnum/Math/Matrix3.h>
-#include <Magnum/Shaders/DistanceFieldVector.h>
-#include <Magnum/Text/AbstractFont.h>
-#include <Magnum/Text/GlyphCache.h>
-#include <Magnum/Text/Renderer.h>
-
 #include "../ui/Font.h"
 #include "../utilities/InputHandler.h"
 

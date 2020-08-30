@@ -1,10 +1,7 @@
 #include <Magnum/Timeline.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
-#include <Magnum/GL/Renderer.h>
 #include <Magnum/Platform/Sdl2Application.h>
 #include <Magnum/Trade/ImageData.h>
-
-#include <functional>
 
 #include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"

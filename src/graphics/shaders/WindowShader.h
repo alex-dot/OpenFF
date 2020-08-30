@@ -3,7 +3,7 @@
 #include <Magnum/GL/AbstractShaderProgram.h>
 #include <Magnum/GL/Texture.h>
 #include <Magnum/Math/Color.h>
-#include "Magnum/Math/Matrix3.h"
+#include <Magnum/Math/Matrix3.h>
 
 #include "../../misc/TerminalOutput.h"
 

@@ -1,6 +1,3 @@
-#include <Magnum/GL/Renderer.h>
-#include <Magnum/Math/Color.h>
-
 #include "Font.h"
 #include "../misc/TerminalOutput.h"
 

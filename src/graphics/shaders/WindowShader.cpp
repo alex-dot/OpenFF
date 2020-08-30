@@ -1,7 +1,6 @@
 #include "WindowShader.h"
 
 #include <Corrade/Containers/Reference.h>
-#include <Corrade/Utility/Resource.h>
 #include <Magnum/GL/Context.h>
 #include <Magnum/GL/Shader.h>
 #include <Magnum/GL/Version.h>

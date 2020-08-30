@@ -1,16 +1,5 @@
-#include <Corrade/Containers/Optional.h>
-#include <Magnum/GL/DefaultFramebuffer.h>
-#include <Magnum/GL/Mesh.h>
-#include <Magnum/GL/Texture.h>
 #include <Magnum/GL/TextureFormat.h>
 #include <Magnum/ImageView.h>
-#include <Magnum/Math/Color.h>
-#include <Magnum/MeshTools/Interleave.h>
-#include <Magnum/MeshTools/CompressIndices.h>
-#include <Magnum/Primitives/Square.h>
-#include <Magnum/Shaders/VertexColor.h>
-#include <Magnum/Trade/AbstractImporter.h>
-#include <Magnum/Trade/ImageData.h>
 #include <Magnum/Trade/MeshData.h>
 
 #include "Window.h"
