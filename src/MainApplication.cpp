@@ -78,6 +78,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           Vector2i(158,40),
           Vector2i(154,148));
   _textbox->write("Cloud\n“Aerith?“");
+  _textbox->show();
 
   // Menus
   _music_menu = new OpenFF::MusicMenu(

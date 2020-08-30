@@ -10,12 +10,19 @@
 
 namespace OpenFF {
 
+const int hide_state_min = 0;
+const int hide_state_step = 10;
+const int hide_state_max = 100;
+
 class Window{
   public:
     explicit Window();
     explicit Window(Vector2i viewport_size);
 
     void draw();
+    void show();
+    void hide();
+    bool isFullyShown();
     void setBorder(Containers::Optional<Trade::ImageData2D> &image);
     void setRelativeBillboardRatio(Magnum::Vector2 relative_billboard_ratio)
             {_shader.setRelativeBillboardRatio(relative_billboard_ratio);}
@@ -35,6 +42,8 @@ class Window{
     WindowShader             _shader;
     Magnum::GL::Mesh         _window;
     Magnum::GL::Texture2D    _texture;
+    bool                     _hidden;
+    int                      _hide_state;
 };
 
 }

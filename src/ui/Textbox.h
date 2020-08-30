@@ -28,6 +28,9 @@ class Textbox{
     void draw(std::string);
     void write(std::string);
 
+    void show();
+    void hide();
+
     // customize font and text
     void setFont(Font*);
     void setTextShadowType(OpenFF::ShadowTypes);
@@ -59,6 +62,7 @@ class Textbox{
     Vector2i          _viewport_size;
     Vector2i          _textbox_size;
     Vector2i          _offset;
+    bool              _hidden;
 };
 
 }

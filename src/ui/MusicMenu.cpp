@@ -44,6 +44,8 @@ MusicMenu& MusicMenu::decreaseGain() {
   return *this;
 }
 MusicMenu& MusicMenu::pauseResume() {
+  if( _music->isPaused() ) _songtitle->show();
+  else _songtitle->hide();
   _music->pauseResume();
   return *this;
 }

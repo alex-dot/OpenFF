@@ -34,6 +34,11 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    WindowShader& setHiddenStateFactor(float factor) {
+      setUniform(_hidden_state_uniform, factor);
+      return *this;
+    }
+
     WindowShader& setColorMode(ColorMode mode) {
       setUniform(_color_mode_uniform, mode);
       return *this;
@@ -93,6 +98,7 @@ class WindowShader: public GL::AbstractShaderProgram {
   private:
     enum: int { TextureUnit = 0 };
 
+    int _hidden_state_uniform;
     int _color_mode_uniform;
     int _uni_color_uniform;
     int _top_left_color_uniform;

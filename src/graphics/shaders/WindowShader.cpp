@@ -27,6 +27,7 @@ WindowShader::WindowShader() {
 
   setUniform(uniformLocation("textureData"), TextureUnit);
 
+  _hidden_state_uniform = uniformLocation("hideFactor");
   _color_mode_uniform = uniformLocation("windowColorMode");
   _uni_color_uniform = uniformLocation("windowUniColor");
   _top_left_color_uniform = uniformLocation("windowTopLeftColor");

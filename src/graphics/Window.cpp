@@ -17,7 +17,9 @@
 
 using namespace OpenFF;
 
-Window::Window() {
+Window::Window() :
+        _hidden(true),
+        _hide_state(hide_state_min) {
   struct QuadVertex {
     Vector2 position;
     Vector2 textureCoordinates;
@@ -35,6 +37,7 @@ Window::Window() {
          .addVertexBuffer(std::move(box_buffer), 0,
                   WindowShader::Position{},
                   WindowShader::TextureCoordinates{});
+  _shader.setHiddenStateFactor(0.0f);
 }
 
 Window::Window(Vector2i viewport_size) :
@@ -93,6 +96,27 @@ void Window::setBorderTransparency(float alpha) {
 }
 
 void Window::draw() {
+  if( !_hidden && _hide_state < hide_state_max ) {
+    _hide_state = _hide_state + hide_state_step;
+    _shader.setHiddenStateFactor(float(_hide_state)/float(hide_state_max));
+  } else if ( _hidden && _hide_state > hide_state_min ) {
+    _hide_state = _hide_state - hide_state_step;
+    _shader.setHiddenStateFactor(float(_hide_state)/float(hide_state_max));
+  }
+
   _shader.bindTexture(_texture)
          .draw(_window);
+}
+
+void Window::show() {
+  _hidden = false;
+  _hide_state = hide_state_min;
+}
+void Window::hide() {
+  _hidden = true;
+  _hide_state = hide_state_max;
+}
+bool Window::isFullyShown() {
+  if( !_hidden && _hide_state == hide_state_max ) return true;
+  return false;
 }

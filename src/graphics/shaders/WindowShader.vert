@@ -1,6 +1,7 @@
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 textureCoordinates;
 
+uniform lowp float hideFactor = 1.0;
 uniform ivec2 viewportSize;
 uniform ivec2 windowSize;
 uniform ivec2 windowOffset;
@@ -10,7 +11,7 @@ out lowp vec2 coords;
 
 void main() {
   // Convert size from pixels to cartesian and modify by billboardratio
-  vec2 size = vec2(windowSize)/vec2(viewportSize)*relativeBillboardRatio;
+  vec2 size = vec2(windowSize)/vec2(viewportSize)*relativeBillboardRatio*hideFactor;
 
   // Convert offset from pixels to cartesian (w/ billboardratio modification)
   // ******************

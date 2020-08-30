@@ -10,7 +10,8 @@ Textbox::Textbox() :
         _relative_billboard_ratio(Vector2(1)),
         _viewport_size(default_viewport),
         _textbox_size(Vector2i(1)),
-        _offset(Vector2i(1)) {}
+        _offset(Vector2i(1)),
+        _hidden(true) {}
 Textbox::Textbox(Configuration* config, RessourceLoader* ressource_loader) :
         Textbox::Textbox() {
   _config = config;
@@ -63,15 +64,23 @@ void Textbox::prepareText() {
 
 void Textbox::draw() {
   _window->draw();
-  _text->draw();
+  if( _window->isFullyShown() ) _text->draw();
 }
 void Textbox::draw(std::string text) {
   _text->setText(text);
-  _window->draw();
-  _text->draw();
+  draw();
 }
 void Textbox::write(std::string text) {
   _text->setText(text);
+}
+
+void Textbox::show() {
+  _hidden = false;
+  _window->show();
+}
+void Textbox::hide() {
+  _hidden = true;
+  _window->hide();
 }
 
 void Textbox::setFont(Font* font) {
