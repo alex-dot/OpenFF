@@ -4,29 +4,33 @@
 * Controller Support
 * config file saving
 
-## 0.1.3
+## 0.1.2
 * MIDI support (by way of MidiAudioImporter Magnum-Plugin)
 
-## 0.1.2
+## 0.1.1
 * Resolution settings
 * Screen Settings
 ** Pixel Perfect (multiple of base resolution (320*224))
 ** Zoom
 ** Stretch
 
-## 0.1.1
-* ff7 field level image loading
-
 ## 0.1.0
 * ReadMe
 * Build Instructions
 
-## 0.0.5
-* UI
-** Font by: http://caveras.net/
+## 0.0.7
+* OpenFF-libs integration
+** ff7 field level image loading
+
+## 0.0.6
 * Music:
 ** multiple songs
 ** song skipping
+* Async, non-blocking file-loading
+
+## 0.0.5
+* UI
+** Font by: http://caveras.net/
 
 ## 0.0.4
 * Audio Playback
