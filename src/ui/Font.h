@@ -21,6 +21,7 @@ class Font{
     float getFontSizeFactor() const { return _font_size_factor; }
 
   private:
+    void makeGlyphCache();
 
     PluginManager::Manager<Text::AbstractFont>  _font_manager;
     Containers::Pointer<Text::AbstractFont>     _font;

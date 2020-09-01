@@ -8,6 +8,11 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
   _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
   if(!_font || !_font->openFile(font_location, font_size))
       Fatal{} << "Can't open font with StbTrueTypeFont";
+
+  makeGlyphCache();
+}
+
+void Font::makeGlyphCache() {
   std::string base_glyphs =
           "abcdefghijklmnopqrstuvwxyz"
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -41,7 +46,7 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
           "ÉéÈèÊêËëĒēÍíÌìÎîÏïİ"     // ĔĕĞğĬĭ
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
           "ÛûŪūŸÿ";
-  std::string glyphs = base_glyphs+base_sign_glyphs+extended_sign_glyphs+extended_sign_glyphs+miscellaneous_glyphs+geometric_glyphs;
+  std::string glyphs = base_glyphs+base_sign_glyphs;
   _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 

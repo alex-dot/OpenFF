@@ -16,9 +16,10 @@ Textbox::Textbox(Configuration* config, RessourceLoader* ressource_loader) :
         Textbox::Textbox() {
   _config = config;
   _ressource_loader = ressource_loader;
-  _font = ressource_loader->getFont(
-          _config->getFontLocation(),
-          _config->getFontBaseSize());
+
+  _font = _ressource_loader->getFont(
+            _config->getFontLocation(),
+            _config->getFontBaseSize());
 }
 Textbox::Textbox(
         Configuration* config,
@@ -89,6 +90,7 @@ void Textbox::setFont(Font* font) {
   delete(_text);
   prepareText();
 }
+
 void Textbox::setTextShadowType(OpenFF::ShadowTypes type) {
   _text->setShadowType(type);
 }
