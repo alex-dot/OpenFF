@@ -3,16 +3,12 @@
 
 using namespace OpenFF;
 
-MusicMenu::MusicMenu() : _music(nullptr) {}
-MusicMenu::MusicMenu(Music* music) : MusicMenu::MusicMenu() {
-  _music = music;
-}
-
 MusicMenu::MusicMenu(
         Configuration* config,
         RessourceLoader* ressource_loader,
-        Vector2 relative_billboard_ratio,
-        Music* music) : MusicMenu::MusicMenu(music) {
+        InputHandler* input_handler,
+        Vector2 relative_billboard_ratio) {
+  _music = new OpenFF::Music(config, ressource_loader, input_handler);
   _songtitle = new OpenFF::Textbox(
           config,
           ressource_loader,
@@ -29,14 +25,9 @@ void MusicMenu::setTitle(std::string title) {
   }
 }
 
-void MusicMenu::draw() {
-  _songtitle->draw();
-  _music->draw();
-}
-
-// only as long as we don't have multi-threading
-void MusicMenu::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
-  _songtitle->setRelativeBillboardRatio(relative_billboard_ratio);
+void MusicMenu::setMusic(Music* music) {
+  delete(_music);
+  _music = music;
 }
 
 MusicMenu& MusicMenu::increaseGain() {
@@ -48,10 +39,21 @@ MusicMenu& MusicMenu::decreaseGain() {
   return *this;
 }
 MusicMenu& MusicMenu::pauseResume() {
-  if( _music->isPaused() ) {_songtitle->show(); Dbg{} << "play";}
-  else {_songtitle->hide(); Dbg{} << "pause";}
+  if( _music->isPaused() )
+    _songtitle->show();
+  else
+    _songtitle->hide();
   _music->pauseResume();
   return *this;
+}
+
+void MusicMenu::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
+  _songtitle->setRelativeBillboardRatio(relative_billboard_ratio);
+}
+
+void MusicMenu::draw() {
+  _songtitle->draw();
+  _music->draw();
 }
 
 void MusicMenu::bindCallbacks(InputHandler* input) {

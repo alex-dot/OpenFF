@@ -6,10 +6,11 @@
 #include <Magnum/Audio/Listener.h>
 #include <Magnum/Audio/Playable.h>
 #include <Magnum/Audio/PlayableGroup.h>
+#include <Magnum/Audio/Source.h>
 #include <Magnum/SceneGraph/Camera.h>
+#include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/Scene.h>
 #include <Magnum/SceneGraph/MatrixTransformation2D.h>
-#include <Magnum/Audio/Source.h>
 
 #include <future>
 

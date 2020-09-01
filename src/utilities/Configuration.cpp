@@ -145,7 +145,7 @@ bool Configuration::getMusicName(
   return false;
 }
 std::string Configuration::getRandomMusic() const {
-  return _music_name_map.find("tb")->first;
+  return _music_name_map.find("ta")->first;
 }
 
 // This is where valid section names for the ini-file are defined

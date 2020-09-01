@@ -25,7 +25,7 @@ Music::Music() :
         _camera_object(&_scene),
         _camera(_camera_object),
         _listener{_scene},
-        _global_pause(false)
+        _global_pause(true)
 {
   _camera.setViewport(GL::defaultFramebuffer.viewport().size());
 }

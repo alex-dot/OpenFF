@@ -3,7 +3,6 @@
 #include <Magnum/Platform/Sdl2Application.h>
 #include <Magnum/Trade/ImageData.h>
 
-#include "audio/Music.h"
 #include "graphics/BackgroundBillboard.h"
 #include "graphics/DebugBox.h"
 #include "ui/MusicMenu.h"
@@ -32,7 +31,6 @@ class OpenFF_Main: public Platform::Application {
     Timeline*                     _timeline;
 
     OpenFF::BackgroundBillboard*  _bb;
-    OpenFF::Music*                _music;
     OpenFF::Configuration*        _config;
     OpenFF::RessourceLoader*      _ressource_loader;
     OpenFF::InputHandler*         _input;
@@ -59,9 +57,6 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           *this, OpenFF::ObjectType::main_app,
           {std::make_pair(&OpenFF_Main::exitMain,OpenFF::InputEvents::app_close)});
 
-  // Music object
-  _music = new OpenFF::Music(_config, _input);
-
   Containers::Optional<Trade::ImageData2D> image;
 
   // initialise background billboard
@@ -77,7 +72,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           _bb->getRelativeBillboardRatio(),
           Vector2i(158,40),
           Vector2i(154,148));
-  _textbox->write("Cloud\n“Aerith?“");
+  _textbox->write("Cloud\nAerith?");
   _textbox->enableInstantRendering();
   _textbox->show();
 
@@ -85,8 +80,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _music_menu = new OpenFF::MusicMenu(
           _config,
           _ressource_loader,
-          _bb->getRelativeBillboardRatio(),
-          _music);
+          _input,
+          _bb->getRelativeBillboardRatio());
   _music_menu->bindCallbacks(_input);
 
   _debug_box = new OpenFF::DebugBox();
@@ -110,6 +105,8 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 }
 
 void OpenFF_Main::drawEvent() {
+//  auto t1 = std::chrono::high_resolution_clock::now();
+
   // first render the background to its own framebuffer
   _bb->getFramebuffer()
           .clear(GL::FramebufferClear::Color)
@@ -137,6 +134,10 @@ void OpenFF_Main::drawEvent() {
   swapBuffers();
   redraw();
   _timeline->nextFrame();
+
+//  auto t2 = std::chrono::high_resolution_clock::now();
+//  auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+//  Dbg{} << "Draw time:" << duration << "μs";
 }
 
 void OpenFF_Main::viewportEvent(ViewportEvent& event) {

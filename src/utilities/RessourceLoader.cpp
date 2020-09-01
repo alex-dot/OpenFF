@@ -35,7 +35,6 @@ Font* RessourceLoader::getFont(std::string font_location, int font_size) {
 
 std::tuple<Audio::BufferFormat,Containers::Array<char>,ALsizei>
         RessourceLoader::getAudio(std::string location) {
-  location = "/media/veracrypt1/Music/Soundtrack/Final Fantasy OST/Final Fantasy (7) VII Remake - Final Fantasy VII Remake and Final Fantasy VII Vinyl/Disc 1/1.08 Main Theme of FINAL FANTASY VII.flac";
   if( !_audio_importer->openFile(location) )
     FatlIOError("Could not load audio file at location: "+location);
   return std::make_tuple(
