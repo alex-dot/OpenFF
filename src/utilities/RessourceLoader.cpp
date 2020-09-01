@@ -7,6 +7,9 @@ RessourceLoader::RessourceLoader() {
   _img_manager = new PluginManager::Manager<Trade::AbstractImporter>;
   _png_importer = _img_manager->loadAndInstantiate("PngImporter");
   if(!(_png_importer)) FatlIOError("Could not load PngImporter Plugin");
+
+  _audio_importer = _audio_manager.loadAndInstantiate("AnyAudioImporter");
+  if(!_audio_importer) FatlIOError("Could not load AnyAudioImporter Plugin");
 }
 
 void RessourceLoader::getImage(
@@ -28,6 +31,17 @@ Font* RessourceLoader::getFont(std::string font_location, int font_size) {
     _font_manager.insert(std::make_pair(font_location,font));
   }
   return font;
+}
+
+std::tuple<Audio::BufferFormat,Containers::Array<char>,ALsizei>
+        RessourceLoader::getAudio(std::string location) {
+  location = "/media/veracrypt1/Music/Soundtrack/Final Fantasy OST/Final Fantasy (7) VII Remake - Final Fantasy VII Remake and Final Fantasy VII Vinyl/Disc 1/1.08 Main Theme of FINAL FANTASY VII.flac";
+  if( !_audio_importer->openFile(location) )
+    FatlIOError("Could not load audio file at location: "+location);
+  return std::make_tuple(
+          _audio_importer->format(),
+          std::move(_audio_importer->data()),
+          _audio_importer->frequency());
 }
 
 }

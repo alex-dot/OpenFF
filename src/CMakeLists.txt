@@ -11,6 +11,7 @@ find_package(Magnum REQUIRED
     AnySceneImporter
     AnyImageImporter)
 find_package(MagnumPlugins REQUIRED AssimpImporter)
+find_package(Threads REQUIRED)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
@@ -56,4 +57,5 @@ target_link_libraries(OpenFF PRIVATE
     Magnum::Shaders
     Magnum::Text
     Magnum::Trade
-    inicpp)
+    inicpp
+    Threads::Threads)

@@ -24,10 +24,14 @@ MusicMenu::MusicMenu(
 
 void MusicMenu::setTitle(std::string title) {
   _songtitle->write(title);
+  if( !_music->isPaused() ) {
+    _songtitle->show();
+  }
 }
 
 void MusicMenu::draw() {
   _songtitle->draw();
+  _music->draw();
 }
 
 // only as long as we don't have multi-threading
@@ -44,8 +48,8 @@ MusicMenu& MusicMenu::decreaseGain() {
   return *this;
 }
 MusicMenu& MusicMenu::pauseResume() {
-  if( _music->isPaused() ) _songtitle->show();
-  else _songtitle->hide();
+  if( _music->isPaused() ) {_songtitle->show(); Dbg{} << "play";}
+  else {_songtitle->hide(); Dbg{} << "pause";}
   _music->pauseResume();
   return *this;
 }

@@ -3,6 +3,9 @@
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/SceneGraph/Drawable.h>
 
+#include <chrono>
+#include <tuple>
+
 #include "Music.h"
 #include "../misc/TerminalOutput.h"
 
@@ -16,54 +19,66 @@ Music::Music() :
           Audio::Context::Configuration{}
             .setHrtf(Audio::Context::Configuration::Hrtf::Enabled)
           },
-        _sourceRig(&_scene),
-        _sourceObject(&_sourceRig),
-        _cameraObject(&_scene),
-        _camera(_cameraObject),
+        _current_track_loaded(false),
+        _source_rig(&_scene),
+        _source_object(&_source_rig),
+        _camera_object(&_scene),
+        _camera(_camera_object),
         _listener{_scene},
         _global_pause(false)
 {
-  _importer = _manager.loadAndInstantiate("AnyAudioImporter");
-  if(!_importer)
-    std::exit(1);
   _camera.setViewport(GL::defaultFramebuffer.viewport().size());
 }
-Music::Music(InputHandler* input) : Music::Music() {
-  this->bindCallbacks(input);
-}
-Music::Music(Configuration* config) :
+Music::Music(Configuration* config, RessourceLoader* ressource_loader) :
         Music::Music() {
   _config = config;
+  _ressource_loader = ressource_loader;
   _current_track_name = _config->getRandomMusic();
-  this->playNextTrack();
+  this->loadAudioData();
 }
-Music::Music(Configuration* config, InputHandler* input) : Music::Music(config) {
+Music::Music(
+        Configuration* config,
+        RessourceLoader* ressource_loader,
+        InputHandler* input) :
+                Music::Music(config, ressource_loader) {
   this->bindCallbacks(input);
+}
+
+Music& Music::loadAudioData() {
+  if(_config->getMusicLocation(_current_track_location, _current_track_name))
+    _current_track_location = _config->getMusicLocation()+_current_track_location;
+  else
+    std::exit(2);
+
+  _current_track_future = std::async(
+          std::launch::async,
+          &RessourceLoader::getAudio,
+          _ressource_loader,
+          _current_track_location);
+
+  return *this;
+}
+
+Music& Music::playAudioData() {
+  _current_track_buffer.setData(
+          _current_track_format,
+          _current_track_buffer_data,
+          _current_track_frequency);
+
+  (new Audio::Playable2D{_source_object, &_playables})->source()
+    .setBuffer(&_current_track_buffer)
+    .setLooping(true);
+  if( !_global_pause ) {
+    _playables.play();
+  }
+
+  return *this;
 }
 
 std::string Music::getCurrentTrackName() {
   std::string name;
   _config->getMusicName(name, _current_track_name);
   return name;
-}
-
-Music& Music::playNextTrack() {
-  std::string track_location;
-  if(_config->getMusicLocation(track_location, _current_track_name))
-    track_location = _config->getMusicLocation()+track_location;
-  // this currently blocks, will wait for Magnum to implement video/audio streaming
-  if( !_importer->openFile(track_location) )
-    std::exit(2);
-
-  _bufferData = _importer->data();
-  _buffer.setData(_importer->format(), _bufferData, _importer->frequency());
-
-  (new Audio::Playable2D{_sourceObject, &_playables})->source()
-    .setBuffer(&_buffer)
-    .setLooping(true);
-  _global_pause = true;
-
-  return *this;
 }
 
 Music& Music::increaseGain() {
@@ -88,8 +103,19 @@ Music& Music::pauseResume() {
 }
 
 void Music::draw() {
-  _listener.update({_playables});
-  _camera.draw(_drawables);
+  if( _current_track_loaded ) {
+    _listener.update({_playables});
+    _camera.draw(_drawables);
+  } else {
+    if( _current_track_future.wait_for(std::chrono::microseconds(1)) == std::future_status::ready ) {
+      auto current_track_tuple = _current_track_future.get();
+      _current_track_format = std::get<0>(current_track_tuple);
+      _current_track_buffer_data = std::move(std::get<1>(current_track_tuple));
+      _current_track_frequency = std::get<2>(current_track_tuple);
+      this->playAudioData();
+      _current_track_loaded = true;
+    }
+  }
 }
 
 void Music::bindCallbacks(InputHandler* input) {
