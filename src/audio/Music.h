@@ -11,9 +11,11 @@
 #include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/Scene.h>
 #include <Magnum/SceneGraph/MatrixTransformation2D.h>
+#include <Magnum/Timeline.h>
 
 #include <future>
 
+#include "../graphics/MusicVisualiser.h"
 #include "../utilities/InputHandler.h"
 #include "../utilities/Configuration.h"
 #include "../utilities/RessourceLoader.h"
@@ -24,6 +26,14 @@ typedef SceneGraph::Object<SceneGraph::MatrixTransformation2D> Object2D;
 typedef SceneGraph::Scene<SceneGraph::MatrixTransformation2D> Scene2D;
 
 namespace OpenFF {
+
+enum MusicVisualiserChannel {
+  left,
+  right,
+  MUSIC_VISUALISER_CHANNEL_MAX = right
+};
+
+float blackmanHarrisNuttalWindowTransform(float, unsigned int, unsigned int);
 
 class Music{
   public:
@@ -36,16 +46,27 @@ class Music{
     void bindCallbacks(InputHandler*);
 
     std::string getCurrentTrackName();
-    bool isPaused() { return _global_pause; }
-
-    Music& loadAudioData();
-    Music& playAudioData();
+    bool isPaused();
 
     Music& increaseGain();
     Music& decreaseGain();
     Music& pauseResume();
 
+    std::tuple<unsigned int,unsigned int,float> getVisualiserInformation();
+    std::vector<std::vector<float>> processAudioForMagnitudeVisualiser(
+            const MusicVisualiserChannel,
+            const unsigned int,
+            const unsigned int);
+
   private:
+    Music& loadAudioData();
+    Music& storeAudioData();
+    Music& playAudioData();
+
+    Music& prepareForMagnitudeVisualiser();
+
+    void drawVisualiser();
+
     OpenFF::Configuration*        _config;
     OpenFF::RessourceLoader*      _ressource_loader;
     Audio::Context                _context;
@@ -68,6 +89,18 @@ class Music{
     Audio::Listener2D             _listener;
     Audio::PlayableGroup2D        _playables;
     bool                          _global_pause;
+
+    unsigned int                     _samples;
+    unsigned int                     _channels;
+    float                            _max_magnitude;
+    std::vector<float>               _frequency_bin;
+    unsigned int                     _visualiser_bar_count;
+    unsigned int                     _maximum_frame_count;
+    unsigned int                     _frame_slice_left;
+    unsigned int                     _frame_slice_right;
+    float                            _frame_window_size;
+    std::vector<std::vector<float>>  _magnitude_bin_matrix_left;
+    std::vector<std::vector<float>>  _magnitude_bin_matrix_right;
 };
 
 }

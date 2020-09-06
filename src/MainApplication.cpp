@@ -1,6 +1,6 @@
-#include <Magnum/Timeline.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/Platform/Sdl2Application.h>
+#include <Magnum/Timeline.h>
 #include <Magnum/Trade/ImageData.h>
 
 #include "graphics/BackgroundBillboard.h"
@@ -142,10 +142,13 @@ void OpenFF_Main::drawEvent() {
 
 void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
+
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
+
   _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
   _music_menu->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+
 }
 
 void OpenFF_Main::exitMain() {

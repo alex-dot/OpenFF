@@ -19,14 +19,18 @@ set(WITH_AUDIO ON CACHE BOOL "" FORCE)
 set(WITH_ANYSCENEIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_ANYIMAGEIMPORTER ON CACHE BOOL "" FORCE)
 set(WITH_ANYAUDIOIMPORTER ON CACHE BOOL "" FORCE)
+set(WITH_WAVAUDIOIMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/magnum EXCLUDE_FROM_ALL)
 
-# Add minIni as a subproject
+# Add inicpp as a subproject
 set(NO_GOOGLE_TEST ON CACHE BOOL "" FORCE)
 add_subdirectory(libraries/inicpp EXCLUDE_FROM_ALL)
 
 # Add yaml-cpp as a subproject
 add_subdirectory(libraries/yaml-cpp EXCLUDE_FROM_ALL)
+
+# Add muFFT as a subproject
+add_subdirectory(libraries/muFFT EXCLUDE_FROM_ALL)
 
 # Add Assimp with unwanted parts disabled, help Magnum find everything needed
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)

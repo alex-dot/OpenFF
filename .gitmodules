@@ -16,3 +16,6 @@
 [submodule "libraries/yaml-cpp"]
 	path = libraries/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "libraries/muFFT"]
+	path = libraries/muFFT
+	url = https://github.com/Themaister/muFFT.git

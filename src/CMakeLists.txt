@@ -9,7 +9,8 @@ find_package(Magnum REQUIRED
     Trade
     Sdl2Application
     AnySceneImporter
-    AnyImageImporter)
+    AnyImageImporter
+    WavAudioImporter)
 find_package(MagnumPlugins REQUIRED AssimpImporter)
 find_package(Threads REQUIRED)
 
@@ -18,10 +19,12 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 add_executable(OpenFF MainApplication.cpp
     audio/Music.cpp
     graphics/BackgroundBillboard.cpp
-    graphics/Window.cpp
+    graphics/MusicVisualiser.cpp
     graphics/Text.cpp
+    graphics/Window.cpp
     graphics/DebugBox.cpp
     graphics/shaders/BillboardShader.cpp
+    graphics/shaders/MusicVisualiserShader.cpp
     graphics/shaders/WindowShader.cpp
     ui/Font.cpp
     ui/MusicMenu.cpp
@@ -34,6 +37,7 @@ add_dependencies(OpenFF
     Magnum::AnySceneImporter
     Magnum::AnyImageImporter
     Magnum::AnyAudioImporter
+    Magnum::WavAudioImporter
     MagnumPlugins::AssimpImporter
     MagnumPlugins::TinyGltfImporter
     MagnumPlugins::PngImporter
@@ -58,4 +62,5 @@ target_link_libraries(OpenFF PRIVATE
     Magnum::Text
     Magnum::Trade
     inicpp
+    muFFT
     Threads::Threads)
