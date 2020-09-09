@@ -22,34 +22,34 @@ class Textbox{
             Vector2i textbox_size,
             Vector2i offset);
 
-    void prepare();
+    Textbox& prepare();
 
-    void draw();
-    void draw(std::string);
-    void write(std::string);
+    Textbox& draw();
+    Textbox& draw(std::string);
+    Textbox& write(std::string);
 
-    void show();
-    void hide();
+    Textbox& show();
+    Textbox& hide();
 
     // customize font and text
-    void setFont(Font*);
-    void setTextShadowType(OpenFF::ShadowTypes);
+    Textbox& setFont(Font*);
+    Textbox& setTextShadowType(OpenFF::ShadowTypes);
     // customize window
     // set uniform color
-    void setColor(Color3);
-    void setColor(Color4);
+    Textbox& setColor(Color3);
+    Textbox& setColor(Color4);
     // set color gradient, starting top-left going clockwise
-    void setColor(Color3, Color3, Color3, Color3);
-    void setColor(Color3, Color3, Color3, Color3, float);
-    void setBodyTransparency(float);
-    void setBorderTransparency(float);
+    Textbox& setColor(Color3, Color3, Color3, Color3);
+    Textbox& setColor(Color3, Color3, Color3, Color3, float);
+    Textbox& setBodyTransparency(float);
+    Textbox& setBorderTransparency(float);
     // set generic textbox variables
-    void setRelativeBillboardRatio(Vector2);
-    void setViewportSize(Vector2i);
-    void setTextboxSize(Vector2i);
-    void setOffset(Vector2i);
-    void enableInstantRendering();
-    void disableInstantRendering();
+    Textbox& setRelativeBillboardRatio(Vector2);
+    Textbox& setViewportSize(Vector2i);
+    Textbox& setTextboxSize(Vector2i);
+    Textbox& setOffset(Vector2i);
+    Textbox& enableInstantRendering();
+    Textbox& disableInstantRendering();
 
   private:
     void prepareWindow();

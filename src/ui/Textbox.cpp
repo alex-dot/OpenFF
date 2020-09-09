@@ -36,9 +36,11 @@ Textbox::Textbox(
   prepare();
 }
 
-void Textbox::prepare() {
+Textbox& Textbox::prepare() {
   prepareWindow();
   prepareText();
+
+  return *this;
 }
 void Textbox::prepareWindow() {
   _window = new OpenFF::Window(_viewport_size);
@@ -63,92 +65,130 @@ void Textbox::prepareText() {
   _text->setOffset(_offset);
 }
 
-void Textbox::draw() {
+Textbox& Textbox::draw() {
   _window->draw();
   if( _window->isFullyShown() ) _text->draw();
+
+  return *this;
 }
-void Textbox::draw(std::string text) {
+Textbox& Textbox::draw(std::string text) {
   _text->setText(text);
   draw();
+
+  return *this;
 }
-void Textbox::write(std::string text) {
+Textbox& Textbox::write(std::string text) {
   _text->setText(text);
+
+  return *this;
 }
 
-void Textbox::show() {
+Textbox& Textbox::show() {
   _hidden = false;
   _window->show();
+
+  return *this;
 }
-void Textbox::hide() {
+Textbox& Textbox::hide() {
   _hidden = true;
   _window->hide();
   _text->hide();
+
+  return *this;
 }
 
-void Textbox::setFont(Font* font) {
+Textbox& Textbox::setFont(Font* font) {
   _font = font;
   delete(_text);
   prepareText();
+
+  return *this;
 }
 
-void Textbox::setTextShadowType(OpenFF::ShadowTypes type) {
+Textbox& Textbox::setTextShadowType(OpenFF::ShadowTypes type) {
   _text->setShadowType(type);
+
+  return *this;
 }
 
-void Textbox::setColor(Color3 color) {
+Textbox& Textbox::setColor(Color3 color) {
   _window->setColor(color);
+
+  return *this;
 }
-void Textbox::setColor(Color4 color) {
+Textbox& Textbox::setColor(Color4 color) {
   _window->setColor(color);
+
+  return *this;
 }
 // set color gradient, starting top-left going clockwise
-void Textbox::setColor(
+Textbox& Textbox::setColor(
         Color3 top_left_color,
         Color3 top_right_color,
         Color3 bottom_right_color,
         Color3 bottom_left_color) {
   _window->setColor(top_left_color, top_right_color, bottom_right_color, bottom_left_color);
+
+  return *this;
 }
-void Textbox::setColor(
+Textbox& Textbox::setColor(
         Color3 top_left_color,
         Color3 top_right_color,
         Color3 bottom_right_color,
         Color3 bottom_left_color,
         float alpha) {
   _window->setColor(top_left_color, top_right_color, bottom_right_color, bottom_left_color, alpha);
+
+  return *this;
 }
-void Textbox::setBodyTransparency(float alpha) {
+Textbox& Textbox::setBodyTransparency(float alpha) {
   _window->setBodyTransparency(alpha);
+
+  return *this;
 }
-void Textbox::setBorderTransparency(float alpha) {
+Textbox& Textbox::setBorderTransparency(float alpha) {
   _window->setBorderTransparency(alpha);
+
+  return *this;
 }
 
-void Textbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
+Textbox& Textbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
   _relative_billboard_ratio = relative_billboard_ratio;
   _window->setRelativeBillboardRatio(_relative_billboard_ratio);
   _text->setRelativeBillboardRatio(_relative_billboard_ratio);
+
+  return *this;
 }
-void Textbox::setViewportSize(Vector2i viewport_size) {
+Textbox& Textbox::setViewportSize(Vector2i viewport_size) {
   _viewport_size = viewport_size;
   _window->setViewportSize(_viewport_size);
   _text->setViewportSize(_viewport_size);
+
+  return *this;
 }
-void Textbox::setTextboxSize(Vector2i textbox_size) {
+Textbox& Textbox::setTextboxSize(Vector2i textbox_size) {
   _textbox_size = textbox_size;
   _window->setWindowSize(_textbox_size);
+
+  return *this;
 }
-void Textbox::setOffset(Vector2i offset) {
+Textbox& Textbox::setOffset(Vector2i offset) {
   _offset = offset;
   _window->setOffset(_offset);
   _text->setOffset(_offset);
+
+  return *this;
 }
 
-void Textbox::enableInstantRendering() {
+Textbox& Textbox::enableInstantRendering() {
   _window->enableInstantRendering();
   _text->enableInstantRendering();
+
+  return *this;
 }
-void Textbox::disableInstantRendering() {
+Textbox& Textbox::disableInstantRendering() {
   _window->disableInstantRendering();
   _text->disableInstantRendering();
+
+  return *this;
 }
