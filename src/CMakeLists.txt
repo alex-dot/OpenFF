@@ -28,6 +28,7 @@ add_executable(OpenFF MainApplication.cpp
     graphics/shaders/WindowShader.cpp
     ui/Font.cpp
     ui/MusicMenu.cpp
+    ui/AbstractTextbox.cpp
     ui/Textbox.cpp
     utilities/Configuration.cpp
     utilities/InputHandler.cpp
