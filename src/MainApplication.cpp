@@ -64,7 +64,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _bb = new OpenFF::BackgroundBillboard();
   _bb->setBackground(image);
   _bb->setRelativeBillboardRatio(Platform::Sdl2Application::windowSize());
-
+/*
   // Textbox
   _textbox = new OpenFF::Textbox(
           _config,
@@ -75,7 +75,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _textbox->write("Cloud\nAerith?");
   _textbox->enableInstantRendering();
   _textbox->show();
-
+*/
   // Menus
   _music_menu = new OpenFF::MusicMenu(
           _config,
@@ -114,7 +114,7 @@ void OpenFF_Main::drawEvent() {
   _bb->draw();
 
   // Textbox
-  _textbox->draw();
+//  _textbox->draw();
 
   _music_menu->draw();
 
@@ -146,7 +146,7 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
 
-  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+//  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
   _music_menu->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
 }

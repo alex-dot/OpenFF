@@ -37,6 +37,9 @@ class MusicMenu{
 
     OpenFF::Music*                                  _music;
     OpenFF::Textbox*                                _songtitle;
+    OpenFF::Textbox*                                _player;
+
+    // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;
     bool                                            _visualiser_loaded;
     Timeline                                        _timeline;

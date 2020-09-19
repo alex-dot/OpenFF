@@ -46,7 +46,8 @@ void Font::makeGlyphCache() {
           "ÉéÈèÊêËëĒēÍíÌìÎîÏïİ"     // ĔĕĞğĬĭ
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
           "ÛûŪūŸÿ";
-  std::string glyphs = base_glyphs+base_sign_glyphs;
+  std::string music_menu_glyphs = "«■▶»";
+  std::string glyphs = base_glyphs+base_sign_glyphs+music_menu_glyphs;
   _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
   _font->fillGlyphCache(*_glyph_cache, glyphs);
 
