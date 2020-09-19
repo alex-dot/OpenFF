@@ -18,15 +18,25 @@
 * ReadMe
 * Build Instructions
 
-## 0.0.7
+## 0.0.8
 * OpenFF-libs integration
 ** ff7 field level image loading
 
-## 0.0.6
+## 0.0.7
 * Music:
 ** multiple songs
 ** song skipping
 * Async, non-blocking file-loading
+
+## 0.0.6
+* Multiple Types of Textboxes
+** (Default) Textbox (w/ default text offset)
+** Freeform Textbox (multiple, individual, monospaced Chars (w/ Char-Matrix);
+                     definable offset (global and per-char))
+** Menu Textbox (w/ indented text offset)
+* Input-Callback on Textboxes
+** Controller-Type Input
+** Mouse-Type Input
 
 ## 0.0.5
 * UI
