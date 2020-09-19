@@ -82,7 +82,7 @@ class Configuration{
     std::map<std::string,OpenFF::ConfigurationSettings> _configuration_settings;
     std::map<std::string,OpenFF::InputEvents>           _input_event_settings;
     std::map<std::string,OpenFF::Keycode>               _keycodes;
-    std::map<std::string,std::string>                   _music_name_map;
+    std::map<std::string,std::string>                   _ff7_music_name_map;
     std::map<std::string,std::string>                   _music_location_map;
 };
 

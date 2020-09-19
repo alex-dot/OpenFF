@@ -137,15 +137,15 @@ bool Configuration::getMusicLocation(
 bool Configuration::getMusicName(
         std::string& name,
         std::string short_name) const {
-  auto it = _music_name_map.find(short_name);
-  if( it != _music_name_map.end() ) {
+  auto it = _ff7_music_name_map.find(short_name);
+  if( it != _ff7_music_name_map.end() ) {
     name = it->second;
     return true;
   }
   return false;
 }
 std::string Configuration::getRandomMusic() const {
-  return _music_name_map.find("ta")->first;
+  return _ff7_music_name_map.find("ta")->first;
 }
 
 // This is where valid section names for the ini-file are defined
@@ -222,9 +222,9 @@ void Configuration::buildMusicMap() {
   // build names
   inicpp::config music_ini = inicpp::parser::load(readFileData("../conf/music.ini"));
   for( auto &sect : music_ini ) {
-    if( sect.get_name() == "music" ) {
+    if( sect.get_name() == "ff7" ) {
     	for( auto &opt : sect ) {
-        _music_name_map[opt.get_name()] = opt.get<inicpp::string_ini_t>();
+        _ff7_music_name_map[opt.get_name()] = opt.get<inicpp::string_ini_t>();
       }
     }
 	}
