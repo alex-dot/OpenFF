@@ -31,6 +31,7 @@ class Text{
     void setRelativeBillboardRatio(Vector2);
     void setViewportSize(Vector2i);
     void setOffset(Vector2i);
+    void setBorderOffset(Vector2i);
     void enableInstantRendering();
     void disableInstantRendering();
 
@@ -51,6 +52,7 @@ class Text{
     Vector2                           _relative_billboard_ratio;
     Vector2i                          _viewport_size;
     Vector2i                          _offset;
+    Vector2                           _border_offset;
     bool                              _render_all_characters_instantly;
     float                             _render_speed;
     float                             _render_state;

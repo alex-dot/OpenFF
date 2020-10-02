@@ -15,6 +15,7 @@ Text::Text(std::string text_location, int text_size) :
         _relative_billboard_ratio(Vector2i(1)),
         _viewport_size(Vector2(1)),
         _offset(Vector2(0)),
+        _border_offset(Vector2(8,7)),
         _render_all_characters_instantly(false),
         _render_speed(text_render_state_step),
         _render_state(text_render_state_min) {
@@ -27,6 +28,7 @@ Text::Text(Font* font) :
         _relative_billboard_ratio(Vector2i(1)),
         _viewport_size(Vector2(1)),
         _offset(Vector2(1)),
+        _border_offset(Vector2(8,7)),
         _render_all_characters_instantly(false),
         _render_speed(text_render_state_step),
         _render_state(text_render_state_min) {
@@ -114,6 +116,10 @@ void Text::setOffset(Vector2i offset) {
   _offset = offset;
   recalculateMVP();
 }
+void Text::setBorderOffset(Vector2i offset) {
+  _border_offset = Vector2(offset);
+  recalculateMVP();
+}
 
 void Text::enableInstantRendering() {
   _render_all_characters_instantly = true;
@@ -151,7 +157,7 @@ void Text::recalculateMVP() {
   Vector2 base_offset = Vector2(Vector2(_offset)/Vector2(_viewport_size));
           base_offset = base_offset*cartesian_transform;
   Vector2 top_left_corner = Vector2(-1.0f,1.0f-_font->getFontSizeFactor());
-  Vector2 border_offset = Vector2(Vector2(8,7)/Vector2(_viewport_size));
+  Vector2 border_offset = Vector2(_border_offset/Vector2(_viewport_size));
           border_offset = border_offset*cartesian_transform;
   Vector2 shadow_offset_x = Vector2(Vector2(1,0)/Vector2(_viewport_size));
           shadow_offset_x = shadow_offset_x*cartesian_transform;
