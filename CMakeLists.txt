@@ -31,6 +31,9 @@ add_subdirectory(libraries/yaml-cpp EXCLUDE_FROM_ALL)
 
 # Add muFFT as a subproject
 add_subdirectory(libraries/muFFT EXCLUDE_FROM_ALL)
+if (NOT FFTW3f_FOUND)
+  message(FATAL_ERROR "Library not found: FFTW3f")
+endif()
 
 # Add Assimp with unwanted parts disabled, help Magnum find everything needed
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
