@@ -65,7 +65,7 @@ Music& Music::loadAudioData() {
   if(_config->getMusicLocation(_current_track_location, _current_track_name))
     _current_track_location = _config->getMusicLocation()+_current_track_location;
   else
-    std::exit(2);
+    FatlInputError<std::string>("Error: could not open file at location: "+std::string(_current_track_location));
 
   _current_track_future = std::async(
           std::launch::async,

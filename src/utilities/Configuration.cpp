@@ -230,6 +230,8 @@ void Configuration::buildMusicMap() {
 	}
   // build locations
   std::vector<std::string> dir = Corrade::Utility::Directory::list(this->getMusicLocation());
+  if( dir.size() == 0 )
+    FatlInputError<std::string>("Error: no audio files at location: "+std::string(this->getMusicLocation()));
   for(auto it = dir.begin(); it != dir.end(); ++it) {
     if(it->length() > 4 && it->substr(it->length()-4) == ".ogg")
       _music_location_map[it->substr(0,it->length()-4)] = *it;
