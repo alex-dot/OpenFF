@@ -14,7 +14,7 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
 
   makeGlyphCache();
   calculateMetadata();
-  _font_line_height = 10; // should be calculated?
+  _font_line_height = _font->lineHeight()/2;
 }
 
 void Font::makeGlyphCache() {
