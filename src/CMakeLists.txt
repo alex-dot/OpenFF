@@ -29,6 +29,7 @@ add_executable(OpenFF MainApplication.cpp
     ui/Font.cpp
     ui/MusicMenu.cpp
     ui/AbstractTextbox.cpp
+    ui/FreeformTextbox.cpp
     ui/Textbox.cpp
     utilities/Configuration.cpp
     utilities/InputHandler.cpp

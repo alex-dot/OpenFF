@@ -35,6 +35,7 @@
                      definable offset (global and per-char))
 ** Menu Textbox (w/ indented text offset)
 * Input-Callback on Textboxes
+** Keyboard-Type Input
 ** Controller-Type Input
 ** Mouse-Type Input
 

@@ -35,6 +35,13 @@ class Text{
     void enableInstantRendering();
     void disableInstantRendering();
 
+    // always divided by 2 because the viewport goes from (-1,1)
+    unsigned getFontMaximumGlyphWidth() { return _font->getMaximumGlyphWidth()/2; }
+    unsigned getFontGlyphWidth(std::string str) { return _font->getGlyphWidth(str)/2; }
+    unsigned getFontLineHeight() { return _font->getFontLineHeight(); }
+
+    std::string getText();
+
   private:
     void recalculateMVP();
     void tieText(std::string);

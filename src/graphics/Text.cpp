@@ -35,13 +35,6 @@ Text::Text(Font* font) :
   setText("");
 }
 
-int getCharLength(const std::string& s)
-{
-    std::ostringstream ret;
-    ret << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(s[0]);
-    return ret.str().length()/2;
-}
-
 void Text::draw() {
   if( !_render_all_characters_instantly && _render_state <= _text.length() ) {
     // First, check the length of the unicode character and skip to its end
@@ -188,6 +181,10 @@ void Text::recalculateMVP() {
   _shadow_mvp_xy = Matrix3(Vector3(size.x(),     0.0f, offset.x()),
                            Vector3(    0.0f, size.y(), offset.y()),
                            Vector3(    0.0f,     0.0f,      1.0f)).transposed();
+}
+
+std::string Text::getText() {
+  return _text;
 }
 
 }

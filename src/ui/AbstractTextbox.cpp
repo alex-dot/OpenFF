@@ -31,9 +31,6 @@ AbstractTextbox::AbstractTextbox(
   _relative_billboard_ratio = relative_billboard_ratio;
   _textbox_size = textbox_size;
   _offset = offset;
-
-  // since everything necessary is initialised, call prepare() directly
-  prepare();
 }
 
 AbstractTextbox& AbstractTextbox::prepare() {
@@ -90,6 +87,11 @@ AbstractTextbox& AbstractTextbox::setFont(Font* font) {
   _font = font;
   delete(_text);
   prepareText();
+
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::setFont(std::string location, int base_size) {
+  _font = _ressource_loader->getFont(location, base_size);
 
   return *this;
 }
@@ -180,12 +182,4 @@ AbstractTextbox& AbstractTextbox::disableInstantRendering() {
   _text->disableInstantRendering();
 
   return *this;
-}
-
-// virtual function
-void AbstractTextbox::prepareText() {
-  _text = new Text(_font);
-  _text->setRelativeBillboardRatio(_relative_billboard_ratio);
-  _text->setViewportSize(_viewport_size);
-  _text->setOffset(_offset);
 }

@@ -32,6 +32,7 @@ class AbstractTextbox{
 
     // customize font and text
     AbstractTextbox& setFont(Font*);
+    AbstractTextbox& setFont(std::string, int);
     AbstractTextbox& setTextShadowType(OpenFF::ShadowTypes);
     // customize window
     // set uniform color
@@ -55,7 +56,7 @@ class AbstractTextbox{
   protected:
     void prepareWindow();
 
-    virtual void prepareText();
+    virtual void prepareText() = 0;
 
     Configuration*    _config;
     RessourceLoader*  _ressource_loader;

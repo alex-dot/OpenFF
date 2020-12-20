@@ -102,7 +102,7 @@ Music& Music::playAudioData() {
   if( !_global_pause ) {
     _playables.play();
   }
-  _listener.setGain(0.2f);
+  _listener.setGain(0.0f);
 
   return *this;
 }

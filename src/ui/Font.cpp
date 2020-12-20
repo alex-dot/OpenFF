@@ -1,6 +1,9 @@
 #include "Font.h"
 #include "../misc/TerminalOutput.h"
 
+#include <uchar.h>
+#include <cstring>
+
 using namespace OpenFF;
 
 Font::Font(std::string font_location, int font_size, float font_size_factor)
@@ -10,6 +13,8 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
       Fatal{} << "Can't open font with StbTrueTypeFont";
 
   makeGlyphCache();
+  calculateMetadata();
+  _font_line_height = 10; // should be calculated?
 }
 
 void Font::makeGlyphCache() {
@@ -46,12 +51,40 @@ void Font::makeGlyphCache() {
           "ÉéÈèÊêËëĒēÍíÌìÎîÏïİ"     // ĔĕĞğĬĭ
           "ĪīıÑñÓóÒòÔôØøŌōŒœŞşÚúÙù" // ŎŏŬŭ
           "ÛûŪūŸÿ";
-  std::string music_menu_glyphs = "«■▶»";
-  std::string glyphs = base_glyphs+base_sign_glyphs+music_menu_glyphs;
-  _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(glyphs.length()*4)}};
-  _font->fillGlyphCache(*_glyph_cache, glyphs);
+  std::string music_menu_glyphs = "«■▶Ⅱ▯»";
+  _glyphs = base_glyphs+base_sign_glyphs+music_menu_glyphs;
+  _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(_glyphs.length()*4)}};
+  _font->fillGlyphCache(*_glyph_cache, _glyphs);
 
   _glyph_texture = &_glyph_cache->texture();
   _glyph_texture->setMinificationFilter(SamplerFilter::Nearest)
                  .setMagnificationFilter(SamplerFilter::Nearest);
+}
+
+void Font::calculateMetadata() {
+  _glyph_max_width = 0;
+  for( unsigned i = 0; i < _glyphs.length(); ++i ) {
+    int char_length = getCharLength(_glyphs.substr(i,1));
+    std::string str = _glyphs.substr(i,char_length);
+    unsigned int width = getGlyphWidth(str);
+    if( char_length > 1 ) i = i + char_length - 1;
+    if( width > _glyph_max_width )
+      _glyph_max_width = width;
+  }
+}
+
+unsigned Font::getGlyphWidth(std::string str) {
+  char32_t c32str;
+  mbstate_t mbs;
+  memset (&mbs, 0, sizeof (mbs));
+  mbrtoc32 (&c32str, str.c_str(), 6, &mbs);
+  return _font->glyphAdvance(_font->glyphId(c32str))[0];
+}
+
+int OpenFF::getCharLength(const std::string& s)
+{
+  if((s[0] & 0xf8) == 0xf0) return 4;
+  else if((s[0] & 0xf0) == 0xe0) return 3;
+  else if((s[0] & 0xe0) == 0xc0) return 2;
+  return 1;
 }

@@ -26,13 +26,15 @@ MusicMenu::MusicMenu(
   setTitle(_music->getCurrentTrackName());
 
   // set Player textbox
-  _player = new OpenFF::Textbox(
+  _player = new OpenFF::FreeformTextbox(
           config,
           ressource_loader,
           relative_billboard_ratio,
           Vector2i(68,24),
           Vector2i(250,10));
-  _player->write("« ■ ▶ II »");
+  _player->write("«■▶Ⅱ»");
+//  _player->rewriteCharacter(0,2,0,0,"f");
+  _player->moveCharacter(0,3,1,1);
   _player->show();
 }
 

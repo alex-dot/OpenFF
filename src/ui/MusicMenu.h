@@ -2,6 +2,7 @@
 
 #include "../audio/Music.h"
 #include "../ui/Textbox.h"
+#include "../ui/FreeformTextbox.h"
 #include "../utilities/Configuration.h"
 #include "../utilities/InputHandler.h"
 #include "../utilities/RessourceLoader.h"
@@ -37,7 +38,7 @@ class MusicMenu{
 
     OpenFF::Music*                                  _music;
     OpenFF::Textbox*                                _songtitle;
-    OpenFF::Textbox*                                _player;
+    OpenFF::FreeformTextbox*                        _player;
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;
