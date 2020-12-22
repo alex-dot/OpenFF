@@ -6,6 +6,7 @@
 #include <Magnum/Text/AbstractFont.h>
 #include <Magnum/Text/GlyphCache.h>
 #include <Magnum/Text/Renderer.h>
+#include <Magnum/Trade/ImageData.h>
 
 using namespace Magnum;
 
@@ -16,6 +17,11 @@ int getCharLength(const std::string&);
 class Font{
   public:
     explicit Font(std::string location, int size, float font_size_factor);
+    explicit Font(
+            std::string location,
+            int size,
+            Containers::Optional<Trade::ImageData2D>& glyph_texture,
+            float font_size_factor);
 
     Text::AbstractFont& getFont() { return *_font; }
     Text::GlyphCache& getGlyphCache() const { return *_glyph_cache; }
@@ -26,7 +32,7 @@ class Font{
     unsigned getFontLineHeight() const { return _font_line_height; }
 
   private:
-    void makeGlyphCache();
+    void makeGlyphCache(Containers::Optional<Trade::ImageData2D>*);
     void calculateMetadata();
 
     PluginManager::Manager<Text::AbstractFont>  _font_manager;

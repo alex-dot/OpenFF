@@ -2,4 +2,5 @@ build*/
 *.kdev4
 *~
 notes.txt
+ressources/glyph_texture.png
 ressources_priv/

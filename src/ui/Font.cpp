@@ -1,6 +1,9 @@
 #include "Font.h"
 #include "../misc/TerminalOutput.h"
 
+#include <Corrade/Containers/Optional.h>
+#include <Magnum/ImageView.h>
+
 #include <uchar.h>
 #include <cstring>
 
@@ -12,12 +15,25 @@ Font::Font(std::string font_location, int font_size, float font_size_factor)
   if(!_font || !_font->openFile(font_location, font_size))
       Fatal{} << "Can't open font with StbTrueTypeFont";
 
-  makeGlyphCache();
+  makeGlyphCache(nullptr);
   calculateMetadata();
-  _font_line_height = _font->lineHeight()/2;
 }
 
-void Font::makeGlyphCache() {
+Font::Font(
+        std::string font_location,
+        int font_size,
+        Containers::Optional<Trade::ImageData2D>& glyph_texture,
+        float font_size_factor)
+                : _font_size_factor(font_size_factor) {
+  _font = _font_manager.loadAndInstantiate("StbTrueTypeFont");
+  if(!_font || !_font->openFile(font_location, font_size))
+      Fatal{} << "Can't open font by cached image";
+
+  makeGlyphCache(&glyph_texture);
+  calculateMetadata();
+}
+
+void Font::makeGlyphCache(Containers::Optional<Trade::ImageData2D>* glyph_texture) {
   std::string base_glyphs =
           "abcdefghijklmnopqrstuvwxyz"
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -54,6 +70,10 @@ void Font::makeGlyphCache() {
   std::string music_menu_glyphs = "«■▶Ⅱ▯»";
   _glyphs = base_glyphs+base_sign_glyphs+music_menu_glyphs;
   _glyph_cache = new Text::GlyphCache{Vector2i{static_cast<int>(_glyphs.length()*4)}};
+  if( glyph_texture ) {
+    ImageView2D glyph_texture_data = **glyph_texture;
+    _glyph_cache->setImage(Vector2i(0), glyph_texture_data);
+  }
   _font->fillGlyphCache(*_glyph_cache, _glyphs);
 
   _glyph_texture = &_glyph_cache->texture();
@@ -71,6 +91,7 @@ void Font::calculateMetadata() {
     if( width > _glyph_max_width )
       _glyph_max_width = width;
   }
+  _font_line_height = _font->lineHeight()/2;
 }
 
 unsigned Font::getGlyphWidth(std::string str) {

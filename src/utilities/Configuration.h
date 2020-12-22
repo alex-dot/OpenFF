@@ -21,7 +21,9 @@ enum ConfigurationSettings {
   border_location,
   font_location,
   font_base_size,
-  CONFIGURATION_SETTINGS_MAX = font_base_size
+  font_cache_glyph_texture,
+  font_glyph_texture_location,
+  CONFIGURATION_SETTINGS_MAX = font_glyph_texture_location
 };
 typedef Iterator<ConfigurationSettings,
                  ConfigurationSettings::background_location,
@@ -45,6 +47,8 @@ class Configuration{
     void setBorderLocation(std::string);
     void setFontLocation(std::string);
     void setFontBaseSize(std::string);
+    void setFontCacheGlyphTexture(std::string);
+    void setFontGlyphTextureLocation(std::string);
 
     // generic getters
     std::string getBackgroundLocation() const;
@@ -52,6 +56,8 @@ class Configuration{
     std::string getBorderLocation() const;
     std::string getFontLocation() const;
     int getFontBaseSize() const;
+    bool getFontCacheGlyphTexture() const;
+    std::string getFontGlyphTextureLocation() const;
 
     // specialized getters
     bool getMusicLocation(std::string&, std::string) const;
@@ -75,6 +81,8 @@ class Configuration{
     std::string   _border_location;
     std::string   _font_location;
     std::string   _font_base_size;
+    std::string   _font_cache_glyph_texture;
+    std::string   _font_glyph_texture_location;
 
     typedef std::map<OpenFF::ConfigurationSettings,
                      std::function<void(Configuration&,std::string)>> csc_map;

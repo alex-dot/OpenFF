@@ -48,6 +48,10 @@ Configuration::Configuration(InputHandler* input_handler) :
           = &Configuration::setFontLocation;
   _configuration_setting_callbacks[ConfigurationSettings::font_base_size]
           = &Configuration::setFontBaseSize;
+  _configuration_setting_callbacks[ConfigurationSettings::font_cache_glyph_texture]
+          = &Configuration::setFontCacheGlyphTexture;
+  _configuration_setting_callbacks[ConfigurationSettings::font_glyph_texture_location]
+          = &Configuration::setFontGlyphTextureLocation;
   validateEnumCallbackMaps<csc_map>
           (&_configuration_setting_callbacks,
           "configuration settings callback",
@@ -59,6 +63,8 @@ Configuration::Configuration(InputHandler* input_handler) :
   _configuration_settings["border_location"] = ConfigurationSettings::border_location;
   _configuration_settings["font_location"] = ConfigurationSettings::font_location;
   _configuration_settings["font_base_size"] = ConfigurationSettings::font_base_size;
+  _configuration_settings["font_cache_glyph_texture"] = ConfigurationSettings::font_cache_glyph_texture;
+  _configuration_settings["font_glyph_texture_location"] = ConfigurationSettings::font_glyph_texture_location;
   validateStringEnumMaps<std::map<std::string,OpenFF::ConfigurationSettings>>
           (&_configuration_settings,
           "configuration settings",
@@ -105,6 +111,12 @@ void Configuration::setFontLocation(std::string new_loc) {
 void Configuration::setFontBaseSize(std::string new_size) {
   _font_base_size = new_size;
 }
+void Configuration::setFontCacheGlyphTexture(std::string do_cache) {
+  _font_cache_glyph_texture = do_cache;
+}
+void Configuration::setFontGlyphTextureLocation(std::string new_loc) {
+  _font_glyph_texture_location = new_loc;
+}
 
 // generic getters
 std::string Configuration::getBackgroundLocation() const {
@@ -121,6 +133,17 @@ std::string Configuration::getFontLocation() const {
 }
 int Configuration::getFontBaseSize() const {
   return std::stoi(_font_base_size);
+}
+bool Configuration::getFontCacheGlyphTexture() const {
+  if( _font_cache_glyph_texture == "True"
+   || _font_cache_glyph_texture == "true"
+   || _font_cache_glyph_texture == "1" ) {
+    return true;
+  }
+  return false;
+}
+std::string Configuration::getFontGlyphTextureLocation() const {
+  return _font_glyph_texture_location;
 }
 
 // specialized getters

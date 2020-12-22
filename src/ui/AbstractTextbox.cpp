@@ -17,9 +17,16 @@ AbstractTextbox::AbstractTextbox(Configuration* config, RessourceLoader* ressour
   _config = config;
   _ressource_loader = ressource_loader;
 
-  _font = _ressource_loader->getFont(
-            _config->getFontLocation(),
-            _config->getFontBaseSize());
+  if( _config->getFontCacheGlyphTexture() ) {
+    _font = _ressource_loader->getFont(
+              _config->getFontLocation(),
+              _config->getFontBaseSize(),
+              _config->getFontGlyphTextureLocation());
+  } else {
+    _font = _ressource_loader->getFont(
+              _config->getFontLocation(),
+              _config->getFontBaseSize());
+  }
 }
 AbstractTextbox::AbstractTextbox(
         Configuration* config,

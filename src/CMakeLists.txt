@@ -11,7 +11,9 @@ find_package(Magnum REQUIRED
     AnySceneImporter
     AnyImageImporter
     WavAudioImporter)
-find_package(MagnumPlugins REQUIRED AssimpImporter)
+find_package(MagnumPlugins REQUIRED
+    AssimpImporter
+    PngImageConverter)
 find_package(Threads REQUIRED)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
@@ -43,6 +45,7 @@ add_dependencies(OpenFF
     MagnumPlugins::AssimpImporter
     MagnumPlugins::TinyGltfImporter
     MagnumPlugins::PngImporter
+    MagnumPlugins::PngImageConverter
     MagnumPlugins::DrFlacAudioImporter
     MagnumPlugins::DrMp3AudioImporter
     MagnumPlugins::StbVorbisAudioImporter
