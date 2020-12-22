@@ -27,19 +27,18 @@ class FreeformTextbox: public AbstractTextbox{
     FreeformTextbox& rewriteCharacter(
             unsigned int line_index,
             unsigned int character_index,
-            unsigned int offset_mod_x,
-            unsigned int offset_mod_y,
+            Vector2i offset_mod,
             std::string character);
-
     FreeformTextbox& moveCharacter(
             unsigned int line_index,
             unsigned int character_index,
-            unsigned int offset_mod_x,
-            unsigned int offset_mod_y);
+            Vector2i offset_mod);
+
+    FreeformTextbox& moveText(Vector2i);
 
     FreeformTextbox& draw();
 
-    FreeformTextbox& setBorderOffset(unsigned int);
+    FreeformTextbox& setBorderOffset(Vector2i);
 
   protected:
     virtual void prepareText();
@@ -57,7 +56,7 @@ class FreeformTextbox: public AbstractTextbox{
             unsigned int character_index);
 
     std::vector<std::vector<FreeformTextboxCharacter>> _textmap;
-    unsigned int                                       _border_offset;
+    Vector2i                                           _border_offset;
     unsigned int                                       _max_char_width;
     unsigned int                                       _line_height;
 };

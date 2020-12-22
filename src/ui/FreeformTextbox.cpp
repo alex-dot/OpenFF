@@ -19,7 +19,7 @@ FreeformTextbox::FreeformTextbox(
 }
 
 void FreeformTextbox::prepareText() {
-  setBorderOffset(7);
+  setBorderOffset(Vector2i(7));
   _line_height = _font->getFontLineHeight();
   // always divided by 2 because the viewport goes from (-1,1)
   _max_char_width = _font->getMaximumGlyphWidth()/2;
@@ -76,8 +76,7 @@ FreeformTextbox& FreeformTextbox::write(std::string text) {
 FreeformTextbox& FreeformTextbox::rewriteCharacter(
         unsigned int line_index,
         unsigned int character_index,
-        unsigned int offset_mod_x,
-        unsigned int offset_mod_y,
+        Vector2i offset_mod,
         std::string character) {
   if( line_index < _textmap.size() && character_index < _textmap[line_index].size() ) {
     _textmap[line_index][character_index].offset = this->calculateCharacterOffset(
@@ -85,7 +84,7 @@ FreeformTextbox& FreeformTextbox::rewriteCharacter(
             character,
             line_index,
             character_index);
-    _textmap[line_index][character_index].offset_mod = Vector2i(offset_mod_x, offset_mod_y);
+    _textmap[line_index][character_index].offset_mod = offset_mod;
     _textmap[line_index][character_index].text_obj->setBorderOffset(
             _textmap[line_index][character_index].offset+_textmap[line_index][character_index].offset_mod);
     _textmap[line_index][character_index].text_obj->setText(character);
@@ -99,19 +98,22 @@ FreeformTextbox& FreeformTextbox::rewriteCharacter(
 FreeformTextbox& FreeformTextbox::moveCharacter(
         unsigned int line_index,
         unsigned int character_index,
-        unsigned int offset_mod_x,
-        unsigned int offset_mod_y) {
+        Vector2i offset_mod) {
   if( line_index < _textmap.size() && character_index < _textmap[line_index].size() ) {
     std::string character = _textmap[line_index][character_index].text_obj->getText();
     this->rewriteCharacter(
             line_index,
             character_index,
-            offset_mod_x,
-            offset_mod_y,
+            offset_mod,
             character);
   } else {
     Err<std::string>("Trying to move non-existing character.");
   }
+  return *this;
+}
+
+FreeformTextbox& FreeformTextbox::moveText(Vector2i offset) {
+  _border_offset = _border_offset + offset;
   return *this;
 }
 
@@ -128,7 +130,7 @@ FreeformTextbox& FreeformTextbox::draw() {
   return *this;
 }
 
-FreeformTextbox& FreeformTextbox::setBorderOffset(unsigned int offset) {
+FreeformTextbox& FreeformTextbox::setBorderOffset(Vector2i offset) {
   _border_offset = offset;
 
   return *this;
@@ -145,8 +147,8 @@ Vector2i FreeformTextbox::calculateCharacterOffset(
         unsigned int line_index,
         unsigned int character_index,
         unsigned int width) {
-  unsigned offset_x = _border_offset + _max_char_width * character_index + width;
-  unsigned offset_y = _border_offset + _line_height * line_index;
+  unsigned offset_x = _border_offset.x() + _max_char_width * character_index + width;
+  unsigned offset_y = _border_offset.y() + _line_height * line_index;
   return Vector2i(offset_x, offset_y);
 }
 

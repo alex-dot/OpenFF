@@ -33,8 +33,8 @@ MusicMenu::MusicMenu(
           Vector2i(68,24),
           Vector2i(250,10));
   _player->write("«■▶Ⅱ»");
-//  _player->rewriteCharacter(0,2,0,0,"f");
-  _player->moveCharacter(0,3,1,1);
+//  _player->rewriteCharacter(0,2,Vector2i(0,0),"f");
+  _player->moveCharacter(0,3,Vector2i(1,1));
   _player->show();
 }
 
