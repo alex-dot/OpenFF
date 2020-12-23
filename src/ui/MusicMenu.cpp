@@ -44,7 +44,7 @@ MusicMenu::MusicMenu(
           relative_billboard_ratio,
           Vector2i(14),
           Vector2i(254,15));
-  _focus->write(" ")
+  _focus->write("")
          .setBorderImageLocation(config->getMenuFocusBorderLocation())
          .setBodyTransparency(0.0)
          .show();
