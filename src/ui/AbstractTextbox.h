@@ -58,6 +58,7 @@ class AbstractTextbox{
     AbstractTextbox& move(Vector2i);
 
     virtual AbstractTextbox& write(std::string) = 0;
+    virtual AbstractTextbox& write() = 0;
 
   protected:
     void prepareWindow();

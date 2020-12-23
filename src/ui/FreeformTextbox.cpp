@@ -26,6 +26,9 @@ void FreeformTextbox::prepareText() {
 }
 
 FreeformTextbox& FreeformTextbox::write(std::string text) {
+  if( text == "" )
+    this->write(" ");
+
   std::string linebreak = "\n";
   // hacky way to make the loop work ('cause the last line is always ignored)
   text = text + linebreak;
@@ -70,6 +73,10 @@ FreeformTextbox& FreeformTextbox::write(std::string text) {
     _textmap.push_back(newline);
   }
 
+  return *this;
+}
+FreeformTextbox& FreeformTextbox::write() {
+  this->write(" ");
   return *this;
 }
 

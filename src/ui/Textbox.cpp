@@ -26,7 +26,14 @@ void Textbox::prepareText() {
 }
 
 Textbox& Textbox::write(std::string text) {
-  _text->setText(text);
+  if( text != "" )
+    _text->setText(text);
+  else
+    _text->setText(" ");
 
+  return *this;
+}
+Textbox& Textbox::write() {
+  this->write(" ");
   return *this;
 }

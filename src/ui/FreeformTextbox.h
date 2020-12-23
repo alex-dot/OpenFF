@@ -23,6 +23,7 @@ class FreeformTextbox: public AbstractTextbox{
             Vector2i offset);
 
     FreeformTextbox& write(std::string);
+    FreeformTextbox& write();
 
     FreeformTextbox& rewriteCharacter(
             unsigned int line_index,

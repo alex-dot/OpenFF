@@ -15,6 +15,7 @@ class Textbox: public AbstractTextbox{
             Vector2i offset);
 
     Textbox& write(std::string);
+    Textbox& write();
 
   protected:
     void prepareText();
