@@ -19,6 +19,7 @@ enum ConfigurationSettings {
   background_location,
   music_location,
   border_location,
+  menu_focus_border_location,
   font_location,
   font_base_size,
   font_cache_glyph_texture,
@@ -45,6 +46,7 @@ class Configuration{
     void setBackgroundLocation(std::string);
     void setMusicLocation(std::string);
     void setBorderLocation(std::string);
+    void setMenuFocusBorderLocation(std::string);
     void setFontLocation(std::string);
     void setFontBaseSize(std::string);
     void setFontCacheGlyphTexture(std::string);
@@ -54,6 +56,7 @@ class Configuration{
     std::string getBackgroundLocation() const;
     std::string getMusicLocation() const;
     std::string getBorderLocation() const;
+    std::string getMenuFocusBorderLocation() const;
     std::string getFontLocation() const;
     int getFontBaseSize() const;
     bool getFontCacheGlyphTexture() const;
@@ -79,6 +82,7 @@ class Configuration{
     std::string   _background_location;
     std::string   _music_location;
     std::string   _border_location;
+    std::string   _menu_focus_border_location;
     std::string   _font_location;
     std::string   _font_base_size;
     std::string   _font_cache_glyph_texture;

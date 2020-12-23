@@ -39,10 +39,13 @@ class MusicMenu{
     OpenFF::Music*                                  _music;
     OpenFF::Textbox*                                _songtitle;
     OpenFF::FreeformTextbox*                        _player;
+    OpenFF::Textbox*                                _focus;
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;
     bool                                            _visualiser_loaded;
+    bool                                            _visualiser_preparing;
+    bool                                            _focus_big;
     Timeline                                        _timeline;
     float                                           _current_time;
     unsigned int                                    _visualiser_bar_count;

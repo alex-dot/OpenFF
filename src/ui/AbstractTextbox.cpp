@@ -7,6 +7,7 @@ AbstractTextbox::AbstractTextbox() :
         _text(nullptr),
         _window(nullptr),
         _font(nullptr),
+        _border_image_location(""),
         _relative_billboard_ratio(Vector2(1)),
         _viewport_size(default_viewport),
         _textbox_size(Vector2i(1)),
@@ -103,6 +104,14 @@ AbstractTextbox& AbstractTextbox::setFont(std::string location, int base_size) {
   return *this;
 }
 
+AbstractTextbox& AbstractTextbox::setBorderImageLocation(std::string location) {
+  Containers::Optional<Trade::ImageData2D> image;
+  _ressource_loader->getImage(location, image);
+  _window->setBorder(image);
+
+  return *this;
+}
+
 AbstractTextbox& AbstractTextbox::setTextShadowType(OpenFF::ShadowTypes type) {
   _text->setShadowType(type);
 
@@ -150,6 +159,18 @@ AbstractTextbox& AbstractTextbox::setBorderTransparency(float alpha) {
   return *this;
 }
 
+AbstractTextbox& AbstractTextbox::enableInstantRendering() {
+  _window->enableInstantRendering();
+  _text->enableInstantRendering();
+
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::disableInstantRendering() {
+  _window->disableInstantRendering();
+  _text->disableInstantRendering();
+
+  return *this;
+}
 AbstractTextbox& AbstractTextbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
   _relative_billboard_ratio = relative_billboard_ratio;
   _window->setRelativeBillboardRatio(_relative_billboard_ratio);
@@ -164,12 +185,24 @@ AbstractTextbox& AbstractTextbox::setViewportSize(Vector2i viewport_size) {
 
   return *this;
 }
+
 AbstractTextbox& AbstractTextbox::setTextboxSize(Vector2i textbox_size) {
   _textbox_size = textbox_size;
   _window->setWindowSize(_textbox_size);
 
   return *this;
 }
+AbstractTextbox& AbstractTextbox::expand(int pixel_factor) {
+  this->setTextboxSize(_textbox_size + Vector2i(pixel_factor));
+
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::shrink(int pixel_factor) {
+  this->expand(-1*pixel_factor);
+
+  return *this;
+}
+
 AbstractTextbox& AbstractTextbox::setOffset(Vector2i offset) {
   _offset = offset;
   _window->setOffset(_offset);
@@ -177,16 +210,8 @@ AbstractTextbox& AbstractTextbox::setOffset(Vector2i offset) {
 
   return *this;
 }
-
-AbstractTextbox& AbstractTextbox::enableInstantRendering() {
-  _window->enableInstantRendering();
-  _text->enableInstantRendering();
-
-  return *this;
-}
-AbstractTextbox& AbstractTextbox::disableInstantRendering() {
-  _window->disableInstantRendering();
-  _text->disableInstantRendering();
+AbstractTextbox& AbstractTextbox::move(Vector2i pixels) {
+  this->setOffset(_offset + pixels);
 
   return *this;
 }

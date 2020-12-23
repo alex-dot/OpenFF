@@ -10,6 +10,7 @@ uniform lowp vec3 windowBottomRightColor = vec3(0.0,0.0,1.0);
 uniform lowp float windowBorderTransparency = float(1.0);
 uniform lowp float windowBodyTransparency = float(1.0);
 
+uniform int windowBorderImageLength = 3;
 uniform ivec2 windowSize;
 uniform lowp vec2 relativeBillboardRatio;
 
@@ -24,9 +25,10 @@ void main() {
   vec2 pixelRatio = 1.0/vec2(windowSize);
 
   // Not in border-area, draw prepared color
-  if( coords.x >= 3.0*pixelRatio.x && coords.y >= 3.0*pixelRatio.y
-   && coords.x <= (windowSize.x-3.0)*pixelRatio.x
-   && coords.y <= (windowSize.y-3.0)*pixelRatio.y ) {
+  if( coords.x >= windowBorderImageLength*pixelRatio.x
+   && coords.y >= windowBorderImageLength*pixelRatio.y
+   && coords.x <= (windowSize.x-windowBorderImageLength)*pixelRatio.x
+   && coords.y <= (windowSize.y-windowBorderImageLength)*pixelRatio.y ) {
 
     if(      windowColorMode == 0 ) fragmentColor.rgb = windowUniColor;
     else if( windowColorMode == 1 ) {

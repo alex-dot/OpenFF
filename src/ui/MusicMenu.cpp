@@ -9,6 +9,8 @@ MusicMenu::MusicMenu(
         InputHandler* input_handler,
         Vector2 relative_billboard_ratio) :
                 _visualiser_loaded(false),
+                _visualiser_preparing(false),
+                _focus_big(true),
                 _current_time(0.0f),
                 _magnitude_bin_matrix_left_fully_loaded(false),
                 _magnitude_bin_matrix_right_fully_loaded(false) {
@@ -36,6 +38,18 @@ MusicMenu::MusicMenu(
 //  _player->rewriteCharacter(0,2,Vector2i(0,0),"f");
   _player->moveCharacter(0,3,Vector2i(1,1));
   _player->show();
+  _focus = new OpenFF::Textbox(
+          config,
+          ressource_loader,
+          relative_billboard_ratio,
+          Vector2i(14),
+          Vector2i(254,15));
+  _focus->write(" ")
+         .setBorderImageLocation(config->getMenuFocusBorderLocation())
+         .setBodyTransparency(0.0)
+         .show();
+
+  _timeline.start();
 }
 
 void MusicMenu::setTitle(std::string title) {
@@ -66,14 +80,29 @@ void MusicMenu::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
 }
 
 void MusicMenu::draw() {
+  _current_time = _current_time + _timeline.previousFrameDuration();
+
   if( !_music->isPaused() ) {
-    if( !_visualiser_loaded )
-      prepareVisualiser();
-    drawVisualiser();
+    if( !_visualiser_loaded ) {
+      if( !_visualiser_preparing )
+        prepareVisualiser();
+    } else {
+      drawVisualiser();
+    }
   }
 
   _songtitle->draw();
   _player->draw();
+
+  if( _focus_big && _current_time-static_cast<int>(_current_time) >= 0.8f ) {
+    _focus->shrink(2).move(Vector2i(1));
+    _focus_big = false;
+  }
+  if( !_focus_big && _current_time-static_cast<int>(_current_time) < 0.8f ) {
+    _focus->expand(2).move(Vector2i(-1));
+    _focus_big = true;
+  }
+  _focus->draw();
 
   _music->draw();
 
@@ -81,7 +110,6 @@ void MusicMenu::draw() {
 }
 
 MusicMenu& MusicMenu::drawVisualiser() {
-  _current_time = _current_time + _timeline.previousFrameDuration();
   unsigned int frame = static_cast<unsigned int>(
           std::floor(_current_time/_frame_window_size));
   if( frame == _maximum_frame_count ) {
@@ -138,7 +166,8 @@ MusicMenu& MusicMenu::drawVisualiser() {
 }
 
 MusicMenu& MusicMenu::prepareVisualiser() {
-  _timeline.start();
+  _visualiser_preparing = true;
+  _current_time = 0.0f;
 
   std::tuple<unsigned int,unsigned int,float>
           visualiser_info = _music->getVisualiserInformation();

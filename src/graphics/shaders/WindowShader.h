@@ -90,6 +90,11 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    WindowShader& setBorderImageLength(unsigned int length) {
+      setUniform(_border_image_length, length);
+      return *this;
+    }
+
     WindowShader& setRelativeBillboardRatio(const Vector2& ratio) {
       setUniform(_relative_billboard_ratio_uniform, ratio);
       return *this;
@@ -111,6 +116,7 @@ class WindowShader: public GL::AbstractShaderProgram {
     int _viewport_uniform;
     int _window_size_uniform;
     int _offset_uniform;
+    int _border_image_length;
     int _relative_billboard_ratio_uniform;
 };
 

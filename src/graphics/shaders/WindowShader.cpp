@@ -38,6 +38,7 @@ WindowShader::WindowShader() {
   _viewport_uniform = uniformLocation("viewportSize");
   _window_size_uniform = uniformLocation("windowSize");
   _offset_uniform = uniformLocation("windowOffset");
+  _border_image_length = uniformLocation("windowBorderImageLength");
   _relative_billboard_ratio_uniform = uniformLocation("relativeBillboardRatio");
   setUniform(_relative_billboard_ratio_uniform, Vector2(1.0f));
 }

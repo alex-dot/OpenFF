@@ -44,6 +44,8 @@ Configuration::Configuration(InputHandler* input_handler) :
           = &Configuration::setMusicLocation;
   _configuration_setting_callbacks[ConfigurationSettings::border_location]
           = &Configuration::setBorderLocation;
+  _configuration_setting_callbacks[ConfigurationSettings::menu_focus_border_location]
+          = &Configuration::setMenuFocusBorderLocation;
   _configuration_setting_callbacks[ConfigurationSettings::font_location]
           = &Configuration::setFontLocation;
   _configuration_setting_callbacks[ConfigurationSettings::font_base_size]
@@ -61,6 +63,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   _configuration_settings["background_location"] = ConfigurationSettings::background_location;
   _configuration_settings["music_location"] = ConfigurationSettings::music_location;
   _configuration_settings["border_location"] = ConfigurationSettings::border_location;
+  _configuration_settings["menu_focus_border_location"] = ConfigurationSettings::menu_focus_border_location;
   _configuration_settings["font_location"] = ConfigurationSettings::font_location;
   _configuration_settings["font_base_size"] = ConfigurationSettings::font_base_size;
   _configuration_settings["font_cache_glyph_texture"] = ConfigurationSettings::font_cache_glyph_texture;
@@ -105,6 +108,9 @@ void Configuration::setMusicLocation(std::string new_loc) {
 void Configuration::setBorderLocation(std::string new_loc) {
   _border_location = new_loc;
 }
+void Configuration::setMenuFocusBorderLocation(std::string new_loc) {
+  _menu_focus_border_location = new_loc;
+}
 void Configuration::setFontLocation(std::string new_loc) {
   _font_location = new_loc;
 }
@@ -127,6 +133,9 @@ std::string Configuration::getMusicLocation() const {
 }
 std::string Configuration::getBorderLocation() const {
   return _border_location;
+}
+std::string Configuration::getMenuFocusBorderLocation() const {
+  return _menu_focus_border_location;
 }
 std::string Configuration::getFontLocation() const {
   return _font_location;

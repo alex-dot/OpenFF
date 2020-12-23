@@ -33,6 +33,7 @@ class AbstractTextbox{
     // customize font and text
     AbstractTextbox& setFont(Font*);
     AbstractTextbox& setFont(std::string, int);
+    AbstractTextbox& setBorderImageLocation(std::string);
     AbstractTextbox& setTextShadowType(OpenFF::ShadowTypes);
     // customize window
     // set uniform color
@@ -44,12 +45,17 @@ class AbstractTextbox{
     AbstractTextbox& setBodyTransparency(float);
     AbstractTextbox& setBorderTransparency(float);
     // set generic textbox variables
-    AbstractTextbox& setRelativeBillboardRatio(Vector2);
-    AbstractTextbox& setViewportSize(Vector2i);
-    AbstractTextbox& setTextboxSize(Vector2i);
-    AbstractTextbox& setOffset(Vector2i);
     AbstractTextbox& enableInstantRendering();
     AbstractTextbox& disableInstantRendering();
+    AbstractTextbox& setRelativeBillboardRatio(Vector2);
+    AbstractTextbox& setViewportSize(Vector2i);
+
+    AbstractTextbox& setTextboxSize(Vector2i);
+    AbstractTextbox& expand(int);
+    AbstractTextbox& shrink(int);
+
+    AbstractTextbox& setOffset(Vector2i);
+    AbstractTextbox& move(Vector2i);
 
     virtual AbstractTextbox& write(std::string) = 0;
 
@@ -63,6 +69,7 @@ class AbstractTextbox{
     Text*             _text;
     Window*           _window;
     Font*             _font;
+    std::string       _border_image_location;
     Vector2           _relative_billboard_ratio;
     Vector2i          _viewport_size;
     Vector2i          _textbox_size;
