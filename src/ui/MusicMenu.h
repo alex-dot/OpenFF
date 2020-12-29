@@ -2,6 +2,7 @@
 
 #include "../audio/Music.h"
 #include "../ui/Textbox.h"
+#include "../ui/MenuBox.h"
 #include "../ui/FreeformTextbox.h"
 #include "../utilities/Configuration.h"
 #include "../utilities/InputHandler.h"
@@ -33,13 +34,19 @@ class MusicMenu{
     MusicMenu& decreaseGain();
     MusicMenu& pauseResume();
 
+    MusicMenu& menuUp();
+    MusicMenu& menuDown();
+    MusicMenu& menuLeft();
+    MusicMenu& menuRight();
+    MusicMenu& menuAccept();
+    MusicMenu& menuCancel();
+
     MusicMenu& drawVisualiser();
     MusicMenu& prepareVisualiser();
 
     OpenFF::Music*                                  _music;
     OpenFF::Textbox*                                _songtitle;
-    OpenFF::FreeformTextbox*                        _player;
-    OpenFF::Textbox*                                _focus;
+    OpenFF::MenuBox*                                _player;
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;

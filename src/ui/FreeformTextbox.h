@@ -39,7 +39,7 @@ class FreeformTextbox: public AbstractTextbox{
 
     FreeformTextbox& draw();
 
-    FreeformTextbox& setBorderOffset(Vector2i);
+    unsigned int getMaximumCharacterWidth() const { return _max_char_width; }
 
   protected:
     virtual void prepareText();
@@ -57,7 +57,6 @@ class FreeformTextbox: public AbstractTextbox{
             unsigned int character_index);
 
     std::vector<std::vector<FreeformTextboxCharacter>> _textmap;
-    Vector2i                                           _border_offset;
     unsigned int                                       _max_char_width;
     unsigned int                                       _line_height;
 };

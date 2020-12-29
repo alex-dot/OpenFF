@@ -23,7 +23,13 @@ enum InputEvents {
   music_increase_gain,
   music_decrease_gain,
   music_pause,
-  INPUT_EVENTS_MAX = music_pause
+  menu_up,
+  menu_down,
+  menu_left,
+  menu_right,
+  menu_accept,
+  menu_cancel,
+  INPUT_EVENTS_MAX = menu_cancel
 };
 typedef Iterator<InputEvents, InputEvents::ie_undefined, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {

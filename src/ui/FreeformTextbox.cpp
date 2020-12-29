@@ -137,12 +137,6 @@ FreeformTextbox& FreeformTextbox::draw() {
   return *this;
 }
 
-FreeformTextbox& FreeformTextbox::setBorderOffset(Vector2i offset) {
-  _border_offset = offset;
-
-  return *this;
-}
-
 unsigned int FreeformTextbox::calculateCharacterWidth(
         Text* text_obj,
         std::string character) {

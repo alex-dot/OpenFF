@@ -215,3 +215,25 @@ AbstractTextbox& AbstractTextbox::move(Vector2i pixels) {
 
   return *this;
 }
+AbstractTextbox& AbstractTextbox::setBorderOffset(Vector2i offset) {
+  _border_offset = offset;
+
+  return *this;
+}
+
+unsigned int AbstractTextbox::getMaximumCharacterWidth() {
+  DbgWarn{} << "Maximum character width not supported by Textbox, use FreeformTextbox instead";
+  return 0;
+}
+AbstractTextbox& AbstractTextbox::rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string) {
+  DbgWarn{} << "Rewriting character not supported by Textbox, use FreeformTextbox instead";
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::moveCharacter(unsigned int, unsigned int, Vector2i) {
+  DbgWarn{} << "Moving character not supported by Textbox, use FreeformTextbox instead";
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::moveText(Vector2i) {
+  DbgWarn{} << "Moving text not supported by Textbox, use FreeformTextbox instead";
+  return *this;
+}

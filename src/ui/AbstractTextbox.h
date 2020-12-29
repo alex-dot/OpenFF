@@ -24,8 +24,8 @@ class AbstractTextbox{
 
     AbstractTextbox& prepare();
 
-    AbstractTextbox& draw();
-    AbstractTextbox& draw(std::string);
+    virtual AbstractTextbox& draw();
+    virtual AbstractTextbox& draw(std::string);
 
     AbstractTextbox& show();
     AbstractTextbox& hide();
@@ -33,9 +33,10 @@ class AbstractTextbox{
     // customize font and text
     AbstractTextbox& setFont(Font*);
     AbstractTextbox& setFont(std::string, int);
-    AbstractTextbox& setBorderImageLocation(std::string);
     AbstractTextbox& setTextShadowType(OpenFF::ShadowTypes);
     // customize window
+    AbstractTextbox& setBorderImageLocation(std::string);
+    virtual unsigned int getMaximumCharacterWidth();
     // set uniform color
     AbstractTextbox& setColor(Color3);
     AbstractTextbox& setColor(Color4);
@@ -54,15 +55,19 @@ class AbstractTextbox{
     AbstractTextbox& expand(int);
     AbstractTextbox& shrink(int);
 
+    AbstractTextbox& setBorderOffset(Vector2i);
     AbstractTextbox& setOffset(Vector2i);
     AbstractTextbox& move(Vector2i);
+
+    virtual AbstractTextbox& rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string);
+    virtual AbstractTextbox& moveCharacter(unsigned int, unsigned int, Vector2i);
+    virtual AbstractTextbox& moveText(Vector2i);
 
     virtual AbstractTextbox& write(std::string) = 0;
     virtual AbstractTextbox& write() = 0;
 
   protected:
     void prepareWindow();
-
     virtual void prepareText() = 0;
 
     Configuration*    _config;
@@ -75,6 +80,7 @@ class AbstractTextbox{
     Vector2i          _viewport_size;
     Vector2i          _textbox_size;
     Vector2i          _offset;
+    Vector2i          _border_offset;
     bool              _hidden;
 };
 

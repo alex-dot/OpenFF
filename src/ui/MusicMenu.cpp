@@ -28,26 +28,16 @@ MusicMenu::MusicMenu(
   setTitle(_music->getCurrentTrackName());
 
   // set Player textbox
-  _player = new OpenFF::FreeformTextbox(
+  _player = new OpenFF::MenuBox(
           config,
           ressource_loader,
           relative_billboard_ratio,
           Vector2i(68,24),
           Vector2i(250,10));
   _player->write("«■▶Ⅱ»");
-//  _player->rewriteCharacter(0,2,Vector2i(0,0),"f");
+  _player->moveCharacter(0,0,Vector2i(1,0));
   _player->moveCharacter(0,3,Vector2i(1,1));
-  _player->show();
-  _focus = new OpenFF::Textbox(
-          config,
-          ressource_loader,
-          relative_billboard_ratio,
-          Vector2i(14),
-          Vector2i(254,15));
-  _focus->write()
-         .setBorderImageLocation(config->getMenuFocusBorderLocation())
-         .setBodyTransparency(0.0)
-         .show();
+  _player->moveCharacter(0,4,Vector2i(1,0));
 
   _timeline.start();
 }
@@ -75,8 +65,30 @@ MusicMenu& MusicMenu::pauseResume() {
   return *this;
 }
 
+MusicMenu& MusicMenu::menuUp() {
+  return *this;
+}
+MusicMenu& MusicMenu::menuDown() {
+  return *this;
+}
+MusicMenu& MusicMenu::menuLeft() {
+//  _focus->move(-1*Vector2i(_player->getMaximumCharacterWidth(),0));
+  return *this;
+}
+MusicMenu& MusicMenu::menuRight() {
+//  _focus->move(Vector2i(_player->getMaximumCharacterWidth(),0));
+  return *this;
+}
+MusicMenu& MusicMenu::menuAccept() {
+  return *this;
+}
+MusicMenu& MusicMenu::menuCancel() {
+  return *this;
+}
+
 void MusicMenu::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
   _songtitle->setRelativeBillboardRatio(relative_billboard_ratio);
+  _player->setRelativeBillboardRatio(relative_billboard_ratio);
 }
 
 void MusicMenu::draw() {
@@ -92,17 +104,7 @@ void MusicMenu::draw() {
   }
 
   _songtitle->draw();
-  _player->draw();
-
-  if( _focus_big && _current_time-static_cast<int>(_current_time) >= 0.8f ) {
-    _focus->shrink(2).move(Vector2i(1));
-    _focus_big = false;
-  }
-  if( !_focus_big && _current_time-static_cast<int>(_current_time) < 0.8f ) {
-    _focus->expand(2).move(Vector2i(-1));
-    _focus_big = true;
-  }
-  _focus->draw();
+  _player->draw(_current_time);
 
   _music->draw();
 
@@ -202,7 +204,13 @@ void MusicMenu::bindCallbacks(InputHandler* input) {
       {
           std::make_pair(&MusicMenu::increaseGain,InputEvents::music_increase_gain),
           std::make_pair(&MusicMenu::decreaseGain,InputEvents::music_decrease_gain),
-          std::make_pair(&MusicMenu::pauseResume,InputEvents::music_pause)
+          std::make_pair(&MusicMenu::pauseResume,InputEvents::music_pause),
+          std::make_pair(&MusicMenu::menuUp,InputEvents::menu_up),
+          std::make_pair(&MusicMenu::menuDown,InputEvents::menu_down),
+          std::make_pair(&MusicMenu::menuLeft,InputEvents::menu_left),
+          std::make_pair(&MusicMenu::menuRight,InputEvents::menu_right),
+          std::make_pair(&MusicMenu::menuAccept,InputEvents::menu_accept),
+          std::make_pair(&MusicMenu::menuCancel,InputEvents::menu_cancel)
       }
   );
 }
