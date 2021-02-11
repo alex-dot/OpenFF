@@ -4,11 +4,13 @@
 using namespace OpenFF;
 
 MenuBox::MenuBox(
+        MenuBoxType type,
         Configuration* config,
         RessourceLoader* ressource_loader,
         Vector2 relative_billboard_ratio,
         Vector2i textbox_size,
         Vector2i offset) :
+                _type(type),
                 _textbox_size(textbox_size),
                 _offset(offset),
                 _focus_normal(true),
@@ -18,20 +20,40 @@ MenuBox::MenuBox(
                 _selection_current_position_vertically(0),
                 _linked_boxes() {
 
-  _textbox = new OpenFF::FreeformTextbox(
-          config,
-          ressource_loader,
-          relative_billboard_ratio,
-          _textbox_size,
-          _offset);
-  _textbox->show();
+  if( _type == MenuBoxType::freeform ) {
+    _textbox = new OpenFF::FreeformTextbox(
+            config,
+            ressource_loader,
+            relative_billboard_ratio,
+            _textbox_size,
+            _offset);
+    _textbox->show();
 
-  _focus = new OpenFF::Textbox(
-          config,
-          ressource_loader,
-          relative_billboard_ratio,
-          Vector2i(14,15),  // TODO calculate?
-          offset+Vector2i(5,4));
+    _focus = new OpenFF::Textbox(
+            config,
+            ressource_loader,
+            relative_billboard_ratio,
+            Vector2i(14,15),  // TODO calculate?
+            offset+Vector2i(5,4));
+  } else if( _type == MenuBoxType::regular ) {
+    _textbox = new OpenFF::Textbox(
+            config,
+            ressource_loader,
+            relative_billboard_ratio,
+            _textbox_size,
+            _offset);
+    _textbox->show();
+
+    _focus = new OpenFF::Textbox(
+            config,
+            ressource_loader,
+            relative_billboard_ratio,
+            Vector2i(textbox_size.x()-10,15),  // TODO calculate?
+            offset+Vector2i(5,4));
+  } else {
+    FatlSrcLogicError("Tried to create menu box of unsupported type");
+  }
+
   _focus->write()
          .setBorderImageLocation(config->getMenuFocusBorderLocation())
          .setBodyTransparency(0.0)
@@ -47,6 +69,20 @@ MenuBox::MenuBox(
           (MenuDirections::right,nullptr));
 }
 
+MenuBox::MenuBox(
+        Configuration* config,
+        RessourceLoader* ressource_loader,
+        Vector2 relative_billboard_ratio,
+        Vector2i textbox_size,
+        Vector2i offset)
+                : MenuBox::MenuBox(
+                        MenuBoxType::freeform,
+                        config,
+                        ressource_loader,
+                        relative_billboard_ratio,
+                        textbox_size,
+                        offset) {}
+
 MenuBox& MenuBox::enableSelection() {
   _selection_active = true;
   return *this;
@@ -57,8 +93,12 @@ MenuBox& MenuBox::disableSelection() {
 }
 
 MenuSelectionReturns MenuBox::selectionUp() {
+  unsigned int line_height = _textbox->getFontLineHeight();
+  if( _type == MenuBoxType::regular )
+    line_height += 1;
+
   if( _selection_current_position_vertically > 0 ) {
-    _focus->move(-1*Vector2i(0,_textbox->getFontLineHeight()));
+    _focus->move(-1*Vector2i(0,line_height));
     --_selection_current_position_vertically;
     return MenuSelectionReturns::success;
   } else {
@@ -67,8 +107,12 @@ MenuSelectionReturns MenuBox::selectionUp() {
   return MenuSelectionReturns::error;
 }
 MenuSelectionReturns MenuBox::selectionDown() {
+  unsigned int line_height = _textbox->getFontLineHeight();
+  if( _type == MenuBoxType::regular )
+    line_height += 1;
+
   if( _selection_current_position_vertically < _textbox->getLineCount() ) {
-    _focus->move(Vector2i(0,_textbox->getFontLineHeight()));
+    _focus->move(Vector2i(0,line_height));
     ++_selection_current_position_vertically;
     return MenuSelectionReturns::success;
   } else {
@@ -77,7 +121,7 @@ MenuSelectionReturns MenuBox::selectionDown() {
   return MenuSelectionReturns::error;
 }
 MenuSelectionReturns MenuBox::selectionLeft() {
-  if( _selection_current_position_horizontally > 0 ) {
+  if( _type == MenuBoxType::freeform && _selection_current_position_horizontally > 0 ) {
     _focus->move(-1*Vector2i(_textbox->getMaximumCharacterWidth(),0));
     --_selection_current_position_horizontally;
     return MenuSelectionReturns::success;
@@ -87,7 +131,7 @@ MenuSelectionReturns MenuBox::selectionLeft() {
   return MenuSelectionReturns::error;
 }
 MenuSelectionReturns MenuBox::selectionRight() {
-  if( _selection_current_position_horizontally <
+  if( _type == MenuBoxType::freeform && _selection_current_position_horizontally <
           _textbox->getCharacterCountPerLine(_selection_current_position_vertically) ) {
     _focus->move(Vector2i(_textbox->getMaximumCharacterWidth(),0));
     ++_selection_current_position_horizontally;

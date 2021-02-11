@@ -23,10 +23,22 @@ enum MenuDirections {
   none,
   MENU_DIRECTIONS_MAX = none
 };
+enum MenuBoxType {
+  regular,
+  freeform,
+  MENU_BOX_TYPES_MAX = freeform
+};
 
 class MenuBox{
   public:
     explicit MenuBox(
+            Configuration* config,
+            RessourceLoader* ressource_loader,
+            Vector2 relative_billboard_ratio,
+            Vector2i textbox_size,
+            Vector2i offset);
+    explicit MenuBox(
+            MenuBoxType type,
             Configuration* config,
             RessourceLoader* ressource_loader,
             Vector2 relative_billboard_ratio,
@@ -118,6 +130,7 @@ class MenuBox{
     void draw(float current_time);
 
   private:
+    MenuBoxType                _type;
     OpenFF::AbstractTextbox*   _textbox;
     OpenFF::Textbox*           _focus;
     Vector2i                   _textbox_size;

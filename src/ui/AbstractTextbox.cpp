@@ -228,7 +228,8 @@ AbstractTextbox& AbstractTextbox::setBorderOffset(Vector2i offset) {
 }
 
 unsigned int AbstractTextbox::getLineCount() {
-  return std::count(_text->getText().begin(), _text->getText().end(), '\n');
+  std::string text = _text->getText();
+  return std::count(text.begin(), text.end(), '\n');
 }
 unsigned int AbstractTextbox::getCharacterCountPerLine(unsigned int) {
   // by default, this returns 0, i.e. N/A or "use windowSize instead"

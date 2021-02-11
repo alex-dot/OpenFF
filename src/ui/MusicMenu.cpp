@@ -49,8 +49,8 @@ MusicMenu::MusicMenu(
   _unsorted_menu_boxes.push_back(box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
-    Vector2i(80,24), Vector2i(40,50));
-  box->write("Box #"+std::to_string(2));
+    Vector2i(80,36), Vector2i(40,60));
+  box->write("Box #"+std::to_string(2)+"\nblub");
   _unsorted_menu_boxes.push_back(box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
@@ -58,7 +58,7 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(3));
   _unsorted_menu_boxes.push_back(box);
   box = new OpenFF::MenuBox(
-    config, ressource_loader, relative_billboard_ratio,
+    MenuBoxType::regular, config, ressource_loader, relative_billboard_ratio,
     Vector2i(110,140), Vector2i(250,20));
   box->write("Box #"+std::to_string(4)
         +"\n2nd line\n3rd line\n4th line\n5th line\n6th line\n7th line\n8th line\n9th line");

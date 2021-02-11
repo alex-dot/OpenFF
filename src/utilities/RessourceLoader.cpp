@@ -51,7 +51,7 @@ Font* RessourceLoader::getFont(std::string font_location, int font_size) {
   if( iter != _font_manager.end() ) {
     font = iter->second;
   } else {
-    font = new Font(font_location, font_size, 0.08f);
+    font = new Font(font_location, font_size, 0.081f);
     _font_manager.insert(std::make_pair(font_location,font));
   }
   return font;
@@ -69,10 +69,10 @@ Font* RessourceLoader::getFont(
     Containers::Optional<Trade::ImageData2D> glyph_texture;
     getImage(font_texture_location, glyph_texture, false);
     if( glyph_texture ) {
-      font = new Font(font_location, font_size, glyph_texture, 0.08f);
+      font = new Font(font_location, font_size, glyph_texture, 0.081f);
     } else {
       Err("Could not load cached font glyph texture, creating. ");
-      font = new Font(font_location, font_size, 0.08f);
+      font = new Font(font_location, font_size, 0.081f);
       Image2D image = font->getGlyphTexture().image(0, {PixelFormat::RGBA8Unorm});
       saveImage(font_texture_location, image);
     }
