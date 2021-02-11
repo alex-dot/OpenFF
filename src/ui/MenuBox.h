@@ -43,6 +43,18 @@ class MenuBox{
     MenuBox& selectionAccept();
     MenuBox& selectionCancel();
 
+    MenuBox& setLinkedBox(MenuDirections, OpenFF::MenuBox*);
+    MenuBox& setLinkedBoxUp(OpenFF::MenuBox*);
+    MenuBox& setLinkedBoxDown(OpenFF::MenuBox*);
+    MenuBox& setLinkedBoxLeft(OpenFF::MenuBox*);
+    MenuBox& setLinkedBoxRight(OpenFF::MenuBox*);
+
+    MenuBox* getLinkedBox(MenuDirections);
+    MenuBox* getLinkedBoxUp();
+    MenuBox* getLinkedBoxDown();
+    MenuBox* getLinkedBoxLeft();
+    MenuBox* getLinkedBoxRight();
+
     MenuBox& updateSelectionWobble(float);
     MenuBox& setSelectionWobbleOffset(float);
 
@@ -115,6 +127,7 @@ class MenuBox{
     float                      _selection_wobble_offset;
     unsigned int               _selection_current_position_horizontally;
     unsigned int               _selection_current_position_vertically;
+    std::map<MenuDirections,OpenFF::MenuBox*>  _linked_boxes;
 };
 
 }

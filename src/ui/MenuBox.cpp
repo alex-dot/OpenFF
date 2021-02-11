@@ -15,7 +15,8 @@ MenuBox::MenuBox(
                 _selection_active(false),
                 _selection_wobble_offset(0.5f),
                 _selection_current_position_horizontally(0),
-                _selection_current_position_vertically(0) {
+                _selection_current_position_vertically(0),
+                _linked_boxes() {
 
   _textbox = new OpenFF::FreeformTextbox(
           config,
@@ -35,6 +36,15 @@ MenuBox::MenuBox(
          .setBorderImageLocation(config->getMenuFocusBorderLocation())
          .setBodyTransparency(0.0)
          .show();
+
+  _linked_boxes.insert(std::pair<MenuDirections,OpenFF::MenuBox*>
+          (MenuDirections::up,nullptr));
+  _linked_boxes.insert(std::pair<MenuDirections,OpenFF::MenuBox*>
+          (MenuDirections::down,nullptr));
+  _linked_boxes.insert(std::pair<MenuDirections,OpenFF::MenuBox*>
+          (MenuDirections::left,nullptr));
+  _linked_boxes.insert(std::pair<MenuDirections,OpenFF::MenuBox*>
+          (MenuDirections::right,nullptr));
 }
 
 MenuBox& MenuBox::enableSelection() {
@@ -78,6 +88,38 @@ MenuBox& MenuBox::selectionAccept() {
 }
 MenuBox& MenuBox::selectionCancel() {
   return *this;
+}
+
+MenuBox& MenuBox::setLinkedBox(MenuDirections dir, OpenFF::MenuBox* mb) {
+  _linked_boxes[dir] = mb;
+  return *this;
+}
+MenuBox& MenuBox::setLinkedBoxUp(OpenFF::MenuBox* mb) {
+  return this->setLinkedBox(MenuDirections::up, mb);
+}
+MenuBox& MenuBox::setLinkedBoxDown(OpenFF::MenuBox* mb) {
+  return this->setLinkedBox(MenuDirections::down, mb);
+}
+MenuBox& MenuBox::setLinkedBoxLeft(OpenFF::MenuBox* mb) {
+  return this->setLinkedBox(MenuDirections::left, mb);
+}
+MenuBox& MenuBox::setLinkedBoxRight(OpenFF::MenuBox* mb) {
+  return this->setLinkedBox(MenuDirections::right, mb);
+}
+MenuBox* MenuBox::getLinkedBox(MenuDirections dir) {
+  return _linked_boxes[dir];
+}
+MenuBox* MenuBox::getLinkedBoxUp() {
+  return this->getLinkedBox(MenuDirections::up);
+}
+MenuBox* MenuBox::getLinkedBoxDown() {
+  return this->getLinkedBox(MenuDirections::down);
+}
+MenuBox* MenuBox::getLinkedBoxLeft() {
+  return this->getLinkedBox(MenuDirections::left);
+}
+MenuBox* MenuBox::getLinkedBoxRight() {
+  return this->getLinkedBox(MenuDirections::right);
 }
 
 MenuBox& MenuBox::updateSelectionWobble(float current_time) {

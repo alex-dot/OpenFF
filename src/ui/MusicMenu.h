@@ -30,9 +30,7 @@ class MusicMenu{
             Vector2 relative_billboard_ratio);
 
     void setTitle(std::string);
-
     void setMusic(Music*);
-
     void setRelativeBillboardRatio(Vector2);
 
     void draw();

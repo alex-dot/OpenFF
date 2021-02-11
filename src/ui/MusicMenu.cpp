@@ -47,12 +47,12 @@ MusicMenu::MusicMenu(
     Vector2i(80,24), Vector2i(40,20));
   box->write("Box #"+std::to_string(1));
   _unsorted_menu_boxes.push_back(box);
+  _active_box = &(box->enableSelection());
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,24), Vector2i(40,50));
   box->write("Box #"+std::to_string(2));
   _unsorted_menu_boxes.push_back(box);
-  _active_box = &(box->enableSelection());
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(120,24), Vector2i(125,35));
@@ -64,6 +64,7 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(4)
         +"\n2nd line\n3rd line\n4th line\n5th line\n6th line\n7th line\n8th line\n9th line");
   _unsorted_menu_boxes.push_back(box);
+  box->setLinkedBoxUp(_active_box).setLinkedBoxDown(_active_box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,24), Vector2i(165,100));
@@ -297,29 +298,34 @@ MenuBox* MusicMenu::getNextMenubox(MenuDirections dir) {
 MenuBox* MusicMenu::getNextMenubox(MenuDirections dir, Vector2i location) {
   MenuBoxElement menubox;
   MenuBoxElement interdimensional_menubox;
-  switch(dir) {
-    case(MenuDirections::up):
-    case(MenuDirections::down):
-      for( unsigned int i = 1; i < _menu_boxes[0].size(); ++i ) {
-        nearestNeighbourMenubox(menubox, interdimensional_menubox, location, i, dir);
-        if( menubox.ptr ) {
-          _active_box_location = findMenubox(menubox.ptr);
-          break;
+  MenuBox* linked_box = _active_box->getLinkedBox(dir);
+  if( linked_box && findMenubox(linked_box) != Vector2i(-1) ) {
+    getMenuboxElement(menubox, findMenubox(linked_box));
+  } else {
+    switch(dir) {
+      case(MenuDirections::up):
+      case(MenuDirections::down):
+        for( unsigned int i = 1; i < _menu_boxes[0].size(); ++i ) {
+          nearestNeighbourMenubox(menubox, interdimensional_menubox, location, i, dir);
+          if( menubox.ptr ) {
+            _active_box_location = findMenubox(menubox.ptr);
+            break;
+          }
         }
-      }
-      break;
-    case(MenuDirections::left):
-    case(MenuDirections::right):
-      for( unsigned int i = 1; i < _menu_boxes.size(); ++i ) {
-        nearestNeighbourMenubox(menubox, interdimensional_menubox, location, i, dir);
-        if( menubox.ptr ) {
-          _active_box_location = findMenubox(menubox.ptr);
-          break;
+        break;
+      case(MenuDirections::left):
+      case(MenuDirections::right):
+        for( unsigned int i = 1; i < _menu_boxes.size(); ++i ) {
+          nearestNeighbourMenubox(menubox, interdimensional_menubox, location, i, dir);
+          if( menubox.ptr ) {
+            _active_box_location = findMenubox(menubox.ptr);
+            break;
+          }
         }
-      }
-      break;
-    default:
-      break;
+        break;
+      default:
+        break;
+    }
   }
 
   if( menubox.ptr ) {
