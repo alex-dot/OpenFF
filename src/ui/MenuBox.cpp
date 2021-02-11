@@ -98,8 +98,14 @@ MenuSelectionReturns MenuBox::selectionUp() {
     line_height += 1;
 
   if( _selection_current_position_vertically > 0 ) {
-    _focus->move(-1*Vector2i(0,line_height));
     --_selection_current_position_vertically;
+    if( _selection_current_position_horizontally <= _textbox->getCharacterCountPerLine(_selection_current_position_vertically) ) {
+      _focus->move(Vector2i(0,-1*line_height));
+    } else {
+      unsigned int horizontal_diff = -1 * (_selection_current_position_horizontally - _textbox->getCharacterCountPerLine(_selection_current_position_vertically));
+      _focus->move(Vector2i(horizontal_diff*_textbox->getMaximumCharacterWidth(),-1*line_height));
+      _selection_current_position_horizontally = _textbox->getCharacterCountPerLine(_selection_current_position_vertically);
+    }
     return MenuSelectionReturns::success;
   } else {
     return MenuSelectionReturns::end_of_line;
@@ -112,8 +118,14 @@ MenuSelectionReturns MenuBox::selectionDown() {
     line_height += 1;
 
   if( _selection_current_position_vertically < _textbox->getLineCount() ) {
-    _focus->move(Vector2i(0,line_height));
     ++_selection_current_position_vertically;
+    if( _selection_current_position_horizontally <= _textbox->getCharacterCountPerLine(_selection_current_position_vertically) ) {
+      _focus->move(Vector2i(0,line_height));
+    } else {
+      unsigned int horizontal_diff = -1 * (_selection_current_position_horizontally - _textbox->getCharacterCountPerLine(_selection_current_position_vertically));
+      _focus->move(Vector2i(horizontal_diff*_textbox->getMaximumCharacterWidth(),line_height));
+      _selection_current_position_horizontally = _textbox->getCharacterCountPerLine(_selection_current_position_vertically);
+    }
     return MenuSelectionReturns::success;
   } else {
     return MenuSelectionReturns::end_of_line;
