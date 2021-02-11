@@ -57,10 +57,24 @@ MenuBox& MenuBox::disableSelection() {
 }
 
 MenuSelectionReturns MenuBox::selectionUp() {
-  return MenuSelectionReturns::end_of_line;
+  if( _selection_current_position_vertically > 0 ) {
+    _focus->move(-1*Vector2i(0,_textbox->getFontLineHeight()));
+    --_selection_current_position_vertically;
+    return MenuSelectionReturns::success;
+  } else {
+    return MenuSelectionReturns::end_of_line;
+  }
+  return MenuSelectionReturns::error;
 }
 MenuSelectionReturns MenuBox::selectionDown() {
-  return MenuSelectionReturns::end_of_line;
+  if( _selection_current_position_vertically < _textbox->getLineCount() ) {
+    _focus->move(Vector2i(0,_textbox->getFontLineHeight()));
+    ++_selection_current_position_vertically;
+    return MenuSelectionReturns::success;
+  } else {
+    return MenuSelectionReturns::end_of_line;
+  }
+  return MenuSelectionReturns::error;
 }
 MenuSelectionReturns MenuBox::selectionLeft() {
   if( _selection_current_position_horizontally > 0 ) {

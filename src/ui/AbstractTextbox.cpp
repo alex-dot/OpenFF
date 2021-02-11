@@ -238,6 +238,9 @@ unsigned int AbstractTextbox::getMaximumCharacterWidth() {
   // by default, this returns 0, i.e. N/A or "use windowSize instead"
   return 0;
 }
+unsigned int AbstractTextbox::getFontLineHeight() {
+  return _font->getFontLineHeight();
+}
 
 AbstractTextbox& AbstractTextbox::rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string) {
   DbgWarn{} << "Rewriting character not supported by Textbox, use FreeformTextbox instead";

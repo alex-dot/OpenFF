@@ -47,7 +47,6 @@ MusicMenu::MusicMenu(
     Vector2i(80,24), Vector2i(40,20));
   box->write("Box #"+std::to_string(1));
   _unsorted_menu_boxes.push_back(box);
-  _active_box = &(box->enableSelection());
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,24), Vector2i(40,50));
@@ -64,6 +63,7 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(4)
         +"\n2nd line\n3rd line\n4th line\n5th line\n6th line\n7th line\n8th line\n9th line");
   _unsorted_menu_boxes.push_back(box);
+  _active_box = &(box->enableSelection());
   box->setLinkedBoxUp(_active_box).setLinkedBoxDown(_active_box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,

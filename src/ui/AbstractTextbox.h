@@ -63,6 +63,7 @@ class AbstractTextbox{
     virtual unsigned int getLineCount();
     virtual unsigned int getCharacterCountPerLine(unsigned int);
     virtual unsigned int getMaximumCharacterWidth();
+    unsigned int getFontLineHeight();
 
     virtual AbstractTextbox& rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string);
     virtual AbstractTextbox& moveCharacter(unsigned int, unsigned int, Vector2i);

@@ -139,7 +139,7 @@ FreeformTextbox& FreeformTextbox::moveText(Vector2i offset) {
 }
 
 unsigned int FreeformTextbox::getLineCount() {
-  return std::count(_text->getText().begin(), _text->getText().end(), '\n');
+  return _textmap.size()-1;
 }
 unsigned int FreeformTextbox::getCharacterCountPerLine(unsigned int line) {
   return _textmap[line].size()-1;
