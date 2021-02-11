@@ -8,9 +8,18 @@
 #include "../utilities/InputHandler.h"
 #include "../utilities/RessourceLoader.h"
 
+#include <list>
+
 using namespace Magnum;
 
 namespace OpenFF {
+
+struct MenuBoxElement {
+  int      weight = 0;
+  int      rowid;
+  int      colid;
+  MenuBox* ptr = nullptr;
+};
 
 class MusicMenu{
   public:
@@ -30,23 +39,43 @@ class MusicMenu{
     void bindCallbacks(InputHandler*);
 
   private:
-    MusicMenu& increaseGain();
-    MusicMenu& decreaseGain();
-    MusicMenu& pauseResume();
-
     MusicMenu& menuUp();
     MusicMenu& menuDown();
     MusicMenu& menuLeft();
     MusicMenu& menuRight();
+    MusicMenu& moveSelection(MenuDirections);
+
     MusicMenu& menuAccept();
     MusicMenu& menuCancel();
+
+    MusicMenu&      sortMenuboxes();
+    Vector2i        findMenubox(MenuBox*);
+    MenuBox*        getMenubox(Vector2i);
+    void  getMenuboxElement(MenuBoxElement&, Vector2i);
+    MenuBox*        getNextMenubox(MenuDirections);
+    MenuBox*        getNextMenubox(MenuDirections, Vector2i);
+
+    void nearestNeighbourMenubox(
+            MenuBoxElement& menubox,
+            MenuBoxElement& interdimensional_menubox,
+            Vector2i location,
+            unsigned int depth,
+            MenuDirections dir);
+
+    MusicMenu& increaseGain();
+    MusicMenu& decreaseGain();
+    MusicMenu& pauseResume();
 
     MusicMenu& drawVisualiser();
     MusicMenu& prepareVisualiser();
 
-    OpenFF::Music*                                  _music;
-    OpenFF::Textbox*                                _songtitle;
-    OpenFF::MenuBox*                                _player;
+    OpenFF::Music*                                        _music;
+    OpenFF::Textbox*                                      _songtitle;
+    OpenFF::MenuBox*                                      _player;
+    OpenFF::MenuBox*                                      _active_box;
+    Vector2i                                              _active_box_location;
+    std::vector<OpenFF::MenuBox*>                         _unsorted_menu_boxes;
+    std::vector<std::vector<std::vector<MenuBoxElement>>> _menu_boxes;
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;

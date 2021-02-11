@@ -36,7 +36,6 @@ class AbstractTextbox{
     AbstractTextbox& setTextShadowType(OpenFF::ShadowTypes);
     // customize window
     AbstractTextbox& setBorderImageLocation(std::string);
-    virtual unsigned int getMaximumCharacterWidth();
     // set uniform color
     AbstractTextbox& setColor(Color3);
     AbstractTextbox& setColor(Color4);
@@ -48,7 +47,7 @@ class AbstractTextbox{
     // set generic textbox variables
     AbstractTextbox& enableInstantRendering();
     AbstractTextbox& disableInstantRendering();
-    AbstractTextbox& setRelativeBillboardRatio(Vector2);
+    virtual AbstractTextbox& setRelativeBillboardRatio(Vector2);
     AbstractTextbox& setViewportSize(Vector2i);
 
     AbstractTextbox& setTextboxSize(Vector2i);
@@ -57,7 +56,13 @@ class AbstractTextbox{
 
     AbstractTextbox& setBorderOffset(Vector2i);
     AbstractTextbox& setOffset(Vector2i);
+    Vector2i         getOffset();
+    Vector2i         getTextboxSize();
     AbstractTextbox& move(Vector2i);
+
+    virtual unsigned int getLineCount();
+    virtual unsigned int getCharacterCountPerLine(unsigned int);
+    virtual unsigned int getMaximumCharacterWidth();
 
     virtual AbstractTextbox& rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string);
     virtual AbstractTextbox& moveCharacter(unsigned int, unsigned int, Vector2i);

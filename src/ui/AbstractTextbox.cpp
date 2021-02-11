@@ -210,6 +210,12 @@ AbstractTextbox& AbstractTextbox::setOffset(Vector2i offset) {
 
   return *this;
 }
+Vector2i AbstractTextbox::getOffset() {
+  return _offset;
+}
+Vector2i AbstractTextbox::getTextboxSize() {
+  return _textbox_size;
+}
 AbstractTextbox& AbstractTextbox::move(Vector2i pixels) {
   this->setOffset(_offset + pixels);
 
@@ -221,10 +227,18 @@ AbstractTextbox& AbstractTextbox::setBorderOffset(Vector2i offset) {
   return *this;
 }
 
-unsigned int AbstractTextbox::getMaximumCharacterWidth() {
-  DbgWarn{} << "Maximum character width not supported by Textbox, use FreeformTextbox instead";
+unsigned int AbstractTextbox::getLineCount() {
+  return std::count(_text->getText().begin(), _text->getText().end(), '\n');
+}
+unsigned int AbstractTextbox::getCharacterCountPerLine(unsigned int) {
+  // by default, this returns 0, i.e. N/A or "use windowSize instead"
   return 0;
 }
+unsigned int AbstractTextbox::getMaximumCharacterWidth() {
+  // by default, this returns 0, i.e. N/A or "use windowSize instead"
+  return 0;
+}
+
 AbstractTextbox& AbstractTextbox::rewriteCharacter(unsigned int, unsigned int, Vector2i, std::string) {
   DbgWarn{} << "Rewriting character not supported by Textbox, use FreeformTextbox instead";
   return *this;

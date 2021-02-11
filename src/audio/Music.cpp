@@ -84,8 +84,10 @@ Music& Music::storeAudioData() {
 
   prepareForMagnitudeVisualiser();
 
-  processAudioForMagnitudeVisualiser(OpenFF::MusicVisualiserChannel::left, 0, 100);
-  processAudioForMagnitudeVisualiser(OpenFF::MusicVisualiserChannel::right, 0, 100);
+  processAudioForMagnitudeVisualiser(
+          OpenFF::MusicVisualiserChannel::channel_left, 0, 100);
+  processAudioForMagnitudeVisualiser(
+          OpenFF::MusicVisualiserChannel::channel_right, 0, 100);
 
   return *this;
 }
@@ -178,11 +180,11 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
         const unsigned int frames_min,
         unsigned int frames_max) {
 
-  if( frames_max <= _frame_slice_left && return_channel == left ) {
+  if( frames_max <= _frame_slice_left && return_channel == channel_left ) {
     return std::vector<std::vector<float>>(
             _magnitude_bin_matrix_left.begin()+frames_min,
             _magnitude_bin_matrix_left.begin()+frames_max);
-  } else if( frames_max <= _frame_slice_right && return_channel == right ) {
+  } else if( frames_max <= _frame_slice_right && return_channel == channel_right ) {
     return std::vector<std::vector<float>>(
             _magnitude_bin_matrix_right.begin()+frames_min,
             _magnitude_bin_matrix_right.begin()+frames_max);
@@ -205,7 +207,7 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
     float *input = static_cast<float*>(mufft_alloc(N * sizeof(float)));
     for (unsigned int n = 0; n < N*2; n=n+c+2) {
       uint16_t data_frame_uint16;
-      if ( _current_track_format == Audio::BufferFormat::Stereo16 && return_channel == right ) {
+      if ( _current_track_format == Audio::BufferFormat::Stereo16 && return_channel == channel_right ) {
         data_frame_uint16 = static_cast<uint16_t>(
                 static_cast<uint8_t>(data[n+2])) |
                   (static_cast<uint16_t>(static_cast<uint8_t>(data[n+3])) << 8);
@@ -242,7 +244,7 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
         _max_magnitude = magnitude;
     }
 
-    if ( return_channel == left ) {
+    if ( return_channel == channel_left ) {
       _magnitude_bin_matrix_left.push_back(magnitude_bin);
     } else {
       _magnitude_bin_matrix_right.push_back(magnitude_bin);
@@ -253,7 +255,7 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
     mufft_free_plan_1d(muplan);
   }
 
-  if ( return_channel == left ) {
+  if ( return_channel == channel_left ) {
     for( auto i=_magnitude_bin_matrix_left.begin()+frames_min;
             i<_magnitude_bin_matrix_left.begin()+frames_max; ++i ) {
       unsigned int freq = 0;
@@ -273,7 +275,7 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
     }
   }
 
-  if( return_channel == left ) {
+  if( return_channel == channel_left ) {
     _frame_slice_left = frames_max;
     return std::vector<std::vector<float>>(
             _magnitude_bin_matrix_left.begin()+frames_min,

@@ -9,6 +9,21 @@ using namespace Magnum;
 
 namespace OpenFF {
 
+enum MenuSelectionReturns {
+  success,
+  end_of_line,
+  error,
+  MENU_SELECTION_RETURNS_MAX = error
+};
+enum MenuDirections {
+  up,
+  down,
+  left,
+  right,
+  none,
+  MENU_DIRECTIONS_MAX = none
+};
+
 class MenuBox{
   public:
     explicit MenuBox(
@@ -18,10 +33,13 @@ class MenuBox{
             Vector2i textbox_size,
             Vector2i offset);
 
-    MenuBox& selectionUp();
-    MenuBox& selectionDown();
-    MenuBox& selectionLeft();
-    MenuBox& selectionRight();
+    MenuBox& enableSelection();
+    MenuBox& disableSelection();
+
+    MenuSelectionReturns selectionUp();
+    MenuSelectionReturns selectionDown();
+    MenuSelectionReturns selectionLeft();
+    MenuSelectionReturns selectionRight();
     MenuBox& selectionAccept();
     MenuBox& selectionCancel();
 
@@ -70,6 +88,9 @@ class MenuBox{
     MenuBox& shrinkTextbox(int);
     MenuBox& shrinkFocus(int);
 
+    Vector2i getOffset();
+    Vector2i getTextboxSize();
+
     MenuBox& rewriteCharacter(
             unsigned int line_index,
             unsigned int character_index,
@@ -90,7 +111,10 @@ class MenuBox{
     Vector2i                   _textbox_size;
     Vector2i                   _offset;
     bool                       _focus_normal;
+    bool                       _selection_active;
     float                      _selection_wobble_offset;
+    unsigned int               _selection_current_position_horizontally;
+    unsigned int               _selection_current_position_vertically;
 };
 
 }

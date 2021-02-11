@@ -28,9 +28,9 @@ typedef SceneGraph::Scene<SceneGraph::MatrixTransformation2D> Scene2D;
 namespace OpenFF {
 
 enum MusicVisualiserChannel {
-  left,
-  right,
-  MUSIC_VISUALISER_CHANNEL_MAX = right
+  channel_left,
+  channel_right,
+  MUSIC_VISUALISER_CHANNEL_MAX = channel_right
 };
 
 float blackmanHarrisNuttalWindowTransform(float, unsigned int, unsigned int);

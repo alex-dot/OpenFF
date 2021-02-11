@@ -80,6 +80,20 @@ FreeformTextbox& FreeformTextbox::write() {
   return *this;
 }
 
+FreeformTextbox& FreeformTextbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
+  _relative_billboard_ratio = relative_billboard_ratio;
+  _window->setRelativeBillboardRatio(_relative_billboard_ratio);
+  if( _window->isFullyShown() ) {
+    for( auto i = _textmap.begin(); i < _textmap.end(); ++i ) {
+      for( auto j = i->begin(); j < i->end(); ++j ) {
+        j->text_obj->setRelativeBillboardRatio(_relative_billboard_ratio);
+      }
+    }
+  }
+
+  return *this;
+}
+
 FreeformTextbox& FreeformTextbox::rewriteCharacter(
         unsigned int line_index,
         unsigned int character_index,
@@ -122,6 +136,16 @@ FreeformTextbox& FreeformTextbox::moveCharacter(
 FreeformTextbox& FreeformTextbox::moveText(Vector2i offset) {
   _border_offset = _border_offset + offset;
   return *this;
+}
+
+unsigned int FreeformTextbox::getLineCount() {
+  return std::count(_text->getText().begin(), _text->getText().end(), '\n');
+}
+unsigned int FreeformTextbox::getCharacterCountPerLine(unsigned int line) {
+  return _textmap[line].size()-1;
+}
+unsigned int FreeformTextbox::getMaximumCharacterWidth() {
+  return _max_char_width;
 }
 
 FreeformTextbox& FreeformTextbox::draw() {

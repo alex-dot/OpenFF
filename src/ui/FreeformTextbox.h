@@ -25,6 +25,8 @@ class FreeformTextbox: public AbstractTextbox{
     FreeformTextbox& write(std::string);
     FreeformTextbox& write();
 
+    FreeformTextbox& setRelativeBillboardRatio(Vector2 relative_billboard_ratio);
+
     FreeformTextbox& rewriteCharacter(
             unsigned int line_index,
             unsigned int character_index,
@@ -37,9 +39,11 @@ class FreeformTextbox: public AbstractTextbox{
 
     FreeformTextbox& moveText(Vector2i);
 
-    FreeformTextbox& draw();
+    unsigned int getLineCount();
+    unsigned int getCharacterCountPerLine(unsigned int);
+    unsigned int getMaximumCharacterWidth();
 
-    unsigned int getMaximumCharacterWidth() const { return _max_char_width; }
+    FreeformTextbox& draw();
 
   protected:
     virtual void prepareText();

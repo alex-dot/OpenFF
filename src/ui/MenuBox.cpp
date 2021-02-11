@@ -12,7 +12,10 @@ MenuBox::MenuBox(
                 _textbox_size(textbox_size),
                 _offset(offset),
                 _focus_normal(true),
-                _selection_wobble_offset(0.5f) {
+                _selection_active(false),
+                _selection_wobble_offset(0.5f),
+                _selection_current_position_horizontally(0),
+                _selection_current_position_vertically(0) {
 
   _textbox = new OpenFF::FreeformTextbox(
           config,
@@ -26,27 +29,49 @@ MenuBox::MenuBox(
           config,
           ressource_loader,
           relative_billboard_ratio,
-          Vector2i(14),  // TODO calculate?
-          offset+Vector2i(5));
+          Vector2i(14,15),  // TODO calculate?
+          offset+Vector2i(5,4));
   _focus->write()
          .setBorderImageLocation(config->getMenuFocusBorderLocation())
          .setBodyTransparency(0.0)
          .show();
 }
 
-MenuBox& MenuBox::selectionUp() {
+MenuBox& MenuBox::enableSelection() {
+  _selection_active = true;
   return *this;
 }
-MenuBox& MenuBox::selectionDown() {
+MenuBox& MenuBox::disableSelection() {
+  _selection_active = false;
   return *this;
 }
-MenuBox& MenuBox::selectionLeft() {
-  //_focus->move(-1*Vector2i(_textbox->getMaximumCharacterWidth(),0));
-  return *this;
+
+MenuSelectionReturns MenuBox::selectionUp() {
+  return MenuSelectionReturns::end_of_line;
 }
-MenuBox& MenuBox::selectionRight() {
-  //_focus->move(Vector2i(_textbox->getMaximumCharacterWidth(),0));
-  return *this;
+MenuSelectionReturns MenuBox::selectionDown() {
+  return MenuSelectionReturns::end_of_line;
+}
+MenuSelectionReturns MenuBox::selectionLeft() {
+  if( _selection_current_position_horizontally > 0 ) {
+    _focus->move(-1*Vector2i(_textbox->getMaximumCharacterWidth(),0));
+    --_selection_current_position_horizontally;
+    return MenuSelectionReturns::success;
+  } else {
+    return MenuSelectionReturns::end_of_line;
+  }
+  return MenuSelectionReturns::error;
+}
+MenuSelectionReturns MenuBox::selectionRight() {
+  if( _selection_current_position_horizontally <
+          _textbox->getCharacterCountPerLine(_selection_current_position_vertically) ) {
+    _focus->move(Vector2i(_textbox->getMaximumCharacterWidth(),0));
+    ++_selection_current_position_horizontally;
+    return MenuSelectionReturns::success;
+  } else {
+    return MenuSelectionReturns::end_of_line;
+  }
+  return MenuSelectionReturns::error;
 }
 MenuBox& MenuBox::selectionAccept() {
   return *this;
@@ -214,6 +239,13 @@ MenuBox& MenuBox::shrinkFocus(int value) {
   return *this;
 }
 
+Vector2i MenuBox::getOffset() {
+  return _textbox->getOffset();
+}
+Vector2i MenuBox::getTextboxSize() {
+  return _textbox->getTextboxSize();
+}
+
 MenuBox& MenuBox::rewriteCharacter(
         unsigned int line_index,
         unsigned int character_index,
@@ -236,7 +268,8 @@ MenuBox& MenuBox::moveText(Vector2i offset) {
 
 void MenuBox::draw() {
   _textbox->draw();
-  _focus->draw();
+  if( _selection_active )
+    _focus->draw();
 }
 void MenuBox::draw(float current_time) {
   this->updateSelectionWobble(current_time);
