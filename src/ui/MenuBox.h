@@ -55,6 +55,11 @@ class MenuBox{
     MenuBox& selectionAccept();
     MenuBox& selectionCancel();
 
+    MenuBox& setSelectionTop();
+    MenuBox& setSelectionBottom();
+    MenuBox& setSelectionLeftmost();
+    MenuBox& setSelectionRightmost();
+
     MenuBox& setLinkedBox(MenuDirections, OpenFF::MenuBox*);
     MenuBox& setLinkedBoxUp(OpenFF::MenuBox*);
     MenuBox& setLinkedBoxDown(OpenFF::MenuBox*);

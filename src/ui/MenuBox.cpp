@@ -76,7 +76,7 @@ MenuBox::MenuBox(
         Vector2i textbox_size,
         Vector2i offset)
                 : MenuBox::MenuBox(
-                        MenuBoxType::freeform,
+                        MenuBoxType::regular,
                         config,
                         ressource_loader,
                         relative_billboard_ratio,
@@ -145,6 +145,54 @@ MenuBox& MenuBox::selectionAccept() {
   return *this;
 }
 MenuBox& MenuBox::selectionCancel() {
+  return *this;
+}
+
+MenuBox& MenuBox::setSelectionTop() {
+  unsigned int vertical = 0;
+  unsigned int horizontal = 0;
+  if( _type == MenuBoxType::freeform ) {
+    horizontal = _textbox->getMaximumCharacterWidth()*_selection_current_position_horizontally;
+  }
+
+  _focus->setOffset(_offset+Vector2i(5,4)+Vector2i(horizontal,vertical));
+  _selection_current_position_vertically = 0;
+  return *this;
+}
+MenuBox& MenuBox::setSelectionBottom() {
+  unsigned int line_height = _textbox->getFontLineHeight();
+  if( _type == MenuBoxType::regular )
+    line_height += 1;
+  unsigned int vertical = line_height*(_textbox->getLineCount()-_selection_current_position_vertically);
+
+  unsigned int horizontal = 0;
+  if( _type == MenuBoxType::freeform ) {
+    horizontal = _textbox->getMaximumCharacterWidth()*_selection_current_position_horizontally;
+  }
+
+  _focus->setOffset(_offset+Vector2i(5,4)+Vector2i(horizontal,vertical));
+  _selection_current_position_vertically = _textbox->getLineCount();
+  return *this;
+}
+MenuBox& MenuBox::setSelectionLeftmost() {
+  if( _type == MenuBoxType::freeform ) {
+    unsigned int vertical = _textbox->getFontLineHeight()*_selection_current_position_vertically;
+    unsigned int horizontal = 0;
+    _focus->setOffset(_offset+Vector2i(5,4)+Vector2i(horizontal,vertical));
+    _selection_current_position_horizontally = 0;
+  }
+  return *this;
+}
+MenuBox& MenuBox::setSelectionRightmost() {
+  if( _type == MenuBoxType::freeform ) {
+    _selection_current_position_horizontally =
+          _textbox->getCharacterCountPerLine(_selection_current_position_vertically);
+    unsigned int vertical =
+          _textbox->getFontLineHeight()*_selection_current_position_vertically;
+    unsigned int horizontal =
+          _textbox->getMaximumCharacterWidth()*_selection_current_position_horizontally;
+    _focus->setOffset(_offset+Vector2i(5,4)+Vector2i(horizontal,vertical));
+  }
   return *this;
 }
 

@@ -48,7 +48,7 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(1));
   _unsorted_menu_boxes.push_back(box);
   box = new OpenFF::MenuBox(
-    config, ressource_loader, relative_billboard_ratio,
+    MenuBoxType::freeform, config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,36), Vector2i(40,60));
   box->write("Box #"+std::to_string(2)+"\nblub");
   _unsorted_menu_boxes.push_back(box);
@@ -58,13 +58,14 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(3));
   _unsorted_menu_boxes.push_back(box);
   box = new OpenFF::MenuBox(
-    MenuBoxType::regular, config, ressource_loader, relative_billboard_ratio,
+    MenuBoxType::freeform, config, ressource_loader, relative_billboard_ratio,
     Vector2i(110,140), Vector2i(250,20));
   box->write("Box #"+std::to_string(4)
         +"\n2nd line\n3rd line\n4th line\n5th line\n6th line\n7th line\n8th line\n9th line");
   _unsorted_menu_boxes.push_back(box);
   _active_box = &(box->enableSelection());
   box->setLinkedBoxUp(_active_box).setLinkedBoxDown(_active_box);
+  box->setLinkedBoxLeft(_active_box).setLinkedBoxRight(_active_box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,24), Vector2i(165,100));
@@ -176,19 +177,6 @@ MusicMenu& MusicMenu::menuCancel() {
 // If a box has no direct horizontal or vertical neighbor and two different
 // boxes in both diagonal directions (case #1a), use the more salient one,
 // which is by default the size-wise larger one.
-// This can be overwritten by using per-box weights:
-//********************************************************************************
-//  _   #1    _            *   _   #1b   _            *   _   #3a   _            *
-// | |  ___  | |     1001  *  |_|  ___  | |     1  1  *  |_|       | |     1  1  *
-// |_| |___| | |  => 1111  *  |_| |___| | |  =>  221  *   _        | |  =>    1  *
-// |_|    _  | |     1001  *  |_|    _  |?|     1  1  *  |_|    _  | |     1  1  *
-//       |_| |_|     0011  *        |_| |_|       41  *        |_| |_|       91  *
-//                         *                          *                          *
-//********************************************************************************
-// 0: box doesn't exists; 1: box exists; >=2: weighted box.
-// In case #1b, this changes the behaviour of the ?-cursor to move to the bottom
-// box. In case #3a, due to the bottom box's high weight, moving right from the
-// top-left box moves the selection to the bottom box.
 MusicMenu& MusicMenu::sortMenuboxes() {
   std::list<int> rows_list;
   std::list<int> cols_list;
@@ -301,6 +289,24 @@ MenuBox* MusicMenu::getNextMenubox(MenuDirections dir, Vector2i location) {
   MenuBox* linked_box = _active_box->getLinkedBox(dir);
   if( linked_box && findMenubox(linked_box) != Vector2i(-1) ) {
     getMenuboxElement(menubox, findMenubox(linked_box));
+    if( _active_box == linked_box ) {
+      switch(dir) {
+        case(MenuDirections::up):
+          _active_box->setSelectionBottom();
+          break;
+        case(MenuDirections::down):
+          _active_box->setSelectionTop();
+          break;
+        case(MenuDirections::left):
+          _active_box->setSelectionRightmost();
+          break;
+        case(MenuDirections::right):
+          _active_box->setSelectionLeftmost();
+          break;
+        default:
+          break;
+      }
+    }
   } else {
     switch(dir) {
       case(MenuDirections::up):
@@ -339,7 +345,7 @@ MenuBox* MusicMenu::getNextMenubox(MenuDirections dir, Vector2i location) {
 
 // This is the lookup method corresponding to the Menu Box Sorting algorithm.
 // Note that this is a best guess approach that will fail on edge cases.
-// Consider using XXXX instead.
+// Consider using linked boxes instead.
 void MusicMenu::nearestNeighbourMenubox(
         MenuBoxElement& mb,
         MenuBoxElement& idmb,
