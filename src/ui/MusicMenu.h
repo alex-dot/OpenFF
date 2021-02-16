@@ -18,6 +18,8 @@ struct MenuBoxElement {
   int      weight = 0;
   int      rowid;
   int      colid;
+  int      row_pixels;
+  int      col_pixels;
   MenuBox* ptr = nullptr;
 };
 
@@ -46,12 +48,13 @@ class MusicMenu{
     MusicMenu& menuAccept();
     MusicMenu& menuCancel();
 
-    MusicMenu&      sortMenuboxes();
-    Vector2i        findMenubox(MenuBox*);
-    MenuBox*        getMenubox(Vector2i);
-    void  getMenuboxElement(MenuBoxElement&, Vector2i);
-    MenuBox*        getNextMenubox(MenuDirections);
-    MenuBox*        getNextMenubox(MenuDirections, Vector2i);
+    MusicMenu&            sortMenuboxes();
+    Vector2i              findMenubox(MenuBox*);
+    std::vector<Vector2i> findAllMenuboxListLocations(MenuBox*);
+    MenuBox*              getMenubox(Vector2i);
+    void                  getMenuboxElement(MenuBoxElement&, Vector2i);
+    MenuBox*              getNextMenubox(MenuDirections);
+    MenuBox*              getNextMenubox(MenuDirections, Vector2i);
 
     void nearestNeighbourMenubox(
             MenuBoxElement& menubox,

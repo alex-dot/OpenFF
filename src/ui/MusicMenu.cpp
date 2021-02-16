@@ -229,6 +229,8 @@ MusicMenu& MusicMenu::sortMenuboxes() {
           mbe.weight = 1;
           mbe.rowid = j->front().rowid;
           mbe.colid = j->front().colid;
+          mbe.col_pixels = (j->front().colid+1)*col_divisor;
+          mbe.row_pixels = (j->front().rowid+1)*row_divisor;
           mbe.ptr = *k;
           if( !j->front().weight )
             j->erase(j->begin());
@@ -239,6 +241,26 @@ MusicMenu& MusicMenu::sortMenuboxes() {
   }
 
   std::swap(_menu_boxes, mb_row);
+
+  for( auto k = _unsorted_menu_boxes.begin(); k != _unsorted_menu_boxes.end(); ++k ) {
+    std::vector<Vector2i> menuboxes = findAllMenuboxListLocations(*k);
+    if( menuboxes.size() > 1 ) {
+      Vector2i last_list_location = menuboxes.front();
+      std::vector<Vector2i> instances;
+      instances.push_back(last_list_location);
+      for( auto m = menuboxes.begin()+1; m < menuboxes.end(); ++m ) {
+        if( last_list_location.x() < m->x() ) {
+          instances.push_back(last_list_location+Vector2i(1,0));
+        }
+        if( last_list_location.y() < m->y() ) {
+          instances.push_back(last_list_location+Vector2i(0,1));
+        }
+        last_list_location = instances.back();
+      }
+
+      (*k)->setInstancesInMenuList(instances);
+    }
+  }
 
   return *this;
 }
@@ -253,6 +275,19 @@ Vector2i MusicMenu::findMenubox(MenuBox* menubox) {
     }
   }
   return Vector2i(-1);
+}
+std::vector<Vector2i> MusicMenu::findAllMenuboxListLocations(MenuBox* menubox) {
+  std::vector<Vector2i> vec;
+  for( unsigned int i = 0; i < _menu_boxes.size(); ++i ) {
+    for( unsigned int j = 0; j < _menu_boxes[i].size(); ++j ) {
+      for( auto k = _menu_boxes[i][j].begin(); k != _menu_boxes[i][j].end(); ++k ) {
+        if( k->ptr == menubox ) {
+          vec.push_back(Vector2i(j,i));
+        }
+      }
+    }
+  }
+  return vec;
 }
 void MusicMenu::getMenuboxElement(MenuBoxElement& mb, Vector2i unsafe_location) {
   unsigned int x = unsafe_location.x();
@@ -278,6 +313,43 @@ MenuBox* MusicMenu::getMenubox(Vector2i unsafe_location) {
 
 MenuBox* MusicMenu::getNextMenubox(MenuDirections dir) {
   Vector2i location = _active_box_location;
+
+  if( !_active_box->isSingleInstanceInMenuLust() ) {
+    switch(dir) {
+      case(MenuDirections::up):
+      case(MenuDirections::down):
+        if( _active_box->getType() == MenuBoxType::freeform ) {
+          std::vector<Vector2i> instances = _active_box->getInstancesInMenuList();
+          for( auto i = instances.end()-1; i >= instances.begin(); --i ) {
+            MenuBoxElement mbe;
+            getMenuboxElement(mbe, Vector2i(i->x(),i->y()));
+            if( _active_box->getSelectionOffset().x() >= mbe.col_pixels ) {
+              location = *i;
+              break;
+            }
+          }
+        }
+        break;
+      case(MenuDirections::left):
+      case(MenuDirections::right):
+        {
+          std::vector<Vector2i> instances = _active_box->getInstancesInMenuList();
+          for( auto i = instances.end()-1; i >= instances.begin(); --i ) {
+            MenuBoxElement mbe;
+            getMenuboxElement(mbe, Vector2i(i->x(),i->y()));
+            Dbg{} << mbe.row_pixels << _active_box->getSelectionOffset().y() << _active_box->getRelativeSelectionOffset().y();
+            if( _active_box->getSelectionOffset().y() >= mbe.row_pixels ) {
+              location = *i;
+              break;
+            }
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
   MenuBox* mb = getNextMenubox(dir, location);
 
   return mb;

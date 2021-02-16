@@ -75,6 +75,10 @@ class MenuBox{
     MenuBox& updateSelectionWobble(float);
     MenuBox& setSelectionWobbleOffset(float);
 
+    MenuBox& setInstancesInMenuList(std::vector<Vector2i>);
+    std::vector<Vector2i> getInstancesInMenuList();
+    bool     isSingleInstanceInMenuLust();
+
     MenuBox& write();
     MenuBox& write(std::string);
 
@@ -131,6 +135,13 @@ class MenuBox{
             Vector2i offset_mod);
     MenuBox& moveText(Vector2i);
 
+    MenuBoxType  getType();
+    unsigned int getCurrentHorizontalPositionOfSelection();
+    unsigned int getCurrentVerticalPositionOfSelection();
+    Vector2i     getCurrentPixelPositionOfSelection();
+    Vector2i     getRelativeSelectionOffset();
+    Vector2i     getSelectionOffset();
+
     void draw();
     void draw(float current_time);
 
@@ -140,6 +151,7 @@ class MenuBox{
     OpenFF::Textbox*           _focus;
     Vector2i                   _textbox_size;
     Vector2i                   _offset;
+    std::vector<Vector2i>      _instances_in_menu_list;
     bool                       _focus_normal;
     bool                       _selection_active;
     float                      _selection_wobble_offset;

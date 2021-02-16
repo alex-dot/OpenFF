@@ -13,6 +13,7 @@ MenuBox::MenuBox(
                 _type(type),
                 _textbox_size(textbox_size),
                 _offset(offset),
+                _instances_in_menu_list(),
                 _focus_normal(true),
                 _selection_active(false),
                 _selection_wobble_offset(0.5f),
@@ -67,6 +68,8 @@ MenuBox::MenuBox(
           (MenuDirections::left,nullptr));
   _linked_boxes.insert(std::pair<MenuDirections,OpenFF::MenuBox*>
           (MenuDirections::right,nullptr));
+
+  _instances_in_menu_list.push_back(Vector2i(1));
 }
 
 MenuBox::MenuBox(
@@ -257,6 +260,19 @@ MenuBox& MenuBox::setSelectionWobbleOffset(float offset) {
   return *this;
 }
 
+MenuBox& MenuBox::setInstancesInMenuList(std::vector<Vector2i> instances) {
+  _instances_in_menu_list = instances;
+  return *this;
+}
+std::vector<Vector2i> MenuBox::getInstancesInMenuList() {
+  return _instances_in_menu_list;
+}
+bool MenuBox::isSingleInstanceInMenuLust() {
+  if( _instances_in_menu_list.size() > 1 )
+    return false;
+  return true;
+}
+
 MenuBox& MenuBox::write() {
   _textbox->write();
   return *this;
@@ -424,6 +440,29 @@ MenuBox& MenuBox::moveCharacter(
 MenuBox& MenuBox::moveText(Vector2i offset) {
   _textbox->moveText(offset);
   return *this;
+}
+
+MenuBoxType MenuBox::getType() {
+  return _type;
+}
+unsigned int MenuBox::getCurrentHorizontalPositionOfSelection() {
+  return _selection_current_position_horizontally;
+}
+unsigned int MenuBox::getCurrentVerticalPositionOfSelection() {
+  return _selection_current_position_vertically;
+}
+Vector2i     MenuBox::getCurrentPixelPositionOfSelection() {
+  unsigned int vertical =
+    _textbox->getFontLineHeight()*_selection_current_position_vertically;
+  unsigned int horizontal =
+    _textbox->getMaximumCharacterWidth()*_selection_current_position_horizontally;
+  return Vector2i(horizontal,vertical);
+}
+Vector2i     MenuBox::getRelativeSelectionOffset() {
+  return _focus->getOffset()-_offset;
+}
+Vector2i     MenuBox::getSelectionOffset() {
+  return _focus->getOffset();
 }
 
 void MenuBox::draw() {
