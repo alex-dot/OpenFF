@@ -32,6 +32,7 @@ MusicMenu::MusicMenu(
 
   // set Player textbox
   _player = new OpenFF::MenuBox(
+          MenuBoxType::freeform,
           config,
           ressource_loader,
           relative_billboard_ratio,
