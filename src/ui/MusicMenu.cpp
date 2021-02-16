@@ -337,7 +337,6 @@ MenuBox* MusicMenu::getNextMenubox(MenuDirections dir) {
           for( auto i = instances.end()-1; i >= instances.begin(); --i ) {
             MenuBoxElement mbe;
             getMenuboxElement(mbe, Vector2i(i->x(),i->y()));
-            Dbg{} << mbe.row_pixels << _active_box->getSelectionOffset().y() << _active_box->getRelativeSelectionOffset().y();
             if( _active_box->getSelectionOffset().y() >= mbe.row_pixels ) {
               location = *i;
               break;

@@ -87,10 +87,12 @@ MenuBox::MenuBox(
                         offset) {}
 
 MenuBox& MenuBox::enableSelection() {
+  _focus->show();
   _selection_active = true;
   return *this;
 }
 MenuBox& MenuBox::disableSelection() {
+  _focus->hide();
   _selection_active = false;
   return *this;
 }
