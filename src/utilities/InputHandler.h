@@ -28,8 +28,8 @@ enum InputEvents {
   menu_left,
   menu_right,
   menu_accept,
-  menu_cancel,
-  INPUT_EVENTS_MAX = menu_cancel
+  menu_exit,
+  INPUT_EVENTS_MAX = menu_exit
 };
 typedef Iterator<InputEvents, InputEvents::ie_undefined, InputEvents::INPUT_EVENTS_MAX> input_events_iterator;
 enum InputType {

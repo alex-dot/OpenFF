@@ -29,6 +29,8 @@ enum MenuBoxType {
   MENU_BOX_TYPES_MAX = freeform
 };
 
+class MusicMenu;
+
 class MenuBox{
   public:
     explicit MenuBox(
@@ -53,12 +55,15 @@ class MenuBox{
     MenuSelectionReturns selectionLeft();
     MenuSelectionReturns selectionRight();
     MenuBox& selectionAccept();
-    MenuBox& selectionCancel();
 
     MenuBox& setSelectionTop();
     MenuBox& setSelectionBottom();
     MenuBox& setSelectionLeftmost();
     MenuBox& setSelectionRightmost();
+    MenuBox& setSelectionAccept(
+            Vector2i position,
+            MusicMenu* object,
+            std::function<void(MusicMenu&)> functor);
 
     MenuBox& setLinkedBox(MenuDirections, OpenFF::MenuBox*);
     MenuBox& setLinkedBoxUp(OpenFF::MenuBox*);
@@ -135,9 +140,13 @@ class MenuBox{
             Vector2i offset_mod);
     MenuBox& moveText(Vector2i);
 
-    MenuBoxType  getType();
+    MenuBoxType getType();
+
+    Vector2i getSelectableEntriesMatrix();
+
     unsigned int getCurrentHorizontalPositionOfSelection();
     unsigned int getCurrentVerticalPositionOfSelection();
+    Vector2i     getCurrentPositionOfSelection();
     Vector2i     getCurrentPixelPositionOfSelection();
     Vector2i     getRelativeSelectionOffset();
     Vector2i     getSelectionOffset();
@@ -158,6 +167,9 @@ class MenuBox{
     unsigned int               _selection_current_position_horizontally;
     unsigned int               _selection_current_position_vertically;
     std::map<MenuDirections,OpenFF::MenuBox*>  _linked_boxes;
+    std::vector<std::vector<std::pair<
+            OpenFF::MusicMenu*,
+            std::function<void(OpenFF::MusicMenu&)>>>>  _menu_callbacks;
 };
 
 }

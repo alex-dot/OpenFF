@@ -111,11 +111,11 @@ void OpenFF_Main::drawEvent() {
   _bb->getFramebuffer()
           .clear(GL::FramebufferClear::Color)
           .bind();
-  _bb->draw();
+/*  _bb->draw();
 
   // Textbox
-//  _textbox->draw();
-
+  _textbox->draw();
+*/
   _music_menu->draw();
 
   // then bind the default framebuffer and blit the backgrounds framebuffer to it
@@ -129,7 +129,7 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
-  _debug_box->draw();
+//  _debug_box->draw();
 
   swapBuffers();
   redraw();

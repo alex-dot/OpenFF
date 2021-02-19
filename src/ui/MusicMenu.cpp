@@ -4,6 +4,10 @@
 #include <list>
 #include <algorithm>
 
+// for testing and posterity
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
 using namespace OpenFF;
 
 MusicMenu::MusicMenu(
@@ -17,7 +21,7 @@ MusicMenu::MusicMenu(
                 _current_time(0.0f),
                 _magnitude_bin_matrix_left_fully_loaded(false),
                 _magnitude_bin_matrix_right_fully_loaded(false) {
-
+/*
   // load music object
   _music = new OpenFF::Music(config, ressource_loader, input_handler);
 
@@ -42,12 +46,16 @@ MusicMenu::MusicMenu(
   _player->moveCharacter(0,0,Vector2i(1,0));
   _player->moveCharacter(0,3,Vector2i(1,1));
   _player->moveCharacter(0,4,Vector2i(1,0));
-
+*/
   OpenFF::MenuBox* box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
-    Vector2i(80,24), Vector2i(40,20));
-  box->write("Box #"+std::to_string(1));
+    Vector2i(80,24), Vector2i(140,96));
+  box->write("create");
+//  box->write("Box #"+std::to_string(1));
+  box->setSelectionAccept(Vector2i(0),this,&MusicMenu::createNewMenubox);
   _unsorted_menu_boxes.push_back(box);
+  _active_box = &(box->enableSelection());
+/*
   box = new OpenFF::MenuBox(
     MenuBoxType::freeform, config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,36), Vector2i(40,60));
@@ -64,18 +72,52 @@ MusicMenu::MusicMenu(
   box->write("Box #"+std::to_string(4)
         +"\n2nd line\n3rd\n4th line\n5th line\n6th line\n7th line\n8th line\n9th line");
   _unsorted_menu_boxes.push_back(box);
-  _active_box = &(box->enableSelection());
   box->setLinkedBoxUp(_active_box).setLinkedBoxDown(_active_box);
   box = new OpenFF::MenuBox(
     config, ressource_loader, relative_billboard_ratio,
     Vector2i(80,24), Vector2i(165,100));
   box->write("Box #"+std::to_string(5));
   _unsorted_menu_boxes.push_back(box);
+*/
 
   this->sortMenuboxes();
   _active_box_location = findMenubox(_active_box);
 
+  // for testing and posterity
+  srand (time(NULL));
+  _config = config;
+  _ressource_loader = ressource_loader;
+  _relative_billboard_ratio = relative_billboard_ratio;
+
   _timeline.start();
+}
+
+void MusicMenu::createNewMenubox() {
+  int x = (rand() % 6 + 1 ) * 40;
+  int y = (rand() % 12 + 1 ) * 20;
+  int t = rand() % 2;
+  Dbg{} << "oracle: " << x << y << t;
+
+  OpenFF::MenuBox* box = new OpenFF::MenuBox(
+    _config, _ressource_loader, _relative_billboard_ratio,
+    Vector2i(80,24), Vector2i(x,y));
+
+  if( t==0 ) {
+    box->write("create");
+    box->setSelectionAccept(Vector2i(0),this,&MusicMenu::createNewMenubox);
+  } else {
+    box->write("delete");
+    box->setSelectionAccept(Vector2i(0),this,&MusicMenu::deleteOneMenubox);
+  }
+
+  _unsorted_menu_boxes.push_back(box);
+  this->sortMenuboxes();
+}
+void MusicMenu::deleteOneMenubox() {
+  int x = rand() % _unsorted_menu_boxes.size();
+  auto i = _unsorted_menu_boxes.begin()+x;
+  _unsorted_menu_boxes.erase(i);
+  this->sortMenuboxes();
 }
 
 void MusicMenu::setTitle(std::string title) {
@@ -144,10 +186,13 @@ MusicMenu& MusicMenu::moveSelection(MenuDirections dir) {
   return *this;
 }
 
-MusicMenu& MusicMenu::menuAccept() {
+MusicMenu& MusicMenu::menuAcceptSelected() {
+  _active_box->selectionAccept();
   return *this;
 }
-MusicMenu& MusicMenu::menuCancel() {
+
+// Called when menu is closed
+MusicMenu& MusicMenu::menuExit() {
   return *this;
 }
 
@@ -242,6 +287,20 @@ MusicMenu& MusicMenu::sortMenuboxes() {
   }
 
   std::swap(_menu_boxes, mb_row);
+
+  Dbg{} << "matrix:";
+  for( auto i = 0; i < _menu_boxes.size(); ++i ) {
+    std::string row = "";
+    for( auto j = 0; j < _menu_boxes[i].size(); ++j ) {
+      if( _menu_boxes[i][j][0].ptr != nullptr ) {
+        row += "1";
+      } else {
+        row += "0";
+      }
+    }
+    Dbg{} << row;
+  }
+  Dbg{} << "";
 
   for( auto k = _unsorted_menu_boxes.begin(); k != _unsorted_menu_boxes.end(); ++k ) {
     std::vector<Vector2i> menuboxes = findAllMenuboxListLocations(*k);
@@ -555,7 +614,7 @@ void MusicMenu::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
 
 void MusicMenu::draw() {
   _current_time = _current_time + _timeline.previousFrameDuration();
-
+/*
   if( !_music->isPaused() ) {
     if( !_visualiser_loaded ) {
       if( !_visualiser_preparing )
@@ -567,12 +626,12 @@ void MusicMenu::draw() {
 
   _songtitle->draw();
   _player->draw(_current_time);
-
+*/
   for( auto i = _unsorted_menu_boxes.begin(); i < _unsorted_menu_boxes.end(); ++i) {
     (*i)->draw(_current_time);
   }
 
-  _music->draw();
+//  _music->draw();
 
   _timeline.nextFrame();
 }
@@ -687,8 +746,8 @@ void MusicMenu::bindCallbacks(InputHandler* input) {
           std::make_pair(&MusicMenu::menuDown,InputEvents::menu_down),
           std::make_pair(&MusicMenu::menuLeft,InputEvents::menu_left),
           std::make_pair(&MusicMenu::menuRight,InputEvents::menu_right),
-          std::make_pair(&MusicMenu::menuAccept,InputEvents::menu_accept),
-          std::make_pair(&MusicMenu::menuCancel,InputEvents::menu_cancel)
+          std::make_pair(&MusicMenu::menuAcceptSelected,InputEvents::menu_accept),
+          std::make_pair(&MusicMenu::menuExit,InputEvents::menu_exit)
       }
   );
 }

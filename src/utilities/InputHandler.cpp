@@ -61,7 +61,7 @@ void CalledObject::callMenuMusic() {
     case(InputEvents::menu_left):
     case(InputEvents::menu_right):
     case(InputEvents::menu_accept):
-    case(InputEvents::menu_cancel):
+    case(InputEvents::menu_exit):
       _callback_menu_music(*static_cast<MusicMenu*>(_object));
       break;
     default:
@@ -92,8 +92,8 @@ InputHandler::InputHandler() {
           CalledObject(InputEvents::menu_right);
   _callback_functions[InputEvents::menu_accept] =
           CalledObject(InputEvents::menu_accept);
-  _callback_functions[InputEvents::menu_cancel] =
-          CalledObject(InputEvents::menu_cancel);
+  _callback_functions[InputEvents::menu_exit] =
+          CalledObject(InputEvents::menu_exit);
   validateEnumCallbackMaps<std::map<OpenFF::InputEvents,CalledObject>>(
                                    &_callback_functions,
                                    "callable objects",

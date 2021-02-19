@@ -83,7 +83,7 @@ Configuration::Configuration(InputHandler* input_handler) :
   _input_event_settings["menu_left"] = InputEvents::menu_left;
   _input_event_settings["menu_right"] = InputEvents::menu_right;
   _input_event_settings["menu_accept"] = InputEvents::menu_accept;
-  _input_event_settings["menu_cancel"] = InputEvents::menu_cancel;
+  _input_event_settings["menu_exit"] = InputEvents::menu_exit;
   validateStringEnumMaps<std::map<std::string,OpenFF::InputEvents>>
           (&_input_event_settings,
           "input event settings",

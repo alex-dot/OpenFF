@@ -38,6 +38,9 @@ class MusicMenu{
     void draw();
     void bindCallbacks(InputHandler*);
 
+    void createNewMenubox();
+    void deleteOneMenubox();
+
   private:
     MusicMenu& menuUp();
     MusicMenu& menuDown();
@@ -45,8 +48,8 @@ class MusicMenu{
     MusicMenu& menuRight();
     MusicMenu& moveSelection(MenuDirections);
 
-    MusicMenu& menuAccept();
-    MusicMenu& menuCancel();
+    MusicMenu& menuAcceptSelected();
+    MusicMenu& menuExit();
 
     MusicMenu&            sortMenuboxes();
     Vector2i              findMenubox(MenuBox*);
@@ -69,6 +72,12 @@ class MusicMenu{
 
     MusicMenu& drawVisualiser();
     MusicMenu& prepareVisualiser();
+
+    // for testing and posterity
+            Configuration* _config;
+            RessourceLoader* _ressource_loader;
+            Vector2 _relative_billboard_ratio;
+
 
     OpenFF::Music*                                        _music;
     OpenFF::Textbox*                                      _songtitle;

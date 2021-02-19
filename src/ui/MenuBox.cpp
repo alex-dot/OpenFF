@@ -19,7 +19,8 @@ MenuBox::MenuBox(
                 _selection_wobble_offset(0.5f),
                 _selection_current_position_horizontally(0),
                 _selection_current_position_vertically(0),
-                _linked_boxes() {
+                _linked_boxes(),
+                _menu_callbacks() {
 
   if( _type == MenuBoxType::freeform ) {
     _textbox = new OpenFF::FreeformTextbox(
@@ -159,9 +160,14 @@ MenuSelectionReturns MenuBox::selectionRight() {
   return MenuSelectionReturns::error;
 }
 MenuBox& MenuBox::selectionAccept() {
-  return *this;
-}
-MenuBox& MenuBox::selectionCancel() {
+  Vector2i pos = this->getCurrentPositionOfSelection();
+  std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>
+          callable = _menu_callbacks[pos.y()][pos.x()];
+  if( callable.first != nullptr && callable.second != nullptr ) {
+    (callable.second)(*(callable.first));
+  } else {
+    Err("Tried calling undefined menu callback: " + std::to_string(pos.x()) + std::to_string(pos.y()));
+  }
   return *this;
 }
 
@@ -209,6 +215,20 @@ MenuBox& MenuBox::setSelectionRightmost() {
     unsigned int horizontal =
           _textbox->getMaximumCharacterWidth()*_selection_current_position_horizontally;
     _focus->setOffset(_offset+Vector2i(5,4)+Vector2i(horizontal,vertical));
+  }
+  return *this;
+}
+MenuBox& MenuBox::setSelectionAccept(
+        Vector2i pos,
+        OpenFF::MusicMenu* object,
+        std::function<void(MusicMenu&)> functor) {
+  if( pos.y() < int(_textbox->getLineCount()) || pos.y() == 0 ) {
+    if( (  _type != MenuBoxType::freeform && pos.y() == 0 )
+     || ( pos.x() < int(_textbox->getCharacterCountPerLine(pos.x())) ) ) {
+      _menu_callbacks[pos.y()][pos.x()] = std::make_pair<
+            OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>
+            (std::move(object),std::move(functor));
+    }
   }
   return *this;
 }
@@ -281,6 +301,17 @@ MenuBox& MenuBox::write() {
 }
 MenuBox& MenuBox::write(std::string text) {
   _textbox->write(text);
+
+  _menu_callbacks.clear();
+  Vector2i callable_matrix = this->getSelectableEntriesMatrix();
+  std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>
+          callable = std::make_pair(nullptr,nullptr);
+  std::vector<std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>>
+          cols(callable_matrix.y()+1,callable);
+  std::vector<std::vector<std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>>>
+          rows(callable_matrix.x()+1,cols);
+  std::swap(rows,_menu_callbacks);
+
   return *this;
 }
 
@@ -447,11 +478,27 @@ MenuBox& MenuBox::moveText(Vector2i offset) {
 MenuBoxType MenuBox::getType() {
   return _type;
 }
+
+Vector2i MenuBox::getSelectableEntriesMatrix() {
+  int lines = _textbox->getLineCount();
+  unsigned int max_chars = 0;
+  for( int i = 0; i < lines; ++i ) {
+    if( _textbox->getCharacterCountPerLine(i) > max_chars ) {
+      max_chars = i;
+    }
+  }
+  return Vector2i(lines,max_chars);
+}
+
 unsigned int MenuBox::getCurrentHorizontalPositionOfSelection() {
   return _selection_current_position_horizontally;
 }
 unsigned int MenuBox::getCurrentVerticalPositionOfSelection() {
   return _selection_current_position_vertically;
+}
+Vector2i     MenuBox::getCurrentPositionOfSelection() {
+  return Vector2i(this->getCurrentVerticalPositionOfSelection(),
+                  this->getCurrentHorizontalPositionOfSelection());
 }
 Vector2i     MenuBox::getCurrentPixelPositionOfSelection() {
   unsigned int vertical =
