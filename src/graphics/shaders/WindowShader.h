@@ -39,6 +39,11 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    WindowShader& setResizeFactor(float factor) {
+      setUniform(_resize_factor_uniform, factor);
+      return *this;
+    }
+
     WindowShader& setColorMode(ColorMode mode) {
       setUniform(_color_mode_uniform, mode);
       return *this;
@@ -100,10 +105,20 @@ class WindowShader: public GL::AbstractShaderProgram {
       return *this;
     }
 
+    WindowShader& disableRelativeBillboardRendering() {
+      setUniform(_relative_billboard_rendering_uniform, false);
+      return *this;
+    }
+    WindowShader& enableRelativeBillboardRendering() {
+      setUniform(_relative_billboard_rendering_uniform, true);
+      return *this;
+    }
+
   private:
     enum: int { TextureUnit = 0 };
 
     int _hidden_state_uniform;
+    int _resize_factor_uniform;
     int _color_mode_uniform;
     int _uni_color_uniform;
     int _top_left_color_uniform;
@@ -118,6 +133,7 @@ class WindowShader: public GL::AbstractShaderProgram {
     int _offset_uniform;
     int _border_image_length;
     int _relative_billboard_ratio_uniform;
+    int _relative_billboard_rendering_uniform;
 };
 
 }

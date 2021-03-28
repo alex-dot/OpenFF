@@ -185,6 +185,25 @@ AbstractTextbox& AbstractTextbox::setViewportSize(Vector2i viewport_size) {
 
   return *this;
 }
+AbstractTextbox& AbstractTextbox::setResizeFactor(float factor) {
+  _window->setResizeFactor(factor);
+  _text->setResizeFactor(factor);
+  this->disableRelativeBillboardRendering();
+
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::enableRelativeBillboardRendering() {
+  _window->enableRelativeBillboardRendering();
+  _text->enableRelativeBillboardRendering();
+
+  return *this;
+}
+AbstractTextbox& AbstractTextbox::disableRelativeBillboardRendering() {
+  _window->disableRelativeBillboardRendering();
+  _text->disableRelativeBillboardRendering();
+
+  return *this;
+}
 
 AbstractTextbox& AbstractTextbox::setTextboxSize(Vector2i textbox_size) {
   _textbox_size = textbox_size;

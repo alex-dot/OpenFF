@@ -37,6 +37,9 @@ class Window{
     void setViewportSize(Vector2i size) {_shader.setViewportSize(size);}
     void setWindowSize(Vector2i size) {_shader.setWindowSize(size);}
     void setOffset(Vector2i coordinates) {_shader.setOffset(coordinates);}
+    void setResizeFactor(float factor) {_shader.setResizeFactor(factor);};
+    void enableRelativeBillboardRendering();
+    void disableRelativeBillboardRendering();
 
   private:
     WindowShader             _shader;

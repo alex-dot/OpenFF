@@ -126,3 +126,10 @@ void Window::enableInstantRendering() {
 void Window::disableInstantRendering() {
   _render_instantly = false;
 }
+
+void Window::enableRelativeBillboardRendering() {
+  _shader.enableRelativeBillboardRendering();
+}
+void Window::disableRelativeBillboardRendering() {
+  _shader.disableRelativeBillboardRendering();
+}

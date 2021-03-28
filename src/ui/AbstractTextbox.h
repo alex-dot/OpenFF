@@ -49,6 +49,9 @@ class AbstractTextbox{
     AbstractTextbox& disableInstantRendering();
     virtual AbstractTextbox& setRelativeBillboardRatio(Vector2);
     AbstractTextbox& setViewportSize(Vector2i);
+    AbstractTextbox& setResizeFactor(float);
+    AbstractTextbox& enableRelativeBillboardRendering();
+    AbstractTextbox& disableRelativeBillboardRendering();
 
     AbstractTextbox& setTextboxSize(Vector2i);
     AbstractTextbox& expand(int);

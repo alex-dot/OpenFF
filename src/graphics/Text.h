@@ -32,8 +32,11 @@ class Text{
     void setViewportSize(Vector2i);
     void setOffset(Vector2i);
     void setBorderOffset(Vector2i);
+    void setResizeFactor(float);
     void enableInstantRendering();
     void disableInstantRendering();
+    void enableRelativeBillboardRendering();
+    void disableRelativeBillboardRendering();
 
     // always divided by 2 because the viewport goes from (-1,1)
     unsigned getFontMaximumGlyphWidth() { return _font->getMaximumGlyphWidth()/2; }
@@ -57,6 +60,8 @@ class Text{
     Matrix3                           _shadow_mvp_y;
     Matrix3                           _shadow_mvp_xy;
     Vector2                           _relative_billboard_ratio;
+    bool                              _relative_billboard_rendering;
+    float                             _resize_factor;
     Vector2i                          _viewport_size;
     Vector2i                          _offset;
     Vector2                           _border_offset;

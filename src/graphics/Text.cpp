@@ -13,6 +13,8 @@ using namespace Magnum;
 Text::Text(std::string text_location, int text_size) :
         _shadow(OpenFF::ShadowTypes::full_shadow),
         _relative_billboard_ratio(Vector2i(1)),
+        _relative_billboard_rendering(true),
+        _resize_factor(1.0f),
         _viewport_size(Vector2(1)),
         _offset(Vector2(0)),
         _border_offset(Vector2(8,7)),
@@ -26,6 +28,8 @@ Text::Text(Font* font) :
         _font(font),
         _shadow(OpenFF::ShadowTypes::full_shadow),
         _relative_billboard_ratio(Vector2i(1)),
+        _relative_billboard_rendering(true),
+        _resize_factor(1.0f),
         _viewport_size(Vector2(1)),
         _offset(Vector2(1)),
         _border_offset(Vector2(8,7)),
@@ -113,6 +117,10 @@ void Text::setBorderOffset(Vector2i offset) {
   _border_offset = Vector2(offset);
   recalculateMVP();
 }
+void Text::setResizeFactor(float factor) {
+  _resize_factor = factor;
+  recalculateMVP();
+}
 
 void Text::enableInstantRendering() {
   _render_all_characters_instantly = true;
@@ -121,6 +129,15 @@ void Text::enableInstantRendering() {
 void Text::disableInstantRendering() {
   _render_all_characters_instantly = false;
   setText(_text);
+}
+
+void Text::enableRelativeBillboardRendering() {
+  _relative_billboard_rendering = true;
+  recalculateMVP();
+}
+void Text::disableRelativeBillboardRendering() {
+  _relative_billboard_rendering = false;
+  recalculateMVP();
 }
 
 void Text::hide() {
@@ -162,9 +179,19 @@ void Text::recalculateMVP() {
 
   Vector2 size = Vector2(0.7f,1.0f)*_relative_billboard_ratio;
 
+  if(!_relative_billboard_rendering) {
+    size = size * _resize_factor;
+    offset = top_left_corner + (base_offset)/_resize_factor + border_offset/cartesian_transform;
+
+    _mvp = Matrix3(Vector3(size.x(),     0.0f, _offset.x()+offset.x()+1.0f),
+                   Vector3(    0.0f, size.y(), _offset.y()+offset.y()-1.0f),
+                   Vector3(    0.0f,     0.0f,      1.0f)).transposed();
+  } else {
+
   _mvp = Matrix3(Vector3(size.x(),     0.0f, offset.x()),
                  Vector3(    0.0f, size.y(), offset.y()),
                  Vector3(    0.0f,     0.0f,      1.0f)).transposed();
+  }
 
   offset = (top_left_corner+base_offset+border_offset+shadow_offset_x)
              *_relative_billboard_ratio;

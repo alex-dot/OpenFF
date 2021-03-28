@@ -35,6 +35,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::RessourceLoader*      _ressource_loader;
     OpenFF::InputHandler*         _input;
     OpenFF::Textbox*              _textbox;
+    OpenFF::Textbox*              _fps_counter;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
 };
@@ -84,6 +85,20 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
           _bb->getRelativeBillboardRatio());
   _music_menu->bindCallbacks(_input);
 
+  _fps_counter = new OpenFF::Textbox(
+          _config,
+          _ressource_loader,
+          Vector2(1.0),
+          Vector2i(158,40),
+          Vector2i(-1.0, 1.0));
+  _fps_counter->write("FPS: 60");
+  _fps_counter->setResizeFactor(0.5f);
+  _fps_counter->setBorderTransparency(0.0f);
+  _fps_counter->setBodyTransparency(0.0f);
+  _fps_counter->setTextShadowType(OpenFF::ShadowTypes::no_shadow);
+  _fps_counter->enableInstantRendering();
+  _fps_counter->show();
+
   _debug_box = new OpenFF::DebugBox();
 
   // set rendering
@@ -106,16 +121,18 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
 
 void OpenFF_Main::drawEvent() {
 //  auto t1 = std::chrono::high_resolution_clock::now();
+  auto fps = _timeline->previousFrameDuration();
 
   // first render the background to its own framebuffer
   _bb->getFramebuffer()
           .clear(GL::FramebufferClear::Color)
           .bind();
-/*  _bb->draw();
+  _bb->draw();
 
   // Textbox
-  _textbox->draw();
-*/
+  //_textbox->draw();
+  _fps_counter->draw();
+
   _music_menu->draw();
 
   // then bind the default framebuffer and blit the backgrounds framebuffer to it
@@ -129,7 +146,8 @@ void OpenFF_Main::drawEvent() {
           Range2Di(Vector2i(0), GL::defaultFramebuffer.viewport().size()),
           GL::FramebufferBlit::Color);
 
-//  _debug_box->draw();
+  _debug_box->draw();
+  _fps_counter->write("FPS: "+std::to_string(static_cast<int>(1.0f/fps)));
 
   swapBuffers();
   redraw();
@@ -137,7 +155,10 @@ void OpenFF_Main::drawEvent() {
 
 //  auto t2 = std::chrono::high_resolution_clock::now();
 //  auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+//  auto tfps = 1000000 / duration;
 //  Dbg{} << "Draw time:" << duration << "μs";
+//  Dbg{} << "Theoretical FPS: " << tfps;
+//  Dbg{} << "FPS:" << 1.f / fps;
 }
 
 void OpenFF_Main::viewportEvent(ViewportEvent& event) {
@@ -146,7 +167,8 @@ void OpenFF_Main::viewportEvent(ViewportEvent& event) {
   _bb->getFramebuffer().setViewport(GL::defaultFramebuffer.viewport());
   _bb->setRelativeBillboardRatio(GL::defaultFramebuffer.viewport().size());
 
-//  _textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  //_textbox->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
+  _fps_counter->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio()*0.4);
   _music_menu->setRelativeBillboardRatio(_bb->getRelativeBillboardRatio());
 
 }

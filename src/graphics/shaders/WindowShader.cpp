@@ -27,6 +27,7 @@ WindowShader::WindowShader() {
   setUniform(uniformLocation("textureData"), TextureUnit);
 
   _hidden_state_uniform = uniformLocation("hideFactor");
+  _resize_factor_uniform = uniformLocation("resizeFactor");
   _color_mode_uniform = uniformLocation("windowColorMode");
   _uni_color_uniform = uniformLocation("windowUniColor");
   _top_left_color_uniform = uniformLocation("windowTopLeftColor");
@@ -41,6 +42,8 @@ WindowShader::WindowShader() {
   _border_image_length = uniformLocation("windowBorderImageLength");
   _relative_billboard_ratio_uniform = uniformLocation("relativeBillboardRatio");
   setUniform(_relative_billboard_ratio_uniform, Vector2(1.0f));
+  _relative_billboard_rendering_uniform = uniformLocation("relativeBillboardRendering");
+  setUniform(_relative_billboard_rendering_uniform, true);
 }
 
 WindowShader::WindowShader(Vector2i viewport_size)

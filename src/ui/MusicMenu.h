@@ -38,9 +38,6 @@ class MusicMenu{
     void draw();
     void bindCallbacks(InputHandler*);
 
-    void createNewMenubox();
-    void deleteOneMenubox();
-
   private:
     MusicMenu& menuUp();
     MusicMenu& menuDown();
