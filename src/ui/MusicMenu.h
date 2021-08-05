@@ -70,6 +70,8 @@ class MusicMenu{
     MusicMenu& drawVisualiser();
     MusicMenu& prepareVisualiser();
 
+    void magnitudeSlicer();
+
     // for testing and posterity
             Configuration* _config;
             RessourceLoader* _ressource_loader;
@@ -86,7 +88,7 @@ class MusicMenu{
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;
-    bool                                            _visualiser_loaded;
+    unsigned int                                    _visualiser_loaded;
     bool                                            _visualiser_preparing;
     bool                                            _focus_big;
     Timeline                                        _timeline;

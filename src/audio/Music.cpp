@@ -83,12 +83,6 @@ Music& Music::storeAudioData() {
   _current_track_frequency = std::get<2>(current_track_tuple);
 
   prepareForMagnitudeVisualiser();
-
-  processAudioForMagnitudeVisualiser(
-          OpenFF::MusicVisualiserChannel::channel_left, 0, 100);
-  processAudioForMagnitudeVisualiser(
-          OpenFF::MusicVisualiserChannel::channel_right, 0, 100);
-
   return *this;
 }
 

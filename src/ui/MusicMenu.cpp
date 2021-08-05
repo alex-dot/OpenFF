@@ -15,7 +15,7 @@ MusicMenu::MusicMenu(
         RessourceLoader* ressource_loader,
         InputHandler* input_handler,
         Vector2 relative_billboard_ratio) :
-                _visualiser_loaded(false),
+                _visualiser_loaded(0),
                 _visualiser_preparing(false),
                 _focus_big(true),
                 _current_time(0.0f),
@@ -538,9 +538,12 @@ void MusicMenu::draw() {
   _current_time = _current_time + _timeline.previousFrameDuration();
 
   if( !_music->isPaused() ) {
-    if( !_visualiser_loaded ) {
-      if( !_visualiser_preparing )
+    if( _visualiser_loaded < 2 ) {
+      if( !_visualiser_preparing ) {
         prepareVisualiser();
+      } else {
+        magnitudeSlicer();
+      }
     } else {
       drawVisualiser();
     }
@@ -558,16 +561,7 @@ void MusicMenu::draw() {
   _timeline.nextFrame();
 }
 
-MusicMenu& MusicMenu::drawVisualiser() {
-  unsigned int frame = static_cast<unsigned int>(
-          std::floor(_current_time/_frame_window_size));
-  if( frame == _maximum_frame_count ) {
-    frame = 0;
-    _timeline.stop();
-    _timeline.start();
-    _current_time = 0.0f;
-  }
-
+void MusicMenu::magnitudeSlicer() {
   if( !_magnitude_bin_matrix_left_fully_loaded ) {
     if( !_magnitude_bin_matrix_left_future.valid() ) {
       _magnitude_bin_matrix_left_future = std::async(
@@ -580,10 +574,13 @@ MusicMenu& MusicMenu::drawVisualiser() {
     } else {
       if( _magnitude_bin_matrix_left_future.wait_for(std::chrono::microseconds(1)) == std::future_status::ready ) {
         auto temp_matrix = _magnitude_bin_matrix_left_future.get();
-        _magnitude_bin_matrix_left.insert(_magnitude_bin_matrix_left.end(),temp_matrix.begin(),temp_matrix.end());
+        //_magnitude_bin_matrix_left.insert(_magnitude_bin_matrix_left.end(),temp_matrix.begin(),temp_matrix.end());
+        _magnitude_bin_matrix_left.insert(_magnitude_bin_matrix_left.begin()+_frame_slice_left,temp_matrix.begin(),temp_matrix.end());
         _frame_slice_left = _frame_slice_left + _frame_slice_window;
-      if( _frame_slice_left > _maximum_frame_count )
-        _magnitude_bin_matrix_left_fully_loaded = true;
+        if( _frame_slice_left > _maximum_frame_count )
+          _magnitude_bin_matrix_left_fully_loaded = true;
+        if( _visualiser_loaded < 2 )
+          _visualiser_loaded++;
       }
     }
   }
@@ -603,9 +600,24 @@ MusicMenu& MusicMenu::drawVisualiser() {
         _frame_slice_right = _frame_slice_right + _frame_slice_window;
         if( _frame_slice_right > _maximum_frame_count )
           _magnitude_bin_matrix_right_fully_loaded = true;
+        if( _visualiser_loaded < 2 )
+          _visualiser_loaded++;
       }
     }
   }
+}
+
+MusicMenu& MusicMenu::drawVisualiser() {
+  unsigned int frame = static_cast<unsigned int>(
+          std::floor(_current_time/_frame_window_size));
+  if( frame == _maximum_frame_count ) {
+    frame = 0;
+    _timeline.stop();
+    _timeline.start();
+    _current_time = 0.0f;
+  }
+
+  magnitudeSlicer();
 
   _visualiser->draw(
           _magnitude_bin_matrix_left[frame],
@@ -631,27 +643,7 @@ MusicMenu& MusicMenu::prepareVisualiser() {
   _magnitude_bin_matrix_left.reserve(_maximum_frame_count);
   _magnitude_bin_matrix_right.reserve(_maximum_frame_count);
 
-  std::vector<std::vector<float>> temp_matrix;
-  temp_matrix = _music->processAudioForMagnitudeVisualiser(
-          OpenFF::MusicVisualiserChannel::channel_left,
-          _frame_slice_left,
-          _frame_slice_window);
-  _magnitude_bin_matrix_left.insert(
-          _magnitude_bin_matrix_left.begin(),
-          temp_matrix.begin(),
-          temp_matrix.end());
-  temp_matrix = _music->processAudioForMagnitudeVisualiser(
-          OpenFF::MusicVisualiserChannel::channel_right,
-          _frame_slice_right,
-          _frame_slice_window);
-  _magnitude_bin_matrix_right.insert(
-          _magnitude_bin_matrix_right.begin(),
-          temp_matrix.begin(),
-          temp_matrix.end());
-
-  _frame_slice_left = _frame_slice_left + _frame_slice_window;
-  _frame_slice_right = _frame_slice_right + _frame_slice_window;
-  _visualiser_loaded = true;
+  magnitudeSlicer();
 
   return *this;
 }
