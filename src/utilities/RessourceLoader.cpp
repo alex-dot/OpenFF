@@ -1,6 +1,8 @@
 #include "RessourceLoader.h"
 #include "../misc/TerminalOutput.h"
 
+#include <Corrade/Containers/StringView.h>
+#include <Corrade/Containers/StringStl.h>
 #include <Magnum/PixelFormat.h>
 #include <Magnum/Image.h>
 #include <Magnum/ImageView.h>
@@ -41,7 +43,8 @@ void RessourceLoader::getImage(
 
 void RessourceLoader::saveImage(std::string location, Image2D& image) {
 //  Trade::ImageData2D image_data{PixelFormat::RGB8Unorm, {32, 32}, std::move(image)};
-  if( !_png_exporter->exportToFile(image, location) )
+  Containers::StringView sv_location = location;
+  if( !_png_exporter->convertToFile(image, sv_location) )
     FatlIOError("Could not save image at location: "+location);
 }
 

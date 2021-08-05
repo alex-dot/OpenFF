@@ -27,7 +27,7 @@ using namespace OpenFF;
 class ColoredDrawable: public SceneGraph::Drawable3D {
     public:
         explicit ColoredDrawable(Object3D& object,
-                                 Shaders::Flat3D& shader,
+                                 Shaders::FlatGL3D& shader,
                                  GL::Mesh& mesh,
                                  const Color4& color,
                                  SceneGraph::DrawableGroup3D& group) :
@@ -40,7 +40,7 @@ class ColoredDrawable: public SceneGraph::Drawable3D {
         void draw(const Matrix4& transformationMatrix,
                   SceneGraph::Camera3D& camera) override;
 
-        Shaders::Flat3D& _shader;
+        Shaders::FlatGL3D& _shader;
         GL::Mesh& _mesh;
         Color4 _color;
 };

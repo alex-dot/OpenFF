@@ -36,6 +36,7 @@ class OpenFF_Main: public Platform::Application {
     OpenFF::InputHandler*         _input;
     OpenFF::Textbox*              _textbox;
     OpenFF::Textbox*              _fps_counter;
+    unsigned int                  _fps_frame_counter;
     OpenFF::MusicMenu*            _music_menu;
     OpenFF::DebugBox*             _debug_box;
 };
@@ -98,6 +99,7 @@ OpenFF_Main::OpenFF_Main(const Arguments& arguments):
   _fps_counter->setTextShadowType(OpenFF::ShadowTypes::no_shadow);
   _fps_counter->enableInstantRendering();
   _fps_counter->show();
+  _fps_frame_counter = 0;
 
   _debug_box = new OpenFF::DebugBox();
 
@@ -147,7 +149,12 @@ void OpenFF_Main::drawEvent() {
           GL::FramebufferBlit::Color);
 
   _debug_box->draw();
-  _fps_counter->write("FPS: "+std::to_string(static_cast<int>(1.0f/fps)));
+
+  _fps_frame_counter++;
+  if( _fps_frame_counter >= 10 ) {
+    _fps_counter->write("FPS: "+std::to_string(static_cast<int>(1.0f/fps)));
+    _fps_frame_counter = 0;
+  }
 
   swapBuffers();
   redraw();

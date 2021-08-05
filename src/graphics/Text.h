@@ -51,7 +51,7 @@ class Text{
 
     std::string                       _text;
     OpenFF::Font*                     _font;
-    Shaders::DistanceFieldVector2D    _text_shader;
+    Shaders::DistanceFieldVectorGL2D  _text_shader;
     GL::Buffer                        _vertex_buffer, _index_buffer;
     GL::Mesh                          _mesh;
     Matrix3                           _mvp;

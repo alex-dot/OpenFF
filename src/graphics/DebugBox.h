@@ -33,7 +33,7 @@ class DebugBox{
 
   private:
     GL::Mesh                      _cube;
-    Shaders::Flat3D               _coloredShader;
+    Shaders::FlatGL3D             _coloredShader;
     Scene3D                       _scene;
     Object3D                      _sceneRoot, _cameraObject;
     SceneGraph::Camera3D*         _camera;
