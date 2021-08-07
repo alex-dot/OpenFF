@@ -17,6 +17,9 @@ void CalledObject::call() {
       case(ObjectType::main_app):
         callMainApp();
         break;
+      case(ObjectType::abstract_menu):
+        callAbstractMenu();
+        break;
       case(ObjectType::music):
         callMusic();
         break;
@@ -40,6 +43,20 @@ void CalledObject::callMainApp() {
       break;
   }
 }
+void CalledObject::callAbstractMenu() {
+  switch(_event) {
+    case(InputEvents::menu_up):
+    case(InputEvents::menu_down):
+    case(InputEvents::menu_left):
+    case(InputEvents::menu_right):
+    case(InputEvents::menu_accept):
+    case(InputEvents::menu_exit):
+      _callback_abstract_menu(*static_cast<AbstractMenu*>(_object));
+      break;
+    default:
+      FatlSrcLogicError<std::string>("Callback on undefined event for object.");
+  }
+}
 void CalledObject::callMusic() {
   switch(_event) {
     case(InputEvents::music_increase_gain):
@@ -56,12 +73,6 @@ void CalledObject::callMenuMusic() {
     case(InputEvents::music_increase_gain):
     case(InputEvents::music_decrease_gain):
     case(InputEvents::music_pause):
-    case(InputEvents::menu_up):
-    case(InputEvents::menu_down):
-    case(InputEvents::menu_left):
-    case(InputEvents::menu_right):
-    case(InputEvents::menu_accept):
-    case(InputEvents::menu_exit):
       _callback_menu_music(*static_cast<MusicMenu*>(_object));
       break;
     default:
@@ -110,6 +121,20 @@ void InputHandler::setCallbacks(
     _callback_functions[it->second]._type = type;
     _callback_functions[it->second]._object = static_cast<void*>(&object);
     _callback_functions[it->second]._callback_main_app = it->first;
+    _callback_functions[it->second]._callback_abstract_menu = nullptr;
+    _callback_functions[it->second]._callback_music = nullptr;
+    _callback_functions[it->second]._callback_menu_music = nullptr;
+  }
+}
+void InputHandler::setCallbacks(
+        AbstractMenu& object, ObjectType type,
+        std::initializer_list<std::pair
+                <std::function<void(AbstractMenu&)>,InputEvents>> events) {
+  for(auto it = events.begin(); it != events.end(); ++it) {
+    _callback_functions[it->second]._type = type;
+    _callback_functions[it->second]._object = static_cast<void*>(&object);
+    _callback_functions[it->second]._callback_main_app = nullptr;
+    _callback_functions[it->second]._callback_abstract_menu = it->first;
     _callback_functions[it->second]._callback_music = nullptr;
     _callback_functions[it->second]._callback_menu_music = nullptr;
   }
@@ -122,6 +147,7 @@ void InputHandler::setCallbacks(
     _callback_functions[it->second]._type = type;
     _callback_functions[it->second]._object = static_cast<void*>(&object);
     _callback_functions[it->second]._callback_main_app = nullptr;
+    _callback_functions[it->second]._callback_abstract_menu = nullptr;
     _callback_functions[it->second]._callback_music = it->first;
     _callback_functions[it->second]._callback_menu_music = nullptr;
   }
@@ -134,6 +160,7 @@ void InputHandler::setCallbacks(
     _callback_functions[it->second]._type = type;
     _callback_functions[it->second]._object = static_cast<void*>(&object);
     _callback_functions[it->second]._callback_main_app = nullptr;
+    _callback_functions[it->second]._callback_abstract_menu = nullptr;
     _callback_functions[it->second]._callback_music = nullptr;
     _callback_functions[it->second]._callback_menu_music = it->first;
   }

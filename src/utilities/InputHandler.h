@@ -12,6 +12,7 @@ class OpenFF_Main;
 
 namespace OpenFF {
 
+class AbstractMenu;
 class Music;
 class MusicMenu;
 
@@ -46,6 +47,7 @@ enum ModifierType {
 enum ObjectType {
   ot_undefined,
   main_app,
+  abstract_menu,
   music,
   menu_music,
   OBJECT_TYPE_MAX = menu_music
@@ -63,6 +65,7 @@ struct CalledObject {
   void call();
   // For each ObjectType, define a call()-function
   void callMainApp();
+  void callAbstractMenu();
   void callMusic();
   void callMenuMusic();
 
@@ -70,9 +73,10 @@ struct CalledObject {
   ObjectType                        _type            = ObjectType::ot_undefined;
   void*                             _object                           = nullptr;
   // For each ObjectType, define a _callback member std::function
-  std::function<void(OpenFF_Main&)> _callback_main_app                = nullptr;
-  std::function<void(Music&)>       _callback_music                   = nullptr;
-  std::function<void(MusicMenu&)>   _callback_menu_music              = nullptr;
+  std::function<void(OpenFF_Main&)>  _callback_main_app               = nullptr;
+  std::function<void(AbstractMenu&)> _callback_abstract_menu          = nullptr;
+  std::function<void(Music&)>        _callback_music                  = nullptr;
+  std::function<void(MusicMenu&)>    _callback_menu_music             = nullptr;
 };
 
 class InputHandler{
@@ -86,6 +90,10 @@ class InputHandler{
             OpenFF_Main&, ObjectType,
             std::initializer_list<std::pair
                     <std::function<void(OpenFF_Main&)>,InputEvents>> events);
+    void setCallbacks(
+            AbstractMenu&, ObjectType,
+            std::initializer_list<std::pair
+                    <std::function<void(AbstractMenu&)>,InputEvents>> events);
     void setCallbacks(
             Music&, ObjectType,
             std::initializer_list<std::pair
