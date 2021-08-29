@@ -84,12 +84,13 @@ Font* RessourceLoader::getFont(
   return font;
 }
 
-std::tuple<Audio::BufferFormat,Containers::Array<char>,ALsizei>
+std::tuple<Audio::BufferFormat,std::size_t,Containers::Array<char>,ALsizei>
         RessourceLoader::getAudio(std::string location) {
   if( !_audio_importer->openFile(location) )
     FatlIOError("Could not load audio file at location: "+location);
   return std::make_tuple(
           _audio_importer->format(),
+          _audio_importer->data().size(),
           std::move(_audio_importer->data()),
           _audio_importer->frequency());
 }

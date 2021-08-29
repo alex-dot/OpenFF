@@ -31,7 +31,7 @@ class RessourceLoader{
             std::string font_location,
             int font_size,
             std::string font_texture_location);
-    std::tuple<Audio::BufferFormat,Containers::Array<char>,ALsizei>
+    std::tuple<Audio::BufferFormat,std::size_t,Containers::Array<char>,ALsizei>
             getAudio(std::string);
 
   private:

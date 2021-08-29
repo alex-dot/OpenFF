@@ -45,8 +45,8 @@ class AbstractTextbox{
     AbstractTextbox& setBodyTransparency(float);
     AbstractTextbox& setBorderTransparency(float);
     // set generic textbox variables
-    AbstractTextbox& enableInstantRendering();
-    AbstractTextbox& disableInstantRendering();
+    virtual AbstractTextbox& enableInstantRendering();
+    virtual AbstractTextbox& disableInstantRendering();
     virtual AbstractTextbox& setRelativeBillboardRatio(Vector2);
     AbstractTextbox& setViewportSize(Vector2i);
     AbstractTextbox& setResizeFactor(float);

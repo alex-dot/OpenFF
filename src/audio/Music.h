@@ -48,9 +48,18 @@ class Music{
     std::string getCurrentTrackName();
     bool isPaused();
 
+    Music& setTrackByName(std::string);
     Music& increaseGain();
     Music& decreaseGain();
     Music& pauseResume();
+    Music& pause();
+    Music& resume();
+    Music& stop();
+    Music& play();
+
+    Music& enableMusicPendingFutures();
+    Music& disableMusicPendingFutures();
+    Music& toggleMusicPendingFutures();
 
     std::tuple<unsigned int,unsigned int,float> getVisualiserInformation();
     std::vector<std::vector<float>> processAudioForMagnitudeVisualiser(
@@ -70,15 +79,18 @@ class Music{
     OpenFF::Configuration*        _config;
     OpenFF::RessourceLoader*      _ressource_loader;
     Audio::Context                _context;
+    Audio::Playable2D*            _current_track;
     bool                          _current_track_loaded;
     Containers::Array<char>       _current_track_buffer_data;
     Audio::BufferFormat           _current_track_format;
     ALsizei                       _current_track_frequency;
     std::future<std::tuple<
       Audio::BufferFormat,
+      std::size_t,
       Containers::Array<char>,
       ALsizei>
     >                             _current_track_future;
+    bool                          _current_track_pending_futures;
     Audio::Buffer                 _current_track_buffer;
     std::string                   _current_track_name;
     std::string                   _current_track_location;

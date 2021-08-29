@@ -1,4 +1,5 @@
 #include <Corrade/Containers/Reference.h>
+#include <Corrade/Containers/GrowableArray.h>
 #include <Magnum/Audio/Playable.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/SceneGraph/Drawable.h>
@@ -33,7 +34,9 @@ Music::Music() :
           Audio::Context::Configuration{}
             .setHrtf(Audio::Context::Configuration::Hrtf::Enabled)
           },
+        _current_track(nullptr),
         _current_track_loaded(false),
+        _current_track_pending_futures(false),
         _source_rig(&_scene),
         _source_object(&_source_rig),
         _camera_object(&_scene),
@@ -45,13 +48,12 @@ Music::Music() :
         _frame_slice_right(0)
 {
   _camera.setViewport(GL::defaultFramebuffer.viewport().size());
+  _listener.setGain(0.5f);
 }
 Music::Music(Configuration* config, RessourceLoader* ressource_loader) :
         Music::Music() {
   _config = config;
   _ressource_loader = ressource_loader;
-  _current_track_name = _config->getRandomMusic();
-  this->loadAudioData();
 }
 Music::Music(
         Configuration* config,
@@ -62,10 +64,10 @@ Music::Music(
 }
 
 Music& Music::loadAudioData() {
-  if(_config->getMusicLocation(_current_track_location, _current_track_name))
+  if(_config->getMusicLocation(_current_track_location, _current_track_name)) {
     _current_track_location = _config->getMusicLocation()+_current_track_location;
-  else
-    FatlInputError<std::string>("Error: could not open file at location: "+std::string(_current_track_location));
+  } else
+    FatlInputError<std::string>("Error: Could not find file in tracklist: "+std::string(_current_track_location));
 
   _current_track_future = std::async(
           std::launch::async,
@@ -77,29 +79,125 @@ Music& Music::loadAudioData() {
 }
 
 Music& Music::storeAudioData() {
+  _current_track_buffer_data.release();
   auto current_track_tuple = _current_track_future.get();
   _current_track_format = std::get<0>(current_track_tuple);
-  _current_track_buffer_data = std::move(std::get<1>(current_track_tuple));
-  _current_track_frequency = std::get<2>(current_track_tuple);
+  Containers::arrayReserve(_current_track_buffer_data, std::get<1>(current_track_tuple));
+  _current_track_buffer_data = std::move(std::get<2>(current_track_tuple));
+  _current_track_frequency = std::get<3>(current_track_tuple);
 
   prepareForMagnitudeVisualiser();
   return *this;
 }
 
 Music& Music::playAudioData() {
+  _playables.stop();
+  if( _current_track ) {
+    _playables.remove(*_current_track);
+    delete _current_track;
+  }
+
   _current_track_buffer.setData(
           _current_track_format,
           _current_track_buffer_data,
           _current_track_frequency);
 
-  (new Audio::Playable2D{_source_object, &_playables})->source()
+  _current_track = new Audio::Playable2D{_source_object, &_playables};
+  _current_track->source()
     .setBuffer(&_current_track_buffer)
     .setLooping(true);
   if( !_global_pause ) {
     _playables.play();
   }
-  _listener.setGain(0.5f);
 
+  return *this;
+}
+
+std::string Music::getCurrentTrackName() {
+  std::string name;
+  _config->getMusicName(name, _current_track_name);
+  return name;
+}
+
+bool Music::isPaused() {
+  return (_global_pause || !_current_track_loaded);
+}
+
+Music& Music::setTrackByName(std::string name) {
+  std::string full_name;
+  if( _config->getMusicName(full_name, name) ) {
+    _current_track_loaded = false;
+    _current_track_name = name;
+    this->loadAudioData();
+    _global_pause = false;
+  } else {
+    DbgWarn{} << "Tried to set new music track by non-existent name";
+  }
+  return *this;
+}
+
+Music& Music::increaseGain() {
+  _listener.setGain(_listener.gain()+0.1f);
+  this->draw();
+  return *this;
+}
+Music& Music::decreaseGain() {
+  _listener.setGain(_listener.gain()-0.1f);
+  this->draw();
+  return *this;
+}
+Music& Music::pauseResume() {
+  if( _global_pause ) {
+    resume();
+  } else {
+    pause();
+  }
+  return *this;
+}
+Music& Music::pause() {
+  _playables.pause();
+  _global_pause = true;
+  return *this;
+}
+Music& Music::resume() {
+  _playables.play();
+  _global_pause = false;
+  return *this;
+}
+Music& Music::stop() {
+  _playables.stop();
+  _global_pause = true;
+  return *this;
+}
+Music& Music::play() {
+  resume();
+  return *this;
+}
+
+void Music::draw() {
+  if( _current_track_loaded ) {
+    _listener.update({_playables});
+    _camera.draw(_drawables);
+  } else {
+    if( !_current_track_pending_futures
+      && _current_track_future.wait_for(std::chrono::microseconds(1)) == std::future_status::ready ) {
+      this->storeAudioData();
+      this->playAudioData();
+      _current_track_loaded = true;
+    }
+  }
+}
+
+Music& Music::enableMusicPendingFutures() {
+  _current_track_pending_futures = true;
+  return *this;
+}
+Music& Music::disableMusicPendingFutures() {
+  _current_track_pending_futures = false;
+  return *this;
+}
+Music& Music::toggleMusicPendingFutures() {
+  _current_track_pending_futures = !_current_track_pending_futures;
   return *this;
 }
 
@@ -140,6 +238,8 @@ Music& Music::prepareForMagnitudeVisualiser() {
 
   // _maximum_frame_count defines how many frames we have given our sampling rate
   _maximum_frame_count = _current_track_buffer_data.size()/_samples;
+  _magnitude_bin_matrix_left.clear();
+  _magnitude_bin_matrix_right.clear();
   _magnitude_bin_matrix_left.reserve(_maximum_frame_count+1);
   _magnitude_bin_matrix_right.reserve(_maximum_frame_count+1);
 
@@ -174,16 +274,6 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
         const unsigned int frames_min,
         unsigned int frames_max) {
 
-  if( frames_max <= _frame_slice_left && return_channel == channel_left ) {
-    return std::vector<std::vector<float>>(
-            _magnitude_bin_matrix_left.begin()+frames_min,
-            _magnitude_bin_matrix_left.begin()+frames_max);
-  } else if( frames_max <= _frame_slice_right && return_channel == channel_right ) {
-    return std::vector<std::vector<float>>(
-            _magnitude_bin_matrix_right.begin()+frames_min,
-            _magnitude_bin_matrix_right.begin()+frames_max);
-  }
-
   Corrade::Containers::ArrayView<char> data;
 
   if( frames_max >= _maximum_frame_count )
@@ -191,7 +281,7 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
 
   for( unsigned int f = frames_min; f < frames_max; ++f ) {
     if( (f+1)*_samples >= (_maximum_frame_count-1)*_samples+_samples/2 ) {
-        data = _current_track_buffer_data.slice(f*_samples,f*_samples+_samples/2);
+      data = _current_track_buffer_data.slice(f*_samples,f*_samples+_samples/2);
     } else {
       data = _current_track_buffer_data.slice(f*_samples,f*_samples+_samples);
     }
@@ -279,50 +369,6 @@ std::vector<std::vector<float>> Music::processAudioForMagnitudeVisualiser(
     return std::vector<std::vector<float>>(
             _magnitude_bin_matrix_right.begin()+frames_min,
             _magnitude_bin_matrix_right.begin()+frames_max);
-  }
-}
-
-std::string Music::getCurrentTrackName() {
-  std::string name;
-  _config->getMusicName(name, _current_track_name);
-  return name;
-}
-
-bool Music::isPaused() {
-  return (_global_pause || !_current_track_loaded);
-}
-
-Music& Music::increaseGain() {
-  _listener.setGain(_listener.gain()+0.1f);
-  this->draw();
-  return *this;
-}
-Music& Music::decreaseGain() {
-  _listener.setGain(_listener.gain()-0.1f);
-  this->draw();
-  return *this;
-}
-Music& Music::pauseResume() {
-  if( _global_pause ) {
-    _playables.play();
-    _global_pause = false;
-  } else {
-    _playables.pause();
-    _global_pause = true;
-  }
-  return *this;
-}
-
-void Music::draw() {
-  if( _current_track_loaded ) {
-    _listener.update({_playables});
-    _camera.draw(_drawables);
-  } else {
-    if( _current_track_future.wait_for(std::chrono::microseconds(1)) == std::future_status::ready ) {
-      this->storeAudioData();
-      this->playAudioData();
-      _current_track_loaded = true;
-    }
   }
 }
 

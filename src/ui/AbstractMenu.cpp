@@ -4,10 +4,6 @@
 #include <list>
 #include <algorithm>
 
-// for testing and posterity
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-
 using namespace OpenFF;
 
 AbstractMenu::AbstractMenu() {}

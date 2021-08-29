@@ -51,7 +51,7 @@ void Text::draw() {
     tieText(_text.substr(0,int(_render_state)));
     // Advance the render state
     _render_state = _render_state + _render_speed;
-    if( _render_state >= _text.length() ) _render_state = _text.length();
+    if( _render_state > _text.length() ) _render_state = _text.length() + 1;
   }
 
   using namespace Math::Literals;
@@ -94,6 +94,8 @@ void Text::setText(std::string text) {
   _text = text;
   if( _render_all_characters_instantly ) {
     tieText(_text);
+  } else {
+    _render_state = text_render_state_min;
   }
 }
 

@@ -33,16 +33,24 @@ class MusicMenu: public AbstractMenu{
   private:
     MusicMenu& increaseGain();
     MusicMenu& decreaseGain();
-    MusicMenu& pauseResume();
+    MusicMenu& pauseResumeTrack();
+    MusicMenu& pauseTrack();
+    MusicMenu& resumeTrack();
+    MusicMenu& previousTrack();
+    MusicMenu& nextTrack();
+    MusicMenu& stopTrack();
 
     MusicMenu& drawVisualiser();
     MusicMenu& prepareVisualiser();
 
     void magnitudeSlicer();
 
-    OpenFF::Music*                                        _music;
-    OpenFF::Textbox*                                      _songtitle;
-    OpenFF::MenuBox*                                      _player;
+    OpenFF::Configuration*                          _config;
+    OpenFF::Music*                                  _music;
+    OpenFF::Textbox*                                _songtitle;
+    OpenFF::MenuBox*                                _player;
+
+    unsigned int                                    _stopped_the_music;
 
     // Visualiser variables
     OpenFF::MusicVisualiser*                        _visualiser;

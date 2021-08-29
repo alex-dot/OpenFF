@@ -39,6 +39,8 @@ class FreeformTextbox: public AbstractTextbox{
 
     FreeformTextbox& moveText(Vector2i);
 
+    virtual FreeformTextbox& enableInstantRendering();
+    virtual FreeformTextbox& disableInstantRendering();
     unsigned int getLineCount();
     unsigned int getCharacterCountPerLine(unsigned int);
     unsigned int getMaximumCharacterWidth();
@@ -63,6 +65,7 @@ class FreeformTextbox: public AbstractTextbox{
     std::vector<std::vector<FreeformTextboxCharacter>> _textmap;
     unsigned int                                       _max_char_width;
     unsigned int                                       _line_height;
+    bool                                               _instant_rendering;
 };
 
 }

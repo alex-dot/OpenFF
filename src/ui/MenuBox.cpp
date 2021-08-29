@@ -166,7 +166,7 @@ MenuBox& MenuBox::selectionAccept() {
   if( callable.first != nullptr && callable.second != nullptr ) {
     (callable.second)(*(callable.first));
   } else {
-    Err("Tried calling undefined menu callback: " + std::to_string(pos.x()) + std::to_string(pos.y()));
+    Err("Tried calling undefined menu callback: " + std::to_string(pos.y()) + std::to_string(pos.x()));
   }
   return *this;
 }
@@ -224,11 +224,15 @@ MenuBox& MenuBox::setSelectionAccept(
         std::function<void(MusicMenu&)> functor) {
   if( pos.y() < int(_textbox->getLineCount()) || pos.y() == 0 ) {
     if( (  _type != MenuBoxType::freeform && pos.y() == 0 )
-     || ( pos.x() < int(_textbox->getCharacterCountPerLine(pos.x())) ) ) {
+     || ( pos.x() <= int(_textbox->getCharacterCountPerLine(pos.y())) ) ) {
       _menu_callbacks[pos.y()][pos.x()] = std::make_pair<
             OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>
             (std::move(object),std::move(functor));
+    } else {
+      DbgWarn{} << "Trying to set callback at undefined position:" << pos;
     }
+  } else {
+    DbgWarn{} << "Trying to set callback at undefined position:" << pos;
   }
   return *this;
 }
@@ -307,9 +311,9 @@ MenuBox& MenuBox::write(std::string text) {
   std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>
           callable = std::make_pair(nullptr,nullptr);
   std::vector<std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>>
-          cols(callable_matrix.y()+1,callable);
+          cols(callable_matrix.x()+1,callable);
   std::vector<std::vector<std::pair<OpenFF::MusicMenu*,std::function<void(OpenFF::MusicMenu&)>>>>
-          rows(callable_matrix.x()+1,cols);
+          rows(callable_matrix.y()+1,cols);
   std::swap(rows,_menu_callbacks);
 
   return *this;
@@ -482,12 +486,12 @@ MenuBoxType MenuBox::getType() {
 Vector2i MenuBox::getSelectableEntriesMatrix() {
   int lines = _textbox->getLineCount();
   unsigned int max_chars = 0;
-  for( int i = 0; i < lines; ++i ) {
+  for( int i = 0; i <= lines; ++i ) {
     if( _textbox->getCharacterCountPerLine(i) > max_chars ) {
-      max_chars = i;
+      max_chars = _textbox->getCharacterCountPerLine(i);
     }
   }
-  return Vector2i(lines,max_chars);
+  return Vector2i(max_chars,lines);
 }
 
 unsigned int MenuBox::getCurrentHorizontalPositionOfSelection() {
@@ -497,8 +501,8 @@ unsigned int MenuBox::getCurrentVerticalPositionOfSelection() {
   return _selection_current_position_vertically;
 }
 Vector2i     MenuBox::getCurrentPositionOfSelection() {
-  return Vector2i(this->getCurrentVerticalPositionOfSelection(),
-                  this->getCurrentHorizontalPositionOfSelection());
+  return Vector2i(this->getCurrentHorizontalPositionOfSelection(),
+                  this->getCurrentVerticalPositionOfSelection());
 }
 Vector2i     MenuBox::getCurrentPixelPositionOfSelection() {
   unsigned int vertical =

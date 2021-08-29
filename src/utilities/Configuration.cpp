@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <random>
 
 #include "Configuration.h"
 #include "InputHandler.h"
@@ -183,7 +184,13 @@ bool Configuration::getMusicName(
   return false;
 }
 std::string Configuration::getRandomMusic() const {
-  return _ff7_music_name_map.find("ta")->first;
+  // at some point, move this to a dedicated misc-Class
+  std::random_device rand;
+  std::mt19937 rng(rand());
+  std::uniform_int_distribution<std::mt19937::result_type>
+          dist(0,_ff7_music_name_map.size());
+  auto iter = std::next(_ff7_music_name_map.begin(),dist(rng));
+  return iter->first;
 }
 
 // This is where valid section names for the ini-file are defined

@@ -14,7 +14,8 @@ FreeformTextbox::FreeformTextbox(
                 ressource_loader,
                 relative_billboard_ratio,
                 textbox_size,
-                offset) {
+                offset),
+          _instant_rendering(false) {
   prepare();
 }
 
@@ -62,6 +63,7 @@ FreeformTextbox& FreeformTextbox::write(std::string text) {
       character.text_obj->setOffset(_offset);
       character.text_obj->setBorderOffset(character.offset+character.offset_mod);
       character.text_obj->setText(line.substr(i,char_length));
+      if( _instant_rendering ) character.text_obj->enableInstantRendering();
 
       newline.push_back(character);
 
@@ -80,14 +82,34 @@ FreeformTextbox& FreeformTextbox::write() {
   return *this;
 }
 
+FreeformTextbox& FreeformTextbox::enableInstantRendering() {
+  _instant_rendering = true;
+  _window->enableInstantRendering();
+  for( auto i = _textmap.begin(); i < _textmap.end(); ++i ) {
+    for( auto j = i->begin(); j < i->end(); ++j ) {
+      j->text_obj->enableInstantRendering();
+    }
+  }
+
+  return *this;
+}
+FreeformTextbox& FreeformTextbox::disableInstantRendering() {
+  _instant_rendering = false;
+  _window->disableInstantRendering();
+  for( auto i = _textmap.begin(); i < _textmap.end(); ++i ) {
+    for( auto j = i->begin(); j < i->end(); ++j ) {
+      j->text_obj->disableInstantRendering();
+    }
+  }
+
+  return *this;
+}
 FreeformTextbox& FreeformTextbox::setRelativeBillboardRatio(Vector2 relative_billboard_ratio) {
   _relative_billboard_ratio = relative_billboard_ratio;
   _window->setRelativeBillboardRatio(_relative_billboard_ratio);
-  if( _window->isFullyShown() ) {
-    for( auto i = _textmap.begin(); i < _textmap.end(); ++i ) {
-      for( auto j = i->begin(); j < i->end(); ++j ) {
-        j->text_obj->setRelativeBillboardRatio(_relative_billboard_ratio);
-      }
+  for( auto i = _textmap.begin(); i < _textmap.end(); ++i ) {
+    for( auto j = i->begin(); j < i->end(); ++j ) {
+      j->text_obj->setRelativeBillboardRatio(_relative_billboard_ratio);
     }
   }
 
